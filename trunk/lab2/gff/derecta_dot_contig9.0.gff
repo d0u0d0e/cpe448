@@ -1,0 +1,10 @@
+contig9	.	mRNA	22187	5441	.	-	.	gene_id "toy"; transcript_id "toy-RA";
+contig9	.	CDS	22187	21937	.	-	.	gene_id "toy"; transcript_id "toy-RA";
+contig9	.	CDS	19390	19210	.	-	.	gene_id "toy"; transcript_id "toy-RA";
+contig9	.	CDS	14676	14439	.	-	.	gene_id "toy"; transcript_id "toy-RA";
+contig9	.	CDS	12926	12750	.	-	.	gene_id "toy"; transcript_id "toy-RA";
+contig9	.	CDS	11923	11841	.	-	.	gene_id "toy"; transcript_id "toy-RA";
+contig9	.	CDS	7499	7245	.	-	.	gene_id "toy"; transcript_id "toy-RA";
+contig9	.	CDS	7187	7039	.	-	.	gene_id "toy"; transcript_id "toy-RA";
+contig9	.	CDS	5791	5589	.	-	.	gene_id "toy"; transcript_id "toy-RA";
+contig9	.	CDS	5532	5438	.	-	.	gene_id "toy"; transcript_id "toy-RA";

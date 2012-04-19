@@ -1,0 +1,48 @@
+Team 6
+
+CSC 448
+Daniel Huang
+Ricardo Tijero
+Ben Tupas
+
+CHEM 441
+Melanie Regan 
+Raquel Kahler
+
+File List:
+DNALib.java - DNA manipulation and analysis library
+MainWindow.java - Interface controller and file parser
+Gene.java - Gene object class
+
+Instructions:
+To compile...
+To run...
+
+DNA Library:
+aminoAcid - represents an amino acid
+Codon - represents a codon/triplet
+GCContent() - returns the GC-content given a start/stop point of the sequence
+complement() - returns the complement of the sequence
+reverse() - returns the reverse complement of the sequence
+mapAdd() - sets up codon mapping
+createMap() - maps codons to amino acids
+counts() - counts codons
+frequencyOptimalCodons() - returns the frequency of optimal codons
+rcsu() - returns the RCSU of an amino acid
+CAI() - returns the codon adaptation index
+effectiveNumberCodons() - returns the effective number of codons
+scaledChi2 - returns the scaled chi-squared value
+enthropy() - returns shannon's inofrmation entropy of the DNA sequence 
+codonDensity() - returns the codon density
+geneDensity() - returns the gene density
+log2() - returns the log base 2 of a number
+count() - returns the length of a substring
+overlap() - computes the GC-contents given a window and a slide value
+nonoverlap() - computes the GC-contents given a equal window/slide value
+geneDensity() - computes the number of genes
+geneGC() - computes the GC-contents in the exons, introns, and intergenic regions
+geneSize() - computes the nucleotides in the exons, introns, and intergenic regions
+codonFrequency() - computes the frequencies of codons within the genes
+
+Work Breakdown:
+-Basic Library, CHEM 448 Specifications, and GUI developed individually with joint assistance.

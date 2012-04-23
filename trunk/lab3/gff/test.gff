@@ -1,0 +1,5 @@
+contig6	.	mRNA	5	9	.	+	.	gene_id "Act"; transcript_id "Actbeta-RA";
+contig6	.	mRNA	1	9	.	+	.	gene_id "Act"; transcript_id "Actbeta-RA";
+contig6	.	mRNA	18	15	.	-	.	gene_id "beta"; transcript_id "Actbeta-RA";
+contig6	.	mRNA	18	12	.	-	.	gene_id "beta"; transcript_id "Actbeta-RA";
+contig6	.	mRNA	18	15	.	-	.	gene_id "beta"; transcript_id "Actbeta-RA";

@@ -7,13 +7,17 @@ JC = javac
 
 CLASSES = \
 	  BM.java \
-	  Main.java
+	  Main.java \
+	  Combine.java
 
 default: classes
 
 classes: $(CLASSES:.java=.class)
 
-t: classes
+c: classes
+	java Combine 
+
+bm: classes
 	java Main 
 
 clean:

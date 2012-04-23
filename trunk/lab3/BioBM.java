@@ -1,39 +1,27 @@
 import java.util.HashMap;
 
-public class BM {
+public class BioBM {
 
-   public static void BMrun(String S, String P) {
+   public static int BMrun(String S, String P) {
       int s = 0, j = 0, n = S.length(), m = P.length();
-      HashMap<Character, Integer> Rval = computeR(P);
       int[] GS = GoodSuffix(P);
 
       j = m;
       while(s <= (n - m)) {
-         System.out.println("s: " + s + ", j: " + j);
+         //System.out.println("s: " + s + ", j: " + j);
          while(j > 0 && P.charAt(j-1) == S.charAt(s+j-1))
        	    j--;
 
          if (j == 0) {
-            System.out.println("Finish: " + s);
-            break;
-            //s = s + GS[0];
+            return s;
          }
 	      else {
 	         //s = GS[j];
             s++;
-            /*try
-            {
-               s += Rval.get(S.charAt(s+j));
-            }
-            catch (Exception e)
-            {
-               s++;
-            }*/
-            // s = j - Rval.get(S.charAt(s+j));
-            //s = Math.max(GS[j], j - Rval.get(S.charAt(s+j)));
 	      }
       }
-      System.out.println("Not Found? s: " +s);
+      //System.out.println("Not Found? s: " +s);
+      return -1;
    }
 
    
@@ -52,18 +40,6 @@ public class BM {
       }
 
       return pi;
-   }
-
-   public static HashMap<Character, Integer> computeR(String P) {
-      HashMap<Character, Integer> Rval = new HashMap<Character, Integer>();
-      
-      for(int i = 0; i < P.length(); i++) 
-         Rval.put(new Character(P.charAt(i)), new Integer(0));
-
-      for(int i = 0; i < P.length(); i++)
-    	   Rval.put(new Character(P.charAt(i)), new Integer(i));
-      
-      return Rval;
    }
 
    public static int[] GoodSuffix(String P) {

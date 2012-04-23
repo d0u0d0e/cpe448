@@ -7,6 +7,7 @@ JC = javac
 
 CLASSES = \
 	  BM.java \
+	  BioBM.java \
 	  Main.java \
 	  Combine.java
 

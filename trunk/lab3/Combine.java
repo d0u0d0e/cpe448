@@ -9,7 +9,8 @@ public class Combine
       ArrayList<String> fasta = new ArrayList<String>();
       ArrayList<String> gff = new ArrayList<String>();
       ArrayList<String> offset = new ArrayList<String>();
-      
+      BioBM bm = new BioBM();
+
       // fasta files
       fasta.add("fasta/contig6.txt");
       fasta.add("fasta/contig7.txt");
@@ -49,12 +50,13 @@ public class Combine
             fasta2 = fasta2 + scF2.nextLine();
          }
          
-         findOverlap(fasta1, fasta2);
+         int overlap = bm.BMrun(fasta1, fasta2);
 
          System.out.println(fasta1);
          System.out.println(fasta2);
+         System.out.println("Overlap: " + overlap);
          break;
-      }      
+      }
    }
    
    public static String findOverlap(String s1, String s2)

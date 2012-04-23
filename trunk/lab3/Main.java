@@ -6,10 +6,10 @@ public class Main
    {
       BM bm = new BM();
       
-      int[] res = bm.GoodSuffix("LLO");
+      int[] res = bm.GoodSuffix("ATTGCATC");
       for (int i : res)
          System.out.print(i + ", ");
       System.out.println("");
-      bm.BMrun("BYEHELLO", "HELLO");
+      bm.BMrun("ATTGCATC", "ATC");
    }
 }

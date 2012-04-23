@@ -7,8 +7,8 @@ public class BM {
       HashMap<Character, Integer> Rval = computeR(P);
       int[] GS = GoodSuffix(P);
 
-      j = m;
       while(s <= (n - m)) {
+      j = m;
          System.out.println("s: " + s + ", j: " + j);
          while(j > 0 && P.charAt(j-1) == S.charAt(s+j-1))
        	    j--;

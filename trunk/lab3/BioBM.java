@@ -9,7 +9,7 @@ public class BioBM {
       j = m;
       while(s <= (n - m)) {
          //System.out.println("s: " + s + ", j: " + j);
-         while(j > 0 && P.charAt(j-1) == S.charAt(s+j-1))
+         while(j > 0 && nEqual(P.charAt(j-1), S.charAt(s+j-1)))
        	    j--;
 
          if (j == 0) {
@@ -24,6 +24,14 @@ public class BioBM {
       return -1;
    }
 
+   static public boolean nEqual(char a, char b)
+   {
+      if (a == b || a == 'N' || b == 'N')
+      {
+         return true;
+      }
+      return false;
+   }
    
    static public int[] computePi(String pattern) {
       int[] pi = new int[pattern.length()+1];

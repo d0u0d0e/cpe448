@@ -6,8 +6,8 @@ public class BioBM {
       int s = 0, j = 0, n = S.length(), m = P.length();
       int[] GS = GoodSuffix(P);
 
-      j = m;
       while(s <= (n - m)) {
+      j = m;
          //System.out.println("s: " + s + ", j: " + j);
          while(j > 0 && nEqual(P.charAt(j-1), S.charAt(s+j-1)))
        	    j--;

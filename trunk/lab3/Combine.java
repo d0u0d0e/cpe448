@@ -17,6 +17,8 @@ public class Combine
       ArrayList<String> gffFiles = new ArrayList<String>();
       ArrayList<String> fasta = new ArrayList<String>();
       ArrayList<ArrayList<Gene>> gff = new ArrayList<ArrayList<Gene>>();
+      ArrayList<String> combinedFastas = new ArrayList<String>();
+      int minMatch = 3;
 
       // intialize bio-specific Boyer-Moore's algorithm
       BioBM bm = new BioBM();
@@ -24,13 +26,19 @@ public class Combine
       // fasta files
       fastaFiles.add("fasta1");
       fastaFiles.add("fasta2");
+      fastaFiles.add("fasta3");
+      fastaFiles.add("fasta4");
+      fastaFiles.add("fasta5");
       
       // gff files
       gffFiles.add("gff1");
       gffFiles.add("gff2");
+      gffFiles.add("gff3");
+      gffFiles.add("gff4");
+      gffFiles.add("gff5");
 
       // check file counts
-      if (fastaFiles.size() != gffFiles.size())
+      if (fastaFiles.size() != gffFiles.size() && fastaFiles.size() > 1)
       {  
          System.out.println("File count does not match\n");
          return;
@@ -45,33 +53,58 @@ public class Combine
       }
 
       // combine files
+      String superFasta = fasta.get(0);
+
       for (int i = 0; i < fasta.size()-1; i++)
       {   
          int overlap;
          int maxOverlap = -1;
-         int end = 0;
+         int offset;
+         int end = minMatch;
          
-         String fasta1 = fasta.get(i);
          String fasta2 = fasta.get(i+1);
          ArrayList<Gene> gff1 = gff.get(i);
          ArrayList<Gene> gff2 = gff.get(i+1);
-
-         while ((overlap = bm.BMrun(fasta1, fasta2.substring(0, end))) >= 0)
+        
+         if (end > fasta2.length()-1)
          {
-            System.out.println((fasta2.substring(0, end)));
+            System.out.println("Minimum match less than string length");
+            return;
+         }
+
+         while ((overlap = bm.BMrun(superFasta, fasta2.substring(0, end))) >= 0)
+         {
             maxOverlap = overlap;
             end++;
             if (end >= fasta2.length())
                break;
          }
+         if (maxOverlap != -1)
+         {
+            //////////////////////////////
+            // QUALITY CHECK, REMOVE LATER
+            if (!fasta2.startsWith(superFasta.substring(maxOverlap, superFasta.length()-1)))
+            {
+               System.out.println("Overlap not actually found at the end");
+               return;
+            }
+            // QUALITY CHECK, REMOVE LATER
+            //////////////////////////////
+            
+            offset = superFasta.length() - maxOverlap;
+            superFasta = superFasta + fasta2.substring(offset, fasta2.length());
+         }
+         else
+         {
+            combinedFastas.add(superFasta);
+            superFasta = fasta.get(i+1); 
+         }
+      }
+      combinedFastas.add(superFasta);
 
-    
-         System.out.println("Fasta1: " + fasta1);
-         System.out.println("Fasta2: " + fasta2);
-         System.out.println("Overlap: " + maxOverlap);
-         String fastaC = fasta1 + fasta2.substring(fasta1.length()-maxOverlap, fasta2.length()-1);
-         System.out.println("Combined: " + fastaC);
-
+      for (String s : combinedFastas)
+      {
+         System.out.println("Fasta: " + s);
       }
    }
 

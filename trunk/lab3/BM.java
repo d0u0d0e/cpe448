@@ -2,7 +2,7 @@ import java.util.HashMap;
 
 public class BM {
 
-   public static void BMrun(String S, String P) {
+public static void BMrun(String S, String P) {
       int s = 0, j = 0, n = S.length(), m = P.length();
       HashMap<Character, Integer> Rval = computeR(P);
       int[] GS = GoodSuffix(P);
@@ -11,31 +11,25 @@ public class BM {
       j = m;
          System.out.println("s: " + s + ", j: " + j);
          while(j > 0 && P.charAt(j-1) == S.charAt(s+j-1))
-       	    j--;
+            j--;
 
          if (j == 0) {
             System.out.println("Finish: " + s);
-            break;
-            //s = s + GS[0];
+            s = s + GS[0];
          }
-	      else {
-	         //s = GS[j];
-            s++;
-            /*try
+         else {
+            try
             {
-               s += Rval.get(S.charAt(s+j));
+                s += Math.max(GS[j], j - Rval.get(S.charAt(s+j)));
             }
             catch (Exception e)
             {
-               s++;
-            }*/
-            // s = j - Rval.get(S.charAt(s+j));
-            //s = Math.max(GS[j], j - Rval.get(S.charAt(s+j)));
-	      }
+            	s += Math.max(GS[j], j);
+            }
+         }
       }
       System.out.println("Not Found? s: " +s);
    }
-
    
    static public int[] computePi(String pattern) {
       int[] pi = new int[pattern.length()+1];
@@ -57,8 +51,8 @@ public class BM {
    public static HashMap<Character, Integer> computeR(String P) {
       HashMap<Character, Integer> Rval = new HashMap<Character, Integer>();
       
-      for(int i = 0; i < P.length(); i++) 
-         Rval.put(new Character(P.charAt(i)), new Integer(0));
+      //for(int i = 0; i < P.length(); i++) 
+        // Rval.put(new Character(P.charAt(i)), new Integer(0));
 
       for(int i = 0; i < P.length(); i++)
     	   Rval.put(new Character(P.charAt(i)), new Integer(i));

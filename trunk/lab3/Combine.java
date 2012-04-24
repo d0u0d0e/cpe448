@@ -19,27 +19,18 @@ public class Combine
       ArrayList<ArrayList<String>> gff = new ArrayList<ArrayList<String>>();
       ArrayList<String> combinedFASTAS = new ArrayList<String>();
       ArrayList<ArrayList<String>> combinedGFFS = new ArrayList<ArrayList<String>>();
-      int minMatch = 3;
+      int minMatch = 100;
 
       // intialize bio-specific Boyer-Moore's algorithm
       BioBM bm = new BioBM();
 
       // fasta files
-      /*fastaFiles.add("fasta1");
-      fastaFiles.add("fasta2");
-      fastaFiles.add("fasta3");
-      fastaFiles.add("fasta4");
-      fastaFiles.add("fasta5");
-      */
-      // gff files
-      /*gffFiles.add("gff1");
-      gffFiles.add("gff2");
-      gffFiles.add("gff3");
-      gffFiles.add("gff4");
-      gffFiles.add("gff5");
-*/
+      fastaFiles.add("fasta/contig5.txt");
       fastaFiles.add("fasta/contig6.txt");
       fastaFiles.add("fasta/contig7.txt");
+      
+      // gff files
+      gffFiles.add("gff/derecta_dot_contig5.0.gff");
       gffFiles.add("gff/derecta_dot_contig6.0.gff");
       gffFiles.add("gff/derecta_dot_contig7.0.gff");
 
@@ -61,6 +52,7 @@ public class Combine
       // combine files
       String superFASTA = fasta.get(0);
       ArrayList<String> superGFF = new ArrayList<String>();
+      ArrayList<String> gff1 = gff.get(0);
 
       for (int i = 0; i < fasta.size()-1; i++)
       {   
@@ -70,7 +62,6 @@ public class Combine
          int end = minMatch;
          
          String fasta2 = fasta.get(i+1);
-         ArrayList<String> gff1 = gff.get(i);
          ArrayList<String> gff2 = gff.get(i+1);
         
          if (end > fasta2.length()-1)
@@ -90,13 +81,13 @@ public class Combine
          if (maxOverlap != -1)
          {
             //////////////////////////////
-            // QUALITY CHECK, REMOVE LATER
+            // MINMATCH QUALITY CHECK, REMOVE LATER
             if (!fasta2.startsWith(superFASTA.substring(maxOverlap, superFASTA.length()-1)))
             {
-               System.out.println("Overlap not actually found at the end");
+               System.out.println("Overlap not actually found at the end, try higher minMatch value");
                return;
             }
-            // QUALITY CHECK, REMOVE LATER
+            // MINMATCH QUALITY CHECK, REMOVE LATER
             //////////////////////////////
             
             offset = superFASTA.length() - maxOverlap;
@@ -117,27 +108,25 @@ public class Combine
                   p2 = parseLine(gff2.get(k));
                   start2 = Integer.parseInt(p2.get(3));
                   stop2 = Integer.parseInt(p2.get(4));
-                  if (!(start1 == (start2 + offset) && 
-                        stop1 == (stop2 + offset) &&
-                        p1.get(9).equals(p2.get(9)) && 
-                        p1.get(11).equals(p2.get(11)))) 
+                  if (start1 != (start2 + maxOverlap) || 
+                        stop1 != (stop2 + maxOverlap))
                   {
-                     System.out.println("p1: " + p1);
-                     System.out.println("p2: " + p2);
+                     System.out.println("p1: " + repiece(p1));
+                     System.out.println("p2: " + updateOffset(p2, maxOverlap));
 
                      if (Math.abs(start1 - stop1) < 
-                         Math.abs(start2 - stop2 + offset))
+                         Math.abs(start2 - stop2 + maxOverlap))
                      {
                         superGFF.add(repiece(p1));
                      }
                      else
                      {
-                        superGFF.add(updateOffset(p2, offset));
+                        superGFF.add(updateOffset(p2, maxOverlap));
                      }
                   }
                   else
                   {
-                     superGFF.add(updateOffset(p2, offset));
+                     superGFF.add(updateOffset(p2, maxOverlap));
                   }
                   k++; 
                }
@@ -148,57 +137,67 @@ public class Combine
                      flag = 1;
                      while (parseLine(gff2.get(k)).get(6).charAt(0) == '+')
                      {
-                        superGFF.add(updateOffset(parseLine(gff2.get(k)), offset));
+                        superGFF.add(updateOffset(parseLine(gff2.get(k)), maxOverlap));
                         k++;
                      }
                   } 
                   p2 = parseLine(gff2.get(k));
                   start2 = Integer.parseInt(p2.get(3));
                   stop2 = Integer.parseInt(p2.get(4));
-                  if (!(start1 == (start2 + offset) && 
-                        stop1 == (stop2 + offset) &&
-                        p1.get(9).equals(p2.get(9)) && 
-                        p1.get(11).equals(p2.get(11)))) 
+                  if (start1 != (start2 + maxOverlap) || 
+                        stop1 != (stop2 + maxOverlap))
                   {
-                     System.out.println("p1: " + p1);
-                     System.out.println("p2: " + p2);
+                     System.out.println("p1: " + repiece(p1));
+                     System.out.println("p2: " + updateOffset(p2, maxOverlap));
 
                      if (Math.abs(start1 - stop1) < 
-                         Math.abs(start1 - stop2 + offset))
+                         Math.abs(start1 - stop2 + maxOverlap))
                      {
                         superGFF.add(repiece(p1));
                      }
                      else
                      {
-                        superGFF.add(updateOffset(p2, offset));
+                        superGFF.add(updateOffset(p2, maxOverlap));
                      }
                   }
                   else
                   {
-                     superGFF.add(updateOffset(p2, offset));
+                     superGFF.add(updateOffset(p2, maxOverlap));
                   }
                   k++;
                }
                else
                {
+                  if (p1.get(6).charAt(0) == '-' && flag == 0)
+                  {
+                     flag = 1;
+                     while (k < gff2.size() && parseLine(gff2.get(k)).get(6).charAt(0) == '+')
+                     {
+                        superGFF.add(updateOffset(parseLine(gff2.get(k)), maxOverlap));
+                        k++;
+                     }
+                  }
                   superGFF.add(repiece(p1));
                }
             }
-            for (int j = k; i < gff2.size(); i++)
+            for (int j = k; j < gff2.size(); j++)
             {
-               superGFF.add(updateOffset(parseLine(gff2.get(i)), offset));
+               superGFF.add(updateOffset(parseLine(gff2.get(j)), maxOverlap));
             }
+            gff1 = superGFF;
+            superGFF = new ArrayList<String>();
          }
          else
          {
             combinedFASTAS.add(superFASTA);
-            combinedGFFS.add(superGFF); 
+            combinedGFFS.add(gff1); 
             superGFF = new ArrayList<String>();
-            superFASTA = fasta.get(i+1); 
+            superFASTA = fasta.get(i+1);
+            gff1 = gff.get(i+1); 
          }
       }
       combinedFASTAS.add(superFASTA);
-      combinedGFFS.add(superGFF); 
+      combinedGFFS.add(gff1); 
       
       // output test
       for (String s : combinedFASTAS)
@@ -283,6 +282,6 @@ public class Combine
 
    public static String repiece(ArrayList<String> l)
    {
-      return l.get(0) + "   .  " + l.get(2) + "  " + l.get(3) + "  " + l.get(4) + " .  " + l.get(6) + "  .  gene_id \"" + l.get(9) + "\"; transcript_id \"" + l.get(11) + "\";";
+      return l.get(0) + "\t.\t" + l.get(2) + "\t" + l.get(3) + "\t" + l.get(4) + "\t.\t" + l.get(6) + "\t.\tgene_id \"" + l.get(9) + "\"; transcript_id \"" + l.get(11) + "\";";
    }
 }

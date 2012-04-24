@@ -1,5 +1,0 @@
-contig2	.	mRNA	0	4	.	+	.	gene_id "2222222"; transcript_id "2222222-RB";
-contig2	.	CDS	0	1	.	+	.	gene_id "2222222"; transcript_id "2222222-RB";
-contig2	.	CDS	3	4	.	+	.	gene_id "2222222"; transcript_id "2222222-RB";
-contig2	.	mRNA	7	9	.	+	.	gene_id "3333333"; transcript_id "3333333-RC";
-contig2	.	CDS	7	9	.	+	.	gene_id "3333333"; transcript_id "3333333-RC";

@@ -1,13 +1,10 @@
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Scanner;
-import java.io.File;
-import java.io.IOException;
-import java.lang.StringBuffer;
+import java.io.*;
 import java.util.StringTokenizer;
 import java.util.ArrayList;
 import java.lang.Math;
-import java.util.Comparator;
-import java.util.Collections;
 
 public class Combine
 {
@@ -19,25 +16,37 @@ public class Combine
       ArrayList<ArrayList<String>> gff = new ArrayList<ArrayList<String>>();
       ArrayList<String> combinedFASTAS = new ArrayList<String>();
       ArrayList<ArrayList<String>> combinedGFFS = new ArrayList<ArrayList<String>>();
+      FileWriter fstreamVar = new FileWriter("variations.csv");
+      BufferedWriter outVar = new BufferedWriter(fstreamVar);
+      HashMap<String, Integer> vars = new HashMap<String, Integer>();
+
+      int bp = 0, varCount = 0;
       int minMatch = 100;
+      int splits = 1;
 
       // intialize bio-specific Boyer-Moore's algorithm
       BioBM bm = new BioBM();
 
       // fasta files
+      fastaFiles.add("fasta/contig1.txt");
+      fastaFiles.add("fasta/contig3.txt");
       fastaFiles.add("fasta/contig5.txt");
       fastaFiles.add("fasta/contig6.txt");
       fastaFiles.add("fasta/contig7.txt");
+      fastaFiles.add("fasta/contig8.txt");
       
       // gff files
+      gffFiles.add("gff/derecta_dot_contig1.0.gff");
+      gffFiles.add("gff/derecta_dot_contig3.0.gff");
       gffFiles.add("gff/derecta_dot_contig5.0.gff");
       gffFiles.add("gff/derecta_dot_contig6.0.gff");
       gffFiles.add("gff/derecta_dot_contig7.0.gff");
+      gffFiles.add("gff/derecta_dot_contig8.0.gff");
 
       // check file counts
       if (fastaFiles.size() != gffFiles.size() && fastaFiles.size() > 1)
       {  
-         System.out.println("File count does not match\n");
+         System.err.println("File count does not match\n");
          return;
       }
 
@@ -66,10 +75,11 @@ public class Combine
         
          if (end > fasta2.length()-1)
          {
-            System.out.println("Minimum match less than string length");
+            System.err.println("Minimum match less than string length");
             return;
          }
 
+         // find largest overlap
          while ((overlap = bm.BMrun(superFASTA, fasta2.substring(0, end))) >= 0)
          {
             maxOverlap = overlap;
@@ -77,14 +87,15 @@ public class Combine
             if (end >= fasta2.length()) 
                break;
          }
-         System.out.println(maxOverlap);
+         
+         // overlap found
          if (maxOverlap != -1)
          {
             //////////////////////////////
             // MINMATCH QUALITY CHECK, REMOVE LATER
             if (!fasta2.startsWith(superFASTA.substring(maxOverlap, superFASTA.length()-1)))
             {
-               System.out.println("Overlap not actually found at the end, try higher minMatch value");
+               System.err.println("Overlap not actually found at the end, try higher minMatch value");
                return;
             }
             // MINMATCH QUALITY CHECK, REMOVE LATER
@@ -93,27 +104,43 @@ public class Combine
             offset = superFASTA.length() - maxOverlap;
             superFASTA = superFASTA + fasta2.substring(offset, fasta2.length());
 
-            int k = 0;
+            // combine GFF files
+            int k = 0; /* second gff file */
 
             for (int j = 0; j < gff1.size(); j++)
             {
                ArrayList<String> p1 = parseLine(gff1.get(j));
-               ArrayList<String> p2;
+               ArrayList<String> p2, p2t;
                int flag = 0;
                int start1 = Integer.parseInt(p1.get(3));
                int stop1 = Integer.parseInt(p1.get(4));
                int start2, stop2;
+
+               // positive order overlaps
                if (p1.get(6).charAt(0) == '+' && start1 >= maxOverlap)
                {
                   p2 = parseLine(gff2.get(k));
                   start2 = Integer.parseInt(p2.get(3));
                   stop2 = Integer.parseInt(p2.get(4));
+                  
+                  // variation found
                   if (start1 != (start2 + maxOverlap) || 
-                        stop1 != (stop2 + maxOverlap))
+                      stop1 != (stop2 + maxOverlap))
                   {
-                     System.out.println("p1: " + repiece(p1));
-                     System.out.println("p2: " + updateOffset(p2, maxOverlap));
+                     // write variations to file
+                     outVar.write(p1.get(9) + ", " + p1.get(0) + ", " + p1.get(3) + ", " + p1.get(4));
+                     p2t = updateOffset(p2, maxOverlap);
+                     outVar.write(p2t.get(9) + ", " + p2t.get(0) + ", " + p2t.get(3) + ", " + p2t.get(4));
+   
+                     // total gene variations and bp
+                     if (!(vars.containsKey(p1.get(9))))
+                     {
+                        vars.put(p1.get(9), 1);
+                        varCount++;
+                     }
+                     bp += Math.abs(Math.abs(start1-stop1) - Math.abs(start2-stop2));
 
+                     // add highest range 
                      if (Math.abs(start1 - stop1) < 
                          Math.abs(start2 - stop2 + maxOverlap))
                      {
@@ -121,35 +148,46 @@ public class Combine
                      }
                      else
                      {
-                        superGFF.add(updateOffset(p2, maxOverlap));
+                        superGFF.add(repiece(updateOffset(p2, maxOverlap)));
                      }
                   }
+                  // no variation
                   else
                   {
-                     superGFF.add(updateOffset(p2, maxOverlap));
+                     superGFF.add(repiece(updateOffset(p2, maxOverlap)));
                   }
                   k++; 
                }
+               // negatives order overlaps
                else if (p1.get(6).charAt(0) == '-' && stop1 >= maxOverlap)
                {
                   if (flag == 0)
                   {
                      flag = 1;
+                     // add rest of first GFF file positives
                      while (parseLine(gff2.get(k)).get(6).charAt(0) == '+')
                      {
-                        superGFF.add(updateOffset(parseLine(gff2.get(k)), maxOverlap));
+                        superGFF.add(repiece(updateOffset(parseLine(gff2.get(k)), maxOverlap)));
                         k++;
                      }
                   } 
                   p2 = parseLine(gff2.get(k));
                   start2 = Integer.parseInt(p2.get(3));
                   stop2 = Integer.parseInt(p2.get(4));
-                  if (start1 != (start2 + maxOverlap) || 
-                        stop1 != (stop2 + maxOverlap))
-                  {
-                     System.out.println("p1: " + repiece(p1));
-                     System.out.println("p2: " + updateOffset(p2, maxOverlap));
 
+                  // variations found
+                  if (start1 != (start2 + maxOverlap) || 
+                      stop1 != (stop2 + maxOverlap))
+                  {
+                     // total gene variations and bp
+                     if (!(vars.containsKey(p1.get(9))))
+                     {
+                        vars.put(p1.get(9), 1);
+                        varCount++;
+                     }
+                     bp += Math.abs(Math.abs(start1-stop1) - Math.abs(start2-stop2));
+
+                     // add highest range 
                      if (Math.abs(start1 - stop1) < 
                          Math.abs(start1 - stop2 + maxOverlap))
                      {
@@ -157,61 +195,100 @@ public class Combine
                      }
                      else
                      {
-                        superGFF.add(updateOffset(p2, maxOverlap));
+                        superGFF.add(repiece(updateOffset(p2, maxOverlap)));
                      }
                   }
+                  // no variation
                   else
                   {
-                     superGFF.add(updateOffset(p2, maxOverlap));
+                     superGFF.add(repiece(updateOffset(p2, maxOverlap)));
                   }
                   k++;
                }
+               // not overlapping
                else
                {
                   if (p1.get(6).charAt(0) == '-' && flag == 0)
                   {
                      flag = 1;
+                     // add rest of first GFF file positives
                      while (k < gff2.size() && parseLine(gff2.get(k)).get(6).charAt(0) == '+')
                      {
-                        superGFF.add(updateOffset(parseLine(gff2.get(k)), maxOverlap));
+                        superGFF.add(repiece(updateOffset(parseLine(gff2.get(k)), maxOverlap)));
                         k++;
                      }
                   }
                   superGFF.add(repiece(p1));
                }
             }
+            // add remaining genes of second GFF file
             for (int j = k; j < gff2.size(); j++)
             {
-               superGFF.add(updateOffset(parseLine(gff2.get(j)), maxOverlap));
+               superGFF.add(repiece(updateOffset(parseLine(gff2.get(j)), maxOverlap)));
             }
             gff1 = superGFF;
             superGFF = new ArrayList<String>();
          }
+         // overlap not found
          else
          {
             combinedFASTAS.add(superFASTA);
-            combinedGFFS.add(gff1); 
-            superGFF = new ArrayList<String>();
+            if (superGFF.isEmpty())
+            {
+               combinedGFFS.add(new ArrayList<String>(gff.get(i)));
+            }
+            else
+            {
+               combinedGFFS.add(gff1); 
+               superGFF = new ArrayList<String>();
+            }
             superFASTA = fasta.get(i+1);
             gff1 = gff.get(i+1); 
          }
       }
+      // add remaining
       combinedFASTAS.add(superFASTA);
       combinedGFFS.add(gff1); 
       
-      // output test
-      for (String s : combinedFASTAS)
-      {
-         //System.out.println("Fasta: " + s);
+      // output to file
+      for (int i = 0; i < combinedFASTAS.size(); i++)
+      { 
+         String outname = "superFASTA" + Integer.toString(i+1) + ".txt";
+         FileWriter fstream = new FileWriter(outname);
+         BufferedWriter out = new BufferedWriter(fstream);
+         String s = combinedFASTAS.get(i);
+         out.write("header\n");
+         // line break every 50 chars
+         for (int j = 0; j < s.length(); j+=50)
+         {
+            if (j + 50 > s.length()-1)
+            {
+               out.write(s.substring(j, s.length()-1) + "\n");
+            }
+            else
+            {
+               out.write(s.substring(j, j + 50) + "\n");
+            }
+         }
+         out.close();
+      }
+      for (int i = 0; i < combinedGFFS.size(); i++)
+      { 
+         String outname2 = "superGFF" + Integer.toString(i+1) + ".txt";
+         FileWriter fstream2 = new FileWriter(outname2);
+         BufferedWriter out2 = new BufferedWriter(fstream2);
+         for (String s : combinedGFFS.get(i))
+         {
+            out2.write(s + "\n");
+         }
+         out2.close();
       }
 
-      for (ArrayList<String> l : combinedGFFS)
-      {
-         for (String s : l)
-         {
-            System.out.println(s);
-         }
-      }
+      // output variation totals
+      outVar.write("Total genes with variation: " + Integer.toString(varCount));
+      outVar.write("\n");
+      outVar.write("Total differed bp: " + Integer.toString(bp));
+      outVar.close();
    }
 
    public static String parseFASTA(String fileName) throws IOException
@@ -268,7 +345,7 @@ public class Combine
       return pieces;
    }
 
-   public static String updateOffset(ArrayList<String> l, int offset)
+   public static ArrayList<String> updateOffset(ArrayList<String> l, int offset)
    {
       ArrayList<String> temp = new ArrayList<String>(l);
       int start = Integer.parseInt(l.get(3));
@@ -277,7 +354,7 @@ public class Combine
       temp.set(3, Integer.toString(start + offset));
       temp.set(4, Integer.toString(stop + offset));
       
-      return repiece(temp);
+      return temp;
    }
 
    public static String repiece(ArrayList<String> l)

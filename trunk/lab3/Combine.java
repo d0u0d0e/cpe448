@@ -21,7 +21,7 @@ public class Combine
       HashMap<String, Integer> vars = new HashMap<String, Integer>();
 
       int bp = 0, varCount = 0;
-      int minMatch = 100;
+      int minMatch = 300;
       int splits = 1;
 
       // intialize bio-specific Boyer-Moore's algorithm
@@ -34,6 +34,8 @@ public class Combine
       fastaFiles.add("fasta/contig6.txt");
       fastaFiles.add("fasta/contig7.txt");
       fastaFiles.add("fasta/contig8.txt");
+      fastaFiles.add("fasta/contig20.txt");
+      fastaFiles.add("fasta/contig21.txt");
       
       // gff files
       gffFiles.add("gff/derecta_dot_contig1.0.gff");
@@ -42,6 +44,8 @@ public class Combine
       gffFiles.add("gff/derecta_dot_contig6.0.gff");
       gffFiles.add("gff/derecta_dot_contig7.0.gff");
       gffFiles.add("gff/derecta_dot_contig8.0.gff");
+      gffFiles.add("gff/derecta_dot_contig20.0.gff");
+      gffFiles.add("gff/derecta_dot_contig21.0.gff");
 
       // check file counts
       if (fastaFiles.size() != gffFiles.size() && fastaFiles.size() > 1)
@@ -128,9 +132,10 @@ public class Combine
                       stop1 != (stop2 + maxOverlap))
                   {
                      // write variations to file
-                     outVar.write(p1.get(9) + ", " + p1.get(0) + ", " + p1.get(3) + ", " + p1.get(4));
+                     System.err.println("j: " + j + ", k: " + k );
+                     outVar.write(p1.get(9) + ", " + p1.get(0) + ", " + p1.get(3) + ", " + p1.get(4) + "\n");
                      p2t = updateOffset(p2, maxOverlap);
-                     outVar.write(p2t.get(9) + ", " + p2t.get(0) + ", " + p2t.get(3) + ", " + p2t.get(4));
+                     outVar.write(p2t.get(9) + ", " + p2t.get(0) + ", " + p2t.get(3) + ", " + p2t.get(4) + "\n");
    
                      // total gene variations and bp
                      if (!(vars.containsKey(p1.get(9))))
@@ -179,6 +184,12 @@ public class Combine
                   if (start1 != (start2 + maxOverlap) || 
                       stop1 != (stop2 + maxOverlap))
                   {
+                     // write variations to file
+                     System.err.println("j: " + j + ", k: " + k );
+                     outVar.write(p1.get(9) + ", " + p1.get(0) + ", " + p1.get(3) + ", " + p1.get(4) + "\n");
+                     p2t = updateOffset(p2, maxOverlap);
+                     outVar.write(p2t.get(9) + ", " + p2t.get(0) + ", " + p2t.get(3) + ", " + p2t.get(4) + "\n");
+                     
                      // total gene variations and bp
                      if (!(vars.containsKey(p1.get(9))))
                      {
@@ -233,15 +244,8 @@ public class Combine
          else
          {
             combinedFASTAS.add(superFASTA);
-            if (superGFF.isEmpty())
-            {
-               combinedGFFS.add(new ArrayList<String>(gff.get(i)));
-            }
-            else
-            {
-               combinedGFFS.add(gff1); 
-               superGFF = new ArrayList<String>();
-            }
+            combinedGFFS.add(gff1); 
+            superGFF = new ArrayList<String>();
             superFASTA = fasta.get(i+1);
             gff1 = gff.get(i+1); 
          }
@@ -285,8 +289,7 @@ public class Combine
       }
 
       // output variation totals
-      outVar.write("Total genes with variation: " + Integer.toString(varCount));
-      outVar.write("\n");
+      outVar.write("Total genes with variation: " + Integer.toString(varCount) + "\n");
       outVar.write("Total differed bp: " + Integer.toString(bp));
       outVar.close();
    }

@@ -1,14 +1,14 @@
 import java.util.HashMap;
 
-public class BioBM {
-
-   public static int BMrun(String S, String P) {
+public class BioBM 
+{
+   public static int BMrun(String S, String P) 
+   {
       int s = 0, j = 0, n = S.length(), m = P.length();
       int[] GS = GoodSuffix(P);
 
       while(s <= (n - m)) {
-      j = m;
-         //System.out.println("s: " + s + ", j: " + j);
+         j = m;
          while(j > 0 && nEqual(P.charAt(j-1), S.charAt(s+j-1)))
        	    j--;
 
@@ -16,11 +16,9 @@ public class BioBM {
             return s;
          }
 	      else {
-	         //s = GS[j];
-            s++;
+	         s += GS[j];
 	      }
       }
-      //System.out.println("Not Found? s: " +s);
       return -1;
    }
 
@@ -30,10 +28,12 @@ public class BioBM {
       {
          return true;
       }
+
       return false;
    }
    
-   static public int[] computePi(String pattern) {
+   static public int[] computePi(String pattern) 
+   {
       int[] pi = new int[pattern.length()+1];
       int nextChr, pfxLen;
       pfxLen = 0; // Prefix we've matched against ourselves so far
@@ -50,7 +50,8 @@ public class BioBM {
       return pi;
    }
 
-   public static int[] GoodSuffix(String P) {
+   public static int[] GoodSuffix(String P) 
+   {
       int[] GS = new int[P.length() + 1], pi, Rpi;
       StringBuffer revP = new StringBuffer(P);
       
@@ -72,6 +73,5 @@ public class BioBM {
       
       return GS;
    }
-   
 }
 

@@ -1,20 +1,20 @@
 import java.util.HashMap;
 
-public class BM {
-
-public static void BMrun(String S, String P) {
+public class BM 
+{
+   public static void BMrun(String S, String P) 
+   {
       int s = 0, j = 0, n = S.length(), m = P.length();
       HashMap<Character, Integer> Rval = computeR(P);
       int[] GS = GoodSuffix(P);
 
       while(s <= (n - m)) {
       j = m;
-         System.out.println("s: " + s + ", j: " + j);
          while(j > 0 && P.charAt(j-1) == S.charAt(s+j-1))
             j--;
 
          if (j == 0) {
-            System.out.println("Finish: " + s);
+            System.out.println(s);
             s = s + GS[0];
          }
          else {
@@ -28,7 +28,6 @@ public static void BMrun(String S, String P) {
             }
          }
       }
-      System.out.println("Not Found? s: " +s);
    }
    
    static public int[] computePi(String pattern) {
@@ -48,19 +47,18 @@ public static void BMrun(String S, String P) {
       return pi;
    }
 
-   public static HashMap<Character, Integer> computeR(String P) {
+   public static HashMap<Character, Integer> computeR(String P) 
+   {
       HashMap<Character, Integer> Rval = new HashMap<Character, Integer>();
       
-      //for(int i = 0; i < P.length(); i++) 
-        // Rval.put(new Character(P.charAt(i)), new Integer(0));
-
       for(int i = 0; i < P.length(); i++)
     	   Rval.put(new Character(P.charAt(i)), new Integer(i));
       
       return Rval;
    }
 
-   public static int[] GoodSuffix(String P) {
+   public static int[] GoodSuffix(String P) 
+   {
       int[] GS = new int[P.length() + 1], pi, Rpi;
       StringBuffer revP = new StringBuffer(P);
       

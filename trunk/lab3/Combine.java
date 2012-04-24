@@ -30,15 +30,14 @@ public class Combine
       // fasta files
       fastaFiles.add("fasta/contig20.txt");
       fastaFiles.add("fasta/contig21.txt");
-      //fastaFiles.add("fasta/contig22.txt");
-      //fastaFiles.add("fasta/contig23.txt");
-      /*fastaFiles.add("fasta/contig24.txt");
+      /*fastaFiles.add("fasta/contig22.txt");
+      fastaFiles.add("fasta/contig24.txt");
       fastaFiles.add("fasta/contig25.txt");
       fastaFiles.add("fasta/contig26.txt");
-      fastaFiles.add("fasta/contig27.txt");
-      fastaFiles.add("fasta/contig28.txt");
-      fastaFiles.add("fasta/contig29.txt");
-      fastaFiles.add("fasta/contig30.txt");
+      *///fastaFiles.add("fasta/contig27.txt");
+      //fastaFiles.add("fasta/contig28.txt");
+      //fastaFiles.add("fasta/contig29.txt");
+      /*fastaFiles.add("fasta/contig30.txt");
       fastaFiles.add("fasta/contig31.txt");
       fastaFiles.add("fasta/contig32.txt");
       fastaFiles.add("fasta/contig33.txt");
@@ -48,18 +47,19 @@ public class Combine
       fastaFiles.add("fasta/contig37.txt");
       fastaFiles.add("fasta/contig38.txt");
       */
+      // MISSING: fastaFiles.add("fasta/contig23.txt");
+      
       // gff files
       gffFiles.add("gff/derecta_dot_contig20.0.gff");
       gffFiles.add("gff/derecta_dot_contig21.0.gff");
-     // gffFiles.add("gff/derecta_dot_contig22.0.gff");
-     // gffFiles.add("gff/derecta_dot_contig23.0.gff");
-     /* gffFiles.add("gff/derecta_dot_contig24.0.gff");
+      /*gffFiles.add("gff/derecta_dot_contig22.0.gff");
+      gffFiles.add("gff/derecta_dot_contig24.0.gff");
       gffFiles.add("gff/derecta_dot_contig25.0.gff");
       gffFiles.add("gff/derecta_dot_contig26.0.gff");
-      gffFiles.add("gff/derecta_dot_contig27.0.gff");
-      gffFiles.add("gff/derecta_dot_contig28.0.gff");
-      gffFiles.add("gff/derecta_dot_contig29.0.gff");
-      gffFiles.add("gff/derecta_dot_contig30.0.gff");
+      *///gffFiles.add("gff/derecta_dot_contig27.0.gff");
+      //gffFiles.add("gff/derecta_dot_contig28.0.gff");
+      //gffFiles.add("gff/derecta_dot_contig29.0.gff");
+      /*gffFiles.add("gff/derecta_dot_contig30.0.gff");
       gffFiles.add("gff/derecta_dot_contig31.0.gff");
       gffFiles.add("gff/derecta_dot_contig32.0.gff");
       gffFiles.add("gff/derecta_dot_contig33.0.gff");
@@ -68,7 +68,9 @@ public class Combine
       gffFiles.add("gff/derecta_dot_contig36.0.gff");
       gffFiles.add("gff/derecta_dot_contig37.0.gff");
       gffFiles.add("gff/derecta_dot_contig38.0.gff");
-     */
+      */
+      // MISSING: gffFiles.add("gff/derecta_dot_contig23.0.gff");
+     
       // check file counts
       if (fastaFiles.size() != gffFiles.size() && fastaFiles.size() > 1)
       {  
@@ -210,50 +212,45 @@ public class Combine
                      }*/
                   }
                   //if (k > gff2.size()-1)
-                  {  
-                     p2 = parseLine(gff2.get(k));
-                     start2 = Integer.parseInt(p2.get(3));
-                     stop2 = Integer.parseInt(p2.get(4));
-                     // variations found
-                     if (start1 != (start2 + maxOverlap) || 
-                         stop1 != (stop2 + maxOverlap))
+                  p2 = parseLine(gff2.get(k));
+                  System.err.println(p2);
+                  start2 = Integer.parseInt(p2.get(3));
+                  stop2 = Integer.parseInt(p2.get(4));
+                  // variations found
+                  if (start1 != (start2 + maxOverlap) || 
+                      stop1 != (stop2 + maxOverlap))
+                  {
+                     // write variations to file
+                     outVar.write(p1.get(9) + ", " + p1.get(0) + ", " + p1.get(3) + ", " + p1.get(4) + "\n");
+                     p2t = updateOffset(p2, maxOverlap);
+                     outVar.write(p2t.get(9) + ", " + p2t.get(0) + ", " + p2t.get(3) + ", " + p2t.get(4) + "\n");
+                     
+                     // total gene variations and bp
+                     if (!(vars.containsKey(p1.get(9))))
                      {
-                        // write variations to file
-                        System.err.println(" - j: " + j + ", k: " + k );
-                        System.err.println("p1: " + p1.get(3) + " , " + p1.get(4));
-                        System.err.println("p2: " + p2.get(3) + " , " + p2.get(4));
-                        
-                        outVar.write(p1.get(9) + ", " + p1.get(0) + ", " + p1.get(3) + ", " + p1.get(4) + "\n");
-                        p2t = updateOffset(p2, maxOverlap);
-                        outVar.write(p2t.get(9) + ", " + p2t.get(0) + ", " + p2t.get(3) + ", " + p2t.get(4) + "\n");
-                        
-                        // total gene variations and bp
-                        if (!(vars.containsKey(p1.get(9))))
-                        {
-                           vars.put(p1.get(9), 1);
-                           varCount++;
-                        }
-                        bp += Math.abs(Math.abs(start1-stop1) - Math.abs(start2-stop2));
-
-                        // add highest range 
-                        if (Math.abs(start1 - stop1) < 
-                            Math.abs(start1 - stop2 + maxOverlap))
-                        {
-                           superGFF.add(repiece(p1));
-                        }
-                        else
-                        {
-                           superGFF.add(repiece(updateOffset(p2, maxOverlap)));
-                        }
-                        //superGFF.add(repiece(p1)); /* just add p1 */
+                        vars.put(p1.get(9), 1);
+                        varCount++;
                      }
-                     // no variation
+                     bp += Math.abs(Math.abs(start1-stop1) - Math.abs(start2-stop2));
+
+                     // add highest range 
+                     if (Math.abs(start1 - stop1) < 
+                         Math.abs(start1 - stop2 + maxOverlap))
+                     {
+                        superGFF.add(repiece(p1));
+                     }
                      else
                      {
                         superGFF.add(repiece(updateOffset(p2, maxOverlap)));
                      }
-                     k++;
+                     //superGFF.add(repiece(p1)); /* just add p1 */
                   }
+                  // no variation
+                  else
+                  {
+                     superGFF.add(repiece(updateOffset(p2, maxOverlap)));
+                  }
+                  k++;
                   /*else
                   {
                      //System.err.println("Overlap found but no matching gene");
@@ -266,7 +263,6 @@ public class Combine
                {
                   if (p1.get(6).charAt(0) == '-' && flag == 0)
                   {
-                     System.err.println("flagged here");
                      flag = 1;
                      // add rest of first GFF file positives
                      while (k < gff2.size() && parseLine(gff2.get(k)).get(6).charAt(0) == '+')
@@ -281,8 +277,10 @@ public class Combine
             // add remaining genes of second GFF file
             if (flag == 1)
             {
-               for (int j = z; j <= x; j++)
+               System.out.println(z + " " + x);
+               for (int j = z; j < x; j++)
                {
+                  System.out.println("here?");
                   superGFF.add(repiece(updateOffset(parseLine(gff2.get(j)), maxOverlap)));
                }
             }

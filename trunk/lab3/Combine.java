@@ -28,15 +28,15 @@ public class Combine
       BioBM bm = new BioBM();
 
       // fasta files
-      fastaFiles.add("fasta/contig20.txt");
-      fastaFiles.add("fasta/contig21.txt");
+      //fastaFiles.add("fasta/contig20.txt");
+      //fastaFiles.add("fasta/contig21.txt");
       /*fastaFiles.add("fasta/contig22.txt");
       fastaFiles.add("fasta/contig24.txt");
       fastaFiles.add("fasta/contig25.txt");
       fastaFiles.add("fasta/contig26.txt");
       *///fastaFiles.add("fasta/contig27.txt");
-      //fastaFiles.add("fasta/contig28.txt");
-      //fastaFiles.add("fasta/contig29.txt");
+      fastaFiles.add("fasta/contig28.txt");
+      fastaFiles.add("fasta/contig29.txt");
       /*fastaFiles.add("fasta/contig30.txt");
       fastaFiles.add("fasta/contig31.txt");
       fastaFiles.add("fasta/contig32.txt");
@@ -50,15 +50,15 @@ public class Combine
       // MISSING: fastaFiles.add("fasta/contig23.txt");
       
       // gff files
-      gffFiles.add("gff/derecta_dot_contig20.0.gff");
-      gffFiles.add("gff/derecta_dot_contig21.0.gff");
+      //gffFiles.add("gff/derecta_dot_contig20.0.gff");
+      //gffFiles.add("gff/derecta_dot_contig21.0.gff");
       /*gffFiles.add("gff/derecta_dot_contig22.0.gff");
       gffFiles.add("gff/derecta_dot_contig24.0.gff");
       gffFiles.add("gff/derecta_dot_contig25.0.gff");
       gffFiles.add("gff/derecta_dot_contig26.0.gff");
       *///gffFiles.add("gff/derecta_dot_contig27.0.gff");
-      //gffFiles.add("gff/derecta_dot_contig28.0.gff");
-      //gffFiles.add("gff/derecta_dot_contig29.0.gff");
+      gffFiles.add("gff/derecta_dot_contig28.0.gff");
+      gffFiles.add("gff/derecta_dot_contig29.0.gff");
       /*gffFiles.add("gff/derecta_dot_contig30.0.gff");
       gffFiles.add("gff/derecta_dot_contig31.0.gff");
       gffFiles.add("gff/derecta_dot_contig32.0.gff");
@@ -190,7 +190,7 @@ public class Combine
                   k++; 
                }
                // negatives order overlaps
-               else if (p1.get(6).charAt(0) == '-' && stop1 >= maxOverlap)
+               else if (p1.get(6).charAt(0) == '-' && start1 >= maxOverlap)
                {
                   if (flag == 0)
                   {
@@ -251,12 +251,6 @@ public class Combine
                      superGFF.add(repiece(updateOffset(p2, maxOverlap)));
                   }
                   k++;
-                  /*else
-                  {
-                     //System.err.println("Overlap found but no matching gene");
-                     //superGFF.add(repiece(p1));
-
-                  }*/
                }
                // not overlapping
                else

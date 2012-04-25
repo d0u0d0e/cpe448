@@ -26,7 +26,6 @@ public class BioBM
 	      
          if (s+j == n) {
             return s;
-            s = s + GS[0];
          }
          else {
             s++;

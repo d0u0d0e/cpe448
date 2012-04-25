@@ -2,10 +2,48 @@ import java.util.HashMap;
 
 public class BioBM 
 {
+   public static int BMrun(String S, String P) {
+      int s, j = 0, n = S.length(), m = P.length();
+      int[] GS;
+
+      if(n > m)
+    	  s = n - m;
+      else
+    	  s = 0;
+      	      
+      while(s+j < n ) {
+         j = 0;
+         GS = GoodSuffix(P);
+
+      try {
+         while(j < P.length() && P.charAt(j) == S.charAt(s+j)) {
+       	    System.out.printf("P = %c, S = %c\n", P.charAt(j), S.charAt(s+j));
+            j++;
+         }
+      }
+      catch (Exception e) {
+      }
+	      
+         if (s+j == n) {
+            return s;
+            s = s + GS[0];
+         }
+         else {
+            s++;
+            P = P.substring(0, P.length() - 1);
+          //   s += Math.max(GS[j], j);
+          // P = P.substring(0, P.length() - Math.max(GS[j], j));
+         }
+      }
+      return -1;
+   }
+
+/*
    public static int BMrun(String S, String P) 
    {
       int s = 0, j = 0, n = S.length(), m = P.length();
       int[] GS = GoodSuffix(P);
+
 
       while(s <= (n - m)) {
          j = m;
@@ -21,7 +59,7 @@ public class BioBM
       }
       return -1;
    }
-
+*/
    static public boolean nEqual(char a, char b)
    {
       if (a == b || a == 'N' || b == 'N')

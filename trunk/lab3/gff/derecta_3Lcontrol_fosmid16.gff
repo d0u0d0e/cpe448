@@ -1,0 +1,16 @@
+fosmid16	.	mRNA	753	1343	.	+	.	gene_id "CG14561"; transcript_id "CG14561-RA";
+fosmid16	.	CDS	753	1346	.	+	.	gene_id "CG14561"; transcript_id "CG14561-RA";
+fosmid16	.	mRNA	11450	12475	.	+	.	gene_id "RpLP0"; transcript_id "RpLP0-RA";
+fosmid16	.	CDS	11450	11503	.	+	.	gene_id "RpLP0"; transcript_id "RpLP0-RA";
+fosmid16	.	CDS	11579	12478	.	+	.	gene_id "RpLP0"; transcript_id "RpLP0-RA";
+fosmid16	.	mRNA	18752	18943	.	+	.	gene_id "msopa"; transcript_id "msopa-RA";
+fosmid16	.	CDS	18752	18946	.	+	.	gene_id "msopa"; transcript_id "msopa-RA";
+fosmid16	.	mRNA	10443	10823	.	-	.	gene_id "CG7130"; transcript_id "CG7130-RA";
+fosmid16	.	CDS	10440	10823	.	-	.	gene_id "CG7130"; transcript_id "CG7130-RA";
+fosmid16	.	mRNA	7288	8274	.	-	.	gene_id "CG7133"; transcript_id "CG7133-RA";
+fosmid16	.	CDS	7285	8274	.	-	.	gene_id "CG7133"; transcript_id "CG7133-RA";
+fosmid16	.	mRNA	2468	6391	.	-	.	gene_id "CG7139"; transcript_id "CG7139-RA";
+fosmid16	.	CDS	5696	6391	.	-	.	gene_id "CG7139"; transcript_id "CG7139-RA";
+fosmid16	.	CDS	3997	4789	.	-	.	gene_id "CG7139"; transcript_id "CG7139-RA";
+fosmid16	.	CDS	2592	3876	.	-	.	gene_id "CG7139"; transcript_id "CG7139-RA";
+fosmid16	.	CDS	2465	2537	.	-	.	gene_id "CG7139"; transcript_id "CG7139-RA";

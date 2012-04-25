@@ -1,0 +1,3 @@
+fosmid23	.	mRNA	35882	36591	.	+	.	gene_id "CG32450"; transcript_id "CG32450-RA";
+fosmid23	.	CDS	35882	36145	.	+	.	gene_id "CG32450"; transcript_id "CG32450-RA";
+fosmid23	.	CDS	36199	36594	.	+	.	gene_id "CG32450"; transcript_id "CG32450-RA";

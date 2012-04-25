@@ -1,0 +1,9 @@
+fosmid30	.	mRNA	742	2295	.	+	.	gene_id "Trxr-2"; transcript_id "Trxr-2-RA";
+fosmid30	.	CDS	742	2298	.	+	.	gene_id "Trxr-2"; transcript_id "Trxr-2-RA";
+fosmid30	.	mRNA	44231	44665	.	+	.	gene_id "CG6914"; transcript_id "CG6914-RA";
+fosmid30	.	CDS	44231	44668	.	+	.	gene_id "CG6914"; transcript_id "CG6914-RA";
+fosmid30	.	mRNA	6782	40577	.	-	.	gene_id "CG14459"; transcript_id "CG14459-RB";
+fosmid30	.	CDS	40517	40577	.	-	.	gene_id "CG14459"; transcript_id "CG14459-RB";
+fosmid30	.	CDS	33346	33384	.	-	.	gene_id "CG14459"; transcript_id "CG14459-RB";
+fosmid30	.	CDS	21192	21545	.	-	.	gene_id "CG14459"; transcript_id "CG14459-RB";
+fosmid30	.	CDS	6779	6825	.	-	.	gene_id "CG14459"; transcript_id "CG14459-RB";

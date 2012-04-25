@@ -150,7 +150,6 @@ public class Combine
                if (flag == 0 && p1.get(6).charAt(0) == '-')
                {
                   flag = 1;
-                  System.err.println("flag set");
                   // add rest of first GFF file positives
                   for (z = k; z < gff2.size() && parseLine(gff2.get(z)).get(6).charAt(0) == '+'; z++)
                   {

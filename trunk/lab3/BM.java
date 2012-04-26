@@ -2,7 +2,7 @@ import java.util.HashMap;
 
 public class BM 
 {
-   public static void BMrun(String S, String P) 
+   public static int BMrun(String S, String P) 
    {
       int s = 0, j = 0, n = S.length(), m = P.length();
       HashMap<Character, Integer> Rval = computeR(P);
@@ -14,7 +14,7 @@ public class BM
             j--;
 
          if (j == 0) {
-            System.out.println(s);
+            //System.out.println(s);
             s = s + GS[0];
          }
          else {
@@ -28,6 +28,7 @@ public class BM
             }
          }
       }
+      return s;
    }
    
    static public int[] computePi(String pattern) {
@@ -36,9 +37,9 @@ public class BM
       pfxLen = 0; // Prefix we've matched against ourselves so far
       for (nextChr = 1; nextChr < pattern.length(); nextChr++) {
          while (pattern.charAt(pfxLen) != pattern.charAt(nextChr) && pfxLen > 0)
-            pfxLen = pi[pfxLen];
+             pfxLen = pi[pfxLen];
             
-         if (pattern.charAt(pfxLen) == pattern.charAt(nextChr))
+         if (pattern.charAt(pfxLen) == pattern.charAt(nextChr)) 
             pfxLen++;
 
          pi[nextChr+1] = pfxLen; // nextChr+1 is match count
@@ -74,7 +75,7 @@ public class BM
       for(int l = 1; l <= P.length(); l++) {
          j = P.length() - Rpi[l];
 
-         if(GS[j] > l - Rpi[l])
+         if(GS[j] > (l - Rpi[l]))
         	 GS[j] = l - Rpi[l];
       }
       

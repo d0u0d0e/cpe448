@@ -1,4 +1,3 @@
-
 import java.util.Arrays;
 import java.util.HashMap;
 
@@ -13,9 +12,6 @@ public class TestBM {
         if (!passed)
             System.out.println(bufErr);
         System.out.printf("ComputeR test %s\n", ((passed = testComputeR(bufErr)) ? pass: fail));
-        System.out.printf("GoodSuffix test %s\n", ((passed = testGoodSuffix(bufErr)) ? pass: fail));
-        if (!passed)
-            System.out.println(bufErr);
     }
 
     public static boolean testComputePi(StringBuffer buf) {

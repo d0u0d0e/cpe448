@@ -13,7 +13,7 @@ File List:
 BM.java - Original Boyer-Moore algorithm using good suffix and bad character rule
 BioOverlap.java - "True" solution suggested in email to find overlap in nucleotides
 Combine.java - Combines sets of FASTA/GFF files. Files needed by our group hardcoded
-               into the source code.
+               into the source code for ease of use.
 TestBM.java - Tests the Boyer-Moore algorithm
 fasta/ - FASTA files for contig and fosmid
 gff/ - GFF files for contig and fosmid
@@ -26,5 +26,6 @@ To run:
 -File Combination, "make combine" or "java Combine"
 
 Output:
--superFASTA#.txt and superGFF#.txt (splits when there are gaps in files)
--variations.csv - all variations
+-superFASTA#.txt and superGFF#.txt
+-variations#.csv - all variations
+# = splits when there are gaps in files

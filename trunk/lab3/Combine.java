@@ -22,7 +22,7 @@ public class Combine
       int bp = 0, varCount = 0;
       int offset = -1, overlap = -1, split = 1;
       
-      // contig files
+      // contig files 20-38
       fastaFiles.add("fasta/contig20.txt");
       fastaFiles.add("fasta/contig21.txt");
       fastaFiles.add("fasta/contig22.txt");
@@ -62,7 +62,7 @@ public class Combine
       gffFiles.add("gff/derecta_dot_contig37.0.gff");
       gffFiles.add("gff/derecta_dot_contig38.0.gff");
 
-      // fosmid files
+      // fosmid files 22-42
       fastaFiles.add("fasta/Fosmid22.txt");
       fastaFiles.add("fasta/Fosmid23.txt");
       fastaFiles.add("fasta/Fosmid24.txt");

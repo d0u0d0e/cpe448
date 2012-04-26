@@ -12,6 +12,14 @@ public class TestBM {
         if (!passed)
             System.out.println(bufErr);
         System.out.printf("ComputeR test %s\n", ((passed = testComputeR(bufErr)) ? pass: fail));
+        System.out.printf("Boyer Moore test %s\n",
+                ((passed = testBMrun(bufErr)) ? pass: fail));
+        if (!passed)
+            System.out.println(bufErr);
+        System.out.printf("finding String Overlap test %s\n",
+                ((passed = testGetOffset(bufErr)) ? pass: fail));
+        if (!passed)
+            System.out.println(bufErr);
     }
 
     public static boolean testComputePi(StringBuffer buf) {
@@ -137,6 +145,74 @@ public class TestBM {
                     + "\nActual Output:   " + Arrays.toString(actual) + "\n");
 
         return test1 && test2 && test3 && test4;
+    }
+    
+    public static boolean testBMrun(StringBuffer buf){
+        boolean test1,test2,test3;
+        int pos;
+        String  s1 = "ACGATATCAGCAGTGTGTTTGACGAT",
+                p1 = "TTGACGAT",
+                s2 = "AAAAAAAA",
+                p2 = "BB",
+                s3 = "ACGAGAGTAAG",
+                p3 = "TAAGCTG";
+        
+        test1 = test2 = test3 = true;
+        buf.delete(0, buf.length());
+        
+        if ((pos = BM.BMrun(s1,p1)) != s1.length() - 1)
+            test1 = false;
+        if (!test1)
+            buf.append("\nTest1:\nExpected: " + (s1.length()-1) + "\nActual: " + pos);
+        
+        if ((pos = BM.BMrun(s2,p2)) != s2.length())
+            test2 = false;
+        if (!test2)
+            buf.append("\nTest2:\nExpected: " + (s2.length()) + "\nActual: " + pos);
+        
+        if ((pos = BM.BMrun(s3,p3)) != s3.length() - 4)
+            test3 = false;
+        if (!test3)
+            buf.append("\nTest3:\nExpected: " + (s3.length()-4) + "\nActual: " + pos);
+        
+        return test1 && test2 && test3;
+    }
+    
+    public static boolean testGetOffset(StringBuffer buf){
+        boolean test1,test2,test3,test4,test5;
+        int pos;
+        String  s1 = "ACGATATCAGCAGTGTGTTTGACGAT",
+                p1 = "TTGACGAT",
+                s2 = "AAAAAAAA",
+                p2 = "BB",
+                s3 = "ACGAGNANGTAAG",
+                p3 = "TAAGCTG";
+        
+        test1 = test2 = test3 = test4 = test5 = true;
+        buf.delete(0, buf.length());
+        
+        if ((pos = BioOverlap.getOffset(s1,p1, 4)) != p1.length())
+            test1 = false;
+        if (!test1)
+            buf.append("\nTest1:\nExpected: " + p1.length() + "\nActual: " + pos);
+        if ((pos = BioOverlap.getOffset(s1,p1, 14)) != -1)
+            test2 = false;
+        if (!test2)
+            buf.append("\nTest2:\nExpected: -1\nActual: " + pos);
+        if ((pos = BioOverlap.getOffset(s2,p2, 0)) != 0)
+            test3 = false;
+        if (!test3)
+            buf.append("\nTest3:\nExpected: 0\nActual: " + pos);
+        if ((pos = BioOverlap.getOffset(s2,s2, 6)) != s2.length())
+            test4 = false;
+        if (!test4)
+            buf.append("\nTest4:\nExpected: " + s2.length() + "\nActual: " + pos);
+        if ((pos = BioOverlap.getOffset(s3,p3, 1)) != 4)
+            test5 = false;
+        if (!test5)
+            buf.append("\nTest5:\nExpected: 4\nActual: " + pos);
+        
+        return test1 && test2 && test3 && test4 && test5;
     }
     
 }

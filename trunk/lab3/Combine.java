@@ -26,7 +26,7 @@ public class Combine
       fastaFiles.add("fasta/contig20.txt");
       fastaFiles.add("fasta/contig21.txt");
       fastaFiles.add("fasta/contig22.txt");
-      //fastaFiles.add("fasta/contig23.txt");
+      //MISSING: fastaFiles.add("fasta/contig23.txt");
       fastaFiles.add("fasta/contig24.txt");
       fastaFiles.add("fasta/contig25.txt");
       fastaFiles.add("fasta/contig26.txt");
@@ -45,7 +45,7 @@ public class Combine
       gffFiles.add("gff/derecta_dot_contig20.0.gff");
       gffFiles.add("gff/derecta_dot_contig21.0.gff");
       gffFiles.add("gff/derecta_dot_contig22.0.gff");
-      //gffFiles.add("gff/derecta_dot_contig23.0.gff");
+      //MISSING: gffFiles.add("gff/derecta_dot_contig23.0.gff");
       gffFiles.add("gff/derecta_dot_contig24.0.gff");
       gffFiles.add("gff/derecta_dot_contig25.0.gff");
       gffFiles.add("gff/derecta_dot_contig26.0.gff");

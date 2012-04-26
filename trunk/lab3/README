@@ -15,8 +15,9 @@ BioOverlap.java - "True" solution suggested in email to find overlap in nucleoti
 Combine.java - Combines sets of FASTA/GFF files. Files needed by our group hardcoded
                into the source code for ease of use.
 TestBM.java - Tests the Boyer-Moore algorithm
-fasta/ - FASTA files for contig and fosmid
-gff/ - GFF files for contig and fosmid
+fasta/ - FASTA files for contig 20-38* and fosmid 22-42 
+gff/ - GFF files for contig 20-38* and fosmid 22-42
+*missing gff 23, thus the extra gap that will show up in our output
 
 To compile: 
 -"make" or "javac *.java"

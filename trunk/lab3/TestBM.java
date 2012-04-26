@@ -1,41 +1,62 @@
 
+import java.util.Arrays;
 import java.util.HashMap;
 
 public class TestBM {
     public static void main(String[] args) {
         String pass = "PASSED!";
         String fail = "FAILED!";
+        boolean passed;
+        StringBuffer bufErr = new StringBuffer();
 
-        System.out.printf("ComputePi test %s\n", (testComputePi() ? pass: fail));
-        System.out.printf("ComputeR test %s\n", (testComputeR() ? pass: fail));
-        System.out.printf("GoodSuffix test %s\n", (testGoodSuffix() ? pass: fail));
+        System.out.printf("ComputePi test %s\n", ((passed = testComputePi(bufErr)) ? pass: fail));
+        if (!passed)
+            System.out.println(bufErr);
+        System.out.printf("ComputeR test %s\n", ((passed = testComputeR(bufErr)) ? pass: fail));
+        System.out.printf("GoodSuffix test %s\n", ((passed = testGoodSuffix(bufErr)) ? pass: fail));
+        if (!passed)
+            System.out.println(bufErr);
     }
 
-    public static boolean testComputePi() {
+    public static boolean testComputePi(StringBuffer buf) {
         boolean test1, test2, test3;
         test1 = test2 = test3 = true;
         int[] actual, expected1 = {0,0,1,0,1,0,0,1,2,2,3},
-                expected2 = {0,0,1,2,3,4,5,6,7,8,9};
-        actual = BM.computePi("AATATCAAAT");
+                expected2 = {0,0},
+                expected3 = {0,0,1,2,3,4,5,6,7,8,9};
+        String p1 = "AATATCAAAT",
+                p2 = "T",
+                p3 = "CCCCCCCCCC";
+        
+        buf.delete(0, buf.length());
+        actual = BM.computePi(p1);
         
         for (int i = 0; i < actual.length; i++)
             if (expected1[i] != actual[i])
                 test1 = false;
-        
-        actual = BM.computePi("T");
+        if (!test1)
+            buf.append("Input: " + p1 + "\nExpected Output: " + Arrays.toString(expected1)
+                    + "\nActual Output:   " + Arrays.toString(actual) + "\n");
+            
+        actual = BM.computePi(p2);
         if(actual[0] != 0 || actual[1] != 0)
             test2 = false;
+        if (!test2)
+            buf.append("Input: " + p2 + "\nExpected Output: " + Arrays.toString(expected2)
+                    + "\nActual Output:   " + Arrays.toString(actual) + "\n");
         
-        
-        actual = BM.computePi("CCCCCCCCCC");
+        actual = BM.computePi(p3);
         for (int i = 0; i < actual.length; i++)
-            if (expected2[i] != actual[i])
+            if (expected3[i] != actual[i])
                 test3 = false;
+        if (!test3)
+            buf.append("Input: " + p3 + "\nExpected Output: " + Arrays.toString(expected3)
+                    + "\nActual Output:   " + Arrays.toString(actual) + "\n");
         
         return test1 && test2 && test3;
     }
     
-    public static boolean testComputeR() {
+    public static boolean testComputeR(StringBuffer buf) {
         boolean test1, test2, test3, test4;
         test1 = test2 = test3 = test4 = true;
         HashMap rval;
@@ -71,7 +92,7 @@ public class TestBM {
         return test1 && test2 && test3 && test4;
     }
     
-    public static boolean testGoodSuffix() {
+    public static boolean testGoodSuffix(StringBuffer buf) {
         boolean test1, test2, test3, test4;
         test1 = test2 = test3 = test4 = true;
         String p1 = "ACAACAACAT",
@@ -85,37 +106,39 @@ public class TestBM {
                expected3 = {6,6,6,6,6,6,6,9,3,5,1},
                expected4 = {1,1,2,3,4,5,6,1};
         
+        buf.delete(0, buf.length());
+        
         actual = BM.GoodSuffix(p1);
         for (int i = 0; i < actual.length; i++)
             if (expected1[i] != actual[i])
                 test1 = false;
-         for (int i = 0; i < actual.length; i++)
-            System.out.print(actual[i] + ", ");
-         System.out.println();
-
-         actual = BM.GoodSuffix(p2);
-         for (int i = 0; i < actual.length; i++)
+        if (!test1)
+            buf.append("Input: " + p1 + "\nExpected Output: " + Arrays.toString(expected1)
+                    + "\nActual Output:   " + Arrays.toString(actual) + "\n");
+        
+        actual = BM.GoodSuffix(p2);
+        for (int i = 0; i < actual.length; i++)
             if (expected2[i] != actual[i])
                 test2 = false;
-         for (int i = 0; i < actual.length; i++)
-            System.out.print(actual[i] + ", ");
-         System.out.println();
-
+        if (!test2)
+            buf.append("Input: " + p2 + "\nExpected Output: " + Arrays.toString(expected2)
+                    + "\nActual Output:   " + Arrays.toString(actual) + "\n");
+        
         actual = BM.GoodSuffix(p3);
         for (int i = 0; i < actual.length; i++)
             if (expected3[i] != actual[i])
                 test3 = false;
-         for (int i = 0; i < actual.length; i++)
-             System.out.print(actual[i] + ", ");
-         System.out.println();
+        if (!test3)
+            buf.append("Input: " + p3 + "\nExpected Output: " + Arrays.toString(expected3)
+                    + "\nActual Output:   " + Arrays.toString(actual) + "\n");
 
         actual = BM.GoodSuffix(p4);
         for (int i = 0; i < actual.length; i++)
             if (expected4[i] != actual[i])
                 test4 = false;
-         for (int i = 0; i < actual.length; i++)
-             System.out.print(actual[i] + ", ");
-         System.out.println();
+        if (!test4)
+            buf.append("Input: " + p4 + "\nExpected Output: " + Arrays.toString(expected4)
+                    + "\nActual Output:   " + Arrays.toString(actual) + "\n");
 
         return test1 && test2 && test3 && test4;
     }

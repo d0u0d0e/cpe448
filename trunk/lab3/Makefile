@@ -9,7 +9,8 @@ CLASSES = \
 	  BM.java \
 	  BioOverlap.java \
 	  TestBM.java \
-	  Combine.java
+	  Combine.java \
+	  TestBM.java
 
 default: classes
 
@@ -18,8 +19,10 @@ classes: $(CLASSES:.java=.class)
 combine: classes
 	java Combine 
 
-test: classes
-	java TestBM 
+test:
+	@echo "Running Tests..."
+	java TestBM
+	@echo "Finished Testing."
 
 clean:
 	$(RM) *.class *.txt *.csv

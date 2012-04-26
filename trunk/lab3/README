@@ -25,3 +25,6 @@ To run:
 -Boyer-Moore Tests, "make test" or "java TestBM"
 -File Combination, "make combine" or "java Combine"
 
+Output:
+-superFASTA#.txt and superGFF#.txt (splits when there are gaps in files)
+-variations.csv - all variations

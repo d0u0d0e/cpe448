@@ -1,0 +1,27 @@
+Team 6
+
+CSC 448
+Daniel Huang
+Ricardo Tijero
+Ben Tupas
+
+CHEM 441
+Melanie Regan 
+Raquel Kahler
+
+File List:
+BM.java - Original Boyer-Moore algorithm using good suffix and bad character rule
+BioOverlap.java - "True" solution suggested in email to find overlap in nucleotides
+Combine.java - Combines sets of FASTA/GFF files. Files needed by our group hardcoded
+               into the source code.
+TestBM.java - Tests the Boyer-Moore algorithm
+fasta/ - FASTA files for contig and fosmid
+gff/ - GFF files for contig and fosmid
+
+To compile: 
+-"make" or "javac *.java"
+
+To run:
+-Boyer-Moore Tests, "make test" or "java TestBM"
+-File Combination, "make combine" or "java Combine"
+

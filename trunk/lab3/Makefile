@@ -7,19 +7,19 @@ JC = javac
 
 CLASSES = \
 	  BM.java \
-	  BioBM.java \
-	  Main.java \
+	  BioOverlap.java \
+	  TestBM.java \
 	  Combine.java
 
 default: classes
 
 classes: $(CLASSES:.java=.class)
 
-c: classes
+combine: classes
 	java Combine 
 
-bm: classes
-	java Main 
+test: classes
+	java TestBM 
 
 clean:
-	$(RM) *.class
+	$(RM) *.class *.txt *.csv

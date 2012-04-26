@@ -89,33 +89,33 @@ public class TestBM {
         for (int i = 0; i < actual.length; i++)
             if (expected1[i] != actual[i])
                 test1 = false;
-for (int i = 0; i < actual.length; i++)
-    System.out.print(actual[i] + ", ");
-System.out.println();
+         for (int i = 0; i < actual.length; i++)
+            System.out.print(actual[i] + ", ");
+         System.out.println();
 
-        actual = BM.GoodSuffix(p2);
-        for (int i = 0; i < actual.length; i++)
+         actual = BM.GoodSuffix(p2);
+         for (int i = 0; i < actual.length; i++)
             if (expected2[i] != actual[i])
                 test2 = false;
-for (int i = 0; i < actual.length; i++)
-    System.out.print(actual[i] + ", ");
-System.out.println();
+         for (int i = 0; i < actual.length; i++)
+            System.out.print(actual[i] + ", ");
+         System.out.println();
 
         actual = BM.GoodSuffix(p3);
         for (int i = 0; i < actual.length; i++)
             if (expected3[i] != actual[i])
                 test3 = false;
-for (int i = 0; i < actual.length; i++)
-    System.out.print(actual[i] + ", ");
-System.out.println();
+         for (int i = 0; i < actual.length; i++)
+             System.out.print(actual[i] + ", ");
+         System.out.println();
 
         actual = BM.GoodSuffix(p4);
         for (int i = 0; i < actual.length; i++)
             if (expected4[i] != actual[i])
                 test4 = false;
-for (int i = 0; i < actual.length; i++)
-    System.out.print(actual[i] + ", ");
-System.out.println();
+         for (int i = 0; i < actual.length; i++)
+             System.out.print(actual[i] + ", ");
+         System.out.println();
 
         return test1 && test2 && test3 && test4;
     }

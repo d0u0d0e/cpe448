@@ -1,5 +1,5 @@
-public class overlap {
-   public static int overlap(String S, String P, int min) {
+public class BioOverlap {
+   public static int getOffset(String S, String P, int min) {
       String C = "";
       int[] pi;
       int ol;
@@ -26,12 +26,19 @@ public class overlap {
          while (pattern.charAt(pfxLen) != pattern.charAt(nextChr) && pfxLen > 0)
             pfxLen = pi[pfxLen];
 
-         if (pattern.charAt(pfxLen) == pattern.charAt(nextChr))
+         if (nucleotideEquals(pattern.charAt(pfxLen), pattern.charAt(nextChr)))
             pfxLen++;
 
          pi[nextChr+1] = pfxLen; // nextChr+1 is match count
       }
 
       return pi;
+   }
+
+   public static boolean nucleotideEquals(char a, char b)
+   {
+      if (a == 'N' || b == 'N' || a == b)
+         return true;
+      return false;
    }
 }

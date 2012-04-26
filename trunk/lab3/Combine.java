@@ -21,16 +21,14 @@ public class Combine
       HashMap<String, Integer> vars = new HashMap<String, Integer>();
 
       int bp = 0, varCount = 0;
-      int minMatch = 300;
-      int splits = 1;
+      int minMatch = 1000;
+      int offset = -1, overlap = -1;
 
-      // intialize bio-specific Boyer-Moore's algorithm
-      BioBM bm = new BioBM();
-
-      // fasta files
+      // contig files
       fastaFiles.add("fasta/contig20.txt");
       fastaFiles.add("fasta/contig21.txt");
       fastaFiles.add("fasta/contig22.txt");
+      //fastaFiles.add("fasta/contig23.txt");
       fastaFiles.add("fasta/contig24.txt");
       fastaFiles.add("fasta/contig25.txt");
       fastaFiles.add("fasta/contig26.txt");
@@ -46,13 +44,10 @@ public class Combine
       fastaFiles.add("fasta/contig36.txt");
       fastaFiles.add("fasta/contig37.txt");
       fastaFiles.add("fasta/contig38.txt");
-      
-      // MISSING: fastaFiles.add("fasta/contig23.txt");
-      
-      // gff files
       gffFiles.add("gff/derecta_dot_contig20.0.gff");
       gffFiles.add("gff/derecta_dot_contig21.0.gff");
       gffFiles.add("gff/derecta_dot_contig22.0.gff");
+      //gffFiles.add("gff/derecta_dot_contig23.0.gff");
       gffFiles.add("gff/derecta_dot_contig24.0.gff");
       gffFiles.add("gff/derecta_dot_contig25.0.gff");
       gffFiles.add("gff/derecta_dot_contig26.0.gff");
@@ -68,9 +63,51 @@ public class Combine
       gffFiles.add("gff/derecta_dot_contig36.0.gff");
       gffFiles.add("gff/derecta_dot_contig37.0.gff");
       gffFiles.add("gff/derecta_dot_contig38.0.gff");
-      
-      // MISSING: gffFiles.add("gff/derecta_dot_contig23.0.gff");
-     
+
+      // fosmid files
+      fastaFiles.add("fasta/Fosmid22.txt");
+      fastaFiles.add("fasta/Fosmid23.txt");
+      fastaFiles.add("fasta/Fosmid24.txt");
+      fastaFiles.add("fasta/Fosmid25.txt");
+      fastaFiles.add("fasta/Fosmid26.txt");
+      fastaFiles.add("fasta/Fosmid27.txt");
+      fastaFiles.add("fasta/Fosmid28.txt");
+      fastaFiles.add("fasta/Fosmid29.txt");
+      fastaFiles.add("fasta/Fosmid30.txt");
+      fastaFiles.add("fasta/Fosmid31.txt");
+      fastaFiles.add("fasta/Fosmid32.txt");
+      fastaFiles.add("fasta/Fosmid33.txt");
+      fastaFiles.add("fasta/Fosmid34.txt");
+      fastaFiles.add("fasta/Fosmid35.txt");
+      fastaFiles.add("fasta/Fosmid36.txt");
+      fastaFiles.add("fasta/Fosmid37.txt");
+      fastaFiles.add("fasta/Fosmid38.txt");
+      fastaFiles.add("fasta/Fosmid39.txt");
+      fastaFiles.add("fasta/Fosmid40.txt");
+      fastaFiles.add("fasta/Fosmid41.txt");
+      fastaFiles.add("fasta/Fosmid42.txt");
+      gffFiles.add("gff/derecta_3Lcontrol_fosmid22a.gff");
+      gffFiles.add("gff/derecta_3Lcontrol_fosmid23a.gff");
+      gffFiles.add("gff/derecta_3Lcontrol_fosmid24a.gff");
+      gffFiles.add("gff/derecta_3Lcontrol_fosmid25a.gff");
+      gffFiles.add("gff/derecta_3Lcontrol_fosmid26a.gff");
+      gffFiles.add("gff/derecta_3Lcontrol_fosmid27a.gff");
+      gffFiles.add("gff/derecta_3Lcontrol_fosmid28a.gff");
+      gffFiles.add("gff/derecta_3Lcontrol_fosmid29a.gff");
+      gffFiles.add("gff/derecta_3Lcontrol_fosmid30a.gff");
+      gffFiles.add("gff/derecta_3Lcontrol_fosmid31a.gff");
+      gffFiles.add("gff/derecta_3Lcontrol_fosmid32a.gff");
+      gffFiles.add("gff/derecta_3Lcontrol_fosmid33a.gff");
+      gffFiles.add("gff/derecta_3Lcontrol_fosmid34a.gff");
+      gffFiles.add("gff/derecta_3Lcontrol_fosmid35a.gff");
+      gffFiles.add("gff/derecta_3Lcontrol_fosmid36a.gff");
+      gffFiles.add("gff/derecta_3Lcontrol_fosmid37a.gff");
+      gffFiles.add("gff/derecta_3Lcontrol_fosmid38a.gff");
+      gffFiles.add("gff/derecta_3Lcontrol_fosmid39a.gff");
+      gffFiles.add("gff/derecta_3Lcontrol_fosmid40a.gff");
+      gffFiles.add("gff/derecta_3Lcontrol_fosmid41a.gff");
+      gffFiles.add("gff/derecta_3Lcontrol_fosmid42a.gff");
+
       // check file counts
       if (fastaFiles.size() != gffFiles.size() && fastaFiles.size() > 1)
       {  
@@ -79,13 +116,15 @@ public class Combine
       }
 
       // parse files
+      System.out.print("Parsing files...");
       for (int i = 0; i < fastaFiles.size(); i++)
       {
          String s = parseFASTA(fastaFiles.get(i));
          fasta.add(s);
          gff.add(parseGFF(gffFiles.get(i), s.length()));   
       }
-
+      System.out.println("done");
+      
       // combine files
       String superFASTA = fasta.get(0);
       ArrayList<String> superGFF = new ArrayList<String>();
@@ -93,44 +132,31 @@ public class Combine
 
       for (int i = 0; i < fasta.size()-1; i++)
       { 
-         System.err.println(gffFiles.get(i)); 
-         int overlap;
-         int maxOverlap = -1;
-         int offset;
-         int end = minMatch;
+         System.out.print("Merging " + gffFiles.get(i) + "..."); 
          
+         if (offset == -1)
+            System.out.println("found no overlap");
+         else
+            System.out.println("found overlap at " + overlap);
+        
+         overlap = -1;
+         offset = -1;
          String fasta2 = fasta.get(i+1);
          ArrayList<String> gff2 = gff.get(i+1);
         
-         if (end > fasta2.length()-1)
+         if (minMatch > fasta2.length()-1)
          {
             System.err.println("Minimum match less than string length");
             return;
          }
 
          // find largest overlap
-         while ((overlap = bm.BMrun(superFASTA, fasta2.substring(0, end))) >= 0)
-         {
-            maxOverlap = overlap;
-            end++;
-            if (end >= fasta2.length()) 
-               break;
-         }
-         System.out.println(maxOverlap);
+         offset = BioOverlap.getOffset(superFASTA, fasta2, minMatch);
+         overlap = superFASTA.length() - offset;
+
          // overlap found
-         if (maxOverlap != -1)
+         if (offset != -1)
          {
-            //////////////////////////////
-            // MINMATCH QUALITY CHECK, REMOVE LATER
-            if (!fasta2.startsWith(superFASTA.substring(maxOverlap, superFASTA.length()-1)))
-            {
-               System.err.println("Overlap not actually found at the end, try higher minMatch value");
-               return;
-            }
-            // MINMATCH QUALITY CHECK, REMOVE LATER
-            //////////////////////////////
-            
-            offset = superFASTA.length() - maxOverlap;
             superFASTA = superFASTA + fasta2.substring(offset, fasta2.length());
 
             // combine GFF files
@@ -153,7 +179,7 @@ public class Combine
                   // add rest of first GFF file positives
                   for (z = k; z < gff2.size() && parseLine(gff2.get(z)).get(6).charAt(0) == '+'; z++)
                   {
-                     superGFF.add(repiece(updateOffset(parseLine(gff2.get(z)), maxOverlap)));
+                     superGFF.add(repiece(updateOffset(parseLine(gff2.get(z)), overlap)));
                   }
                   
                   for (x = gff2.size()-1; x > 0 && Integer.parseInt(parseLine(gff2.get(x)).get(3)) <= offset && parseLine(gff2.get(x)).get(6).charAt(0) == '-'; x--)
@@ -163,25 +189,25 @@ public class Combine
                   
                   for (int l = z; l < x; l++)
                   {
-                     superGFF.add(repiece(updateOffset(parseLine(gff2.get(l)), maxOverlap)));
+                     superGFF.add(repiece(updateOffset(parseLine(gff2.get(l)), overlap)));
                   }
                }
                // overlaps
-               if (start1 >= maxOverlap)
+               if (start1 >= overlap)
                {
-                  if (k < gff.size())
+                  if (k < gff2.size())
                   {
                      p2 = parseLine(gff2.get(k));
                      start2 = Integer.parseInt(p2.get(3));
                      stop2 = Integer.parseInt(p2.get(4));
 
                      // variations found
-                     if (start1 != (start2 + maxOverlap) || stop1 != (stop2 + maxOverlap)
+                     if (start1 != (start2 + overlap) || stop1 != (stop2 + overlap)
                          || (!p1.get(9).equals(p2.get(9))))
                      {
                         // write variations to file
                         outVar.write(p1.get(9) + ", " + p1.get(0) + ", " + p1.get(3) + ", " + p1.get(4) + "\n");
-                        p2t = updateOffset(p2, maxOverlap);
+                        p2t = updateOffset(p2, overlap);
                         outVar.write(p2t.get(9) + ", " + p2t.get(0) + ", " + p2t.get(3) + ", " + p2t.get(4) + "\n");
                         
                         // total gene variations and bp
@@ -201,25 +227,26 @@ public class Combine
                         // range mismatch only, add highest range
                         if (p1.get(9).equals(p2.get(9)))
                         { 
-                           if (Math.abs(start1 - stop1) < Math.abs(start1 - stop2 + maxOverlap))
+                           if (Math.abs(start1 - stop1) < Math.abs(start1 - stop2 + overlap))
                            {
                               superGFF.add(repiece(p1));
                            }
                            else
                            {
-                              superGFF.add(repiece(updateOffset(p2, maxOverlap)));
+                              superGFF.add(repiece(updateOffset(p2, overlap)));
                            }
                         }
-                        /* gene mismatch, just add p1 */
+                        /* gene mismatch, add both */
                         else
                         { 
                            superGFF.add(repiece(p1));
+                           superGFF.add(repiece(updateOffset(p2, overlap)));
                         }
                      }
                      // no variation
                      else
                      {
-                        superGFF.add(repiece(updateOffset(p2, maxOverlap)));
+                        superGFF.add(repiece(updateOffset(p2, overlap)));
                      }
                      k++;
                   }
@@ -240,7 +267,7 @@ public class Combine
             {
                for (int j = k; j < gff2.size(); j++)
                {
-                  superGFF.add(repiece(updateOffset(parseLine(gff2.get(j)), maxOverlap)));
+                  superGFF.add(repiece(updateOffset(parseLine(gff2.get(j)), overlap)));
                }
             }
 
@@ -263,6 +290,7 @@ public class Combine
       combinedGFFS.add(gff1); 
       
       // output to file
+      System.out.print("Outputting to files...");
       for (int i = 0; i < combinedFASTAS.size(); i++)
       { 
          String outname = "superFASTA" + Integer.toString(i+1) + ".txt";
@@ -300,6 +328,8 @@ public class Combine
       outVar.write("Total genes with variation: " + Integer.toString(varCount) + "\n");
       outVar.write("Total differed bp: " + Integer.toString(bp));
       outVar.close();
+
+      System.out.println("done");
    }
 
    public static String parseFASTA(String fileName) throws IOException

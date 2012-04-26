@@ -1,0 +1,17 @@
+contig22	.	mRNA	5250	15267	.	+	.	gene_id "Thd1"; transcript_id "Thd1-RA";
+contig22	.	CDS	5250	6835	.	+	.	gene_id "Thd1"; transcript_id "Thd1-RA";
+contig22	.	CDS	7468	8100	.	+	.	gene_id "Thd1"; transcript_id "Thd1-RA";
+contig22	.	CDS	9952	10111	.	+	.	gene_id "Thd1"; transcript_id "Thd1-RA";
+contig22	.	CDS	10204	10566	.	+	.	gene_id "Thd1"; transcript_id "Thd1-RA";
+contig22	.	CDS	12778	15270	.	+	.	gene_id "Thd1"; transcript_id "Thd1-RA";
+contig22	.	mRNA	22469	41538	.	-	.	gene_id "zfh2"; transcript_id "zfh2-RA";
+contig22	.	CDS	39938	41538	.	-	.	gene_id "zfh2"; transcript_id "zfh2-RA";
+contig22	.	CDS	38340	38521	.	-	.	gene_id "zfh2"; transcript_id "zfh2-RA";
+contig22	.	CDS	36000	37619	.	-	.	gene_id "zfh2"; transcript_id "zfh2-RA";
+contig22	.	CDS	29708	31108	.	-	.	gene_id "zfh2"; transcript_id "zfh2-RA";
+contig22	.	CDS	29420	29640	.	-	.	gene_id "zfh2"; transcript_id "zfh2-RA";
+contig22	.	CDS	29004	29351	.	-	.	gene_id "zfh2"; transcript_id "zfh2-RA";
+contig22	.	CDS	27671	27811	.	-	.	gene_id "zfh2"; transcript_id "zfh2-RA";
+contig22	.	CDS	24725	27616	.	-	.	gene_id "zfh2"; transcript_id "zfh2-RA";
+contig22	.	CDS	23349	23937	.	-	.	gene_id "zfh2"; transcript_id "zfh2-RA";
+contig22	.	CDS	22466	22482	.	-	.	gene_id "zfh2"; transcript_id "zfh2-RA";

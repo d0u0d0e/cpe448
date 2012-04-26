@@ -1,4 +1,0 @@
-fosmid26	.	mRNA	30999	32597	.	+	.	gene_id "CG11449"; transcript_id "CG11449-RA";
-fosmid26	.	CDS	30999	32600	.	+	.	gene_id "CG11449"; transcript_id "CG11449-RA";
-fosmid26	.	mRNA	35943	36953	.	-	.	gene_id "laza"; transcript_id "laza-RA";
-fosmid26	.	CDS	35940	36953	.	-	.	gene_id "laza"; transcript_id "laza-RA";

@@ -1,5 +1,0 @@
-fosmid13	.	mRNA	1948	3241	.	+	.	gene_id "Act79B"; transcript_id "Act79B-RA";
-fosmid13	.	CDS	1948	2872	.	+	.	gene_id "Act79B"; transcript_id "Act79B-RA";
-fosmid13	.	CDS	3039	3244	.	+	.	gene_id "Act79B"; transcript_id "Act79B-RA";
-fosmid13	.	mRNA	42967	44577	.	-	.	gene_id "CG7140"; transcript_id "CG7140-RB";
-fosmid13	.	CDS	42961	44577	.	-	.	gene_id "CG7140"; transcript_id "CG7140-RB";

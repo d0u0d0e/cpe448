@@ -1,7 +1,0 @@
-fosmid17	.	mRNA	4450	5475	.	+	.	gene_id "RpLP0"; transcript_id "RpLP0-RA";
-fosmid17	.	CDS	4450	4503	.	+	.	gene_id "RpLP0"; transcript_id "RpLP0-RA";
-fosmid17	.	CDS	4579	5478	.	+	.	gene_id "RpLP0"; transcript_id "RpLP0-RA";
-fosmid17	.	mRNA	288	1274	.	-	.	gene_id "CG7133"; transcript_id "CG7133-RA";
-fosmid17	.	CDS	285	1274	.	-	.	gene_id "CG7133"; transcript_id "CG7133-RA";
-fosmid17	.	mRNA	3443	3823	.	-	.	gene_id "FBgn:temp3:fosmid17"; transcript_id "FBgn:temp3:fosmid17-RA";
-fosmid17	.	CDS	3440	3823	.	-	.	gene_id "FBgn:temp3:fosmid17"; transcript_id "FBgn:temp3:fosmid17-RA";

@@ -1,6 +1,0 @@
-fosmid29	.	mRNA	22921	23583	.	+	.	gene_id "CG11404"; transcript_id "CG11404-RA";
-fosmid29	.	CDS	22921	23005	.	+	.	gene_id "CG11404"; transcript_id "CG11404-RA";
-fosmid29	.	CDS	23052	23212	.	+	.	gene_id "CG11404"; transcript_id "CG11404-RA";
-fosmid29	.	CDS	23269	23586	.	+	.	gene_id "CG11404"; transcript_id "CG11404-RA";
-fosmid29	.	mRNA	24742	26295	.	+	.	gene_id "Trxr-2"; transcript_id "Trxr-2-RA";
-fosmid29	.	CDS	24742	26298	.	+	.	gene_id "Trxr-2"; transcript_id "Trxr-2-RA";

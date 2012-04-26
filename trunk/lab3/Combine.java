@@ -16,14 +16,12 @@ public class Combine
       ArrayList<ArrayList<String>> gff = new ArrayList<ArrayList<String>>();
       ArrayList<String> combinedFASTAS = new ArrayList<String>();
       ArrayList<ArrayList<String>> combinedGFFS = new ArrayList<ArrayList<String>>();
-      FileWriter fstreamVar = new FileWriter("variations.csv");
-      BufferedWriter outVar = new BufferedWriter(fstreamVar);
       HashMap<String, Integer> vars = new HashMap<String, Integer>();
-
-      int bp = 0, varCount = 0;
+      
       int minMatch = 1000;
-      int offset = -1, overlap = -1;
-
+      int bp = 0, varCount = 0;
+      int offset = -1, overlap = -1, split = 1;
+      
       // contig files
       fastaFiles.add("fasta/contig20.txt");
       fastaFiles.add("fasta/contig21.txt");
@@ -129,7 +127,9 @@ public class Combine
       String superFASTA = fasta.get(0);
       ArrayList<String> superGFF = new ArrayList<String>();
       ArrayList<String> gff1 = gff.get(0);
-
+      FileWriter fstreamVar = new FileWriter("variations" + Integer.toString(split) + ".csv");
+      BufferedWriter outVar = new BufferedWriter(fstreamVar);
+      
       for (int i = 0; i < fasta.size()-1; i++)
       { 
          System.out.print("Merging " + gffFiles.get(i) + "..."); 
@@ -281,16 +281,27 @@ public class Combine
             combinedGFFS.add(gff1); 
             superGFF = new ArrayList<String>();
             superFASTA = fasta.get(i+1);
-            gff1 = gff.get(i+1); 
+            gff1 = gff.get(i+1);
+            outVar.write("Total genes with variation: " + Integer.toString(varCount) + "\n");
+            outVar.write("Total differed bp: " + Integer.toString(bp));
+            outVar.close();
+            split++; 
+            fstreamVar = new FileWriter("variations" + Integer.toString(split) + ".csv");
+            outVar = new BufferedWriter(fstreamVar);
+            bp = 0;
+            varCount = 0;
+            vars = new HashMap<String, Integer>();
          }
       }
 
       // add remaining
       combinedFASTAS.add(superFASTA);
       combinedGFFS.add(gff1); 
-      
+      outVar.write("Total genes with variation: " + Integer.toString(varCount) + "\n");
+      outVar.write("Total differed bp: " + Integer.toString(bp));
+      outVar.close(); 
+
       // output to file
-      System.out.print("Outputting to files...");
       for (int i = 0; i < combinedFASTAS.size(); i++)
       { 
          String outname = "superFASTA" + Integer.toString(i+1) + ".txt";
@@ -323,13 +334,6 @@ public class Combine
          }
          out2.close();
       }
-
-      // output variation totals
-      outVar.write("Total genes with variation: " + Integer.toString(varCount) + "\n");
-      outVar.write("Total differed bp: " + Integer.toString(bp));
-      outVar.close();
-
-      System.out.println("done");
    }
 
    public static String parseFASTA(String fileName) throws IOException

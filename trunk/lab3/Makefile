@@ -19,7 +19,7 @@ classes: $(CLASSES:.java=.class)
 combine: classes
 	java Combine 
 
-test:
+test: classes
 	@echo "Running Tests..."
 	java TestBM
 	@echo "Finished Testing."

@@ -11,6 +11,7 @@ public class SuffixTree {
 	
    class Inner extends node {
       public boolean ldiverse;        //left diversity
+      char prevChar;                  //If children not left diverse then the left char is passed on to parent
 
       public Inner(String label, node n) {
          this.label = label;

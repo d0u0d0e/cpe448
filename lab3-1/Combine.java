@@ -11,7 +11,9 @@ public class Combine
    public static void main(String args[]) throws IOException
    {
       ArrayList<String> fastaFiles = new ArrayList<String>();
+      ArrayList<String> fastaFilesAll = new ArrayList<String>();
       ArrayList<String> gffFiles = new ArrayList<String>();
+      ArrayList<String> gffFilesAll = new ArrayList<String>();
       ArrayList<String> fasta = new ArrayList<String>();
       ArrayList<ArrayList<String>> gff = new ArrayList<ArrayList<String>>();
       ArrayList<String> combinedFASTAS = new ArrayList<String>();
@@ -21,90 +23,150 @@ public class Combine
       int minMatch = 1000;
       int bp = 0, varCount = 0;
       int offset = -1, overlap = -1, split = 1;
-      
-      // contig files 20-38
-      fastaFiles.add("fasta/contig20.txt");
-      fastaFiles.add("fasta/contig21.txt");
-      fastaFiles.add("fasta/contig22.txt");
-      //MISSING: fastaFiles.add("fasta/contig23.txt");
-      fastaFiles.add("fasta/contig24.txt");
-      fastaFiles.add("fasta/contig25.txt");
-      fastaFiles.add("fasta/contig26.txt");
-      fastaFiles.add("fasta/contig27.txt");
-      fastaFiles.add("fasta/contig28.txt");
-      fastaFiles.add("fasta/contig29.txt");
-      fastaFiles.add("fasta/contig30.txt");
-      fastaFiles.add("fasta/contig31.txt");
-      fastaFiles.add("fasta/contig32.txt");
-      fastaFiles.add("fasta/contig33.txt");
-      fastaFiles.add("fasta/contig34.txt");
-      fastaFiles.add("fasta/contig35.txt");
-      fastaFiles.add("fasta/contig36.txt");
-      fastaFiles.add("fasta/contig37.txt");
-      fastaFiles.add("fasta/contig38.txt");
-      gffFiles.add("gff/derecta_dot_contig20.0.gff");
-      gffFiles.add("gff/derecta_dot_contig21.0.gff");
-      gffFiles.add("gff/derecta_dot_contig22.0.gff");
-      //MISSING: gffFiles.add("gff/derecta_dot_contig23.0.gff");
-      gffFiles.add("gff/derecta_dot_contig24.0.gff");
-      gffFiles.add("gff/derecta_dot_contig25.0.gff");
-      gffFiles.add("gff/derecta_dot_contig26.0.gff");
-      gffFiles.add("gff/derecta_dot_contig27.0.gff");
-      gffFiles.add("gff/derecta_dot_contig28.0.gff");
-      gffFiles.add("gff/derecta_dot_contig29.0.gff");
-      gffFiles.add("gff/derecta_dot_contig30.0.gff");
-      gffFiles.add("gff/derecta_dot_contig31.0.gff");
-      gffFiles.add("gff/derecta_dot_contig32.0.gff");
-      gffFiles.add("gff/derecta_dot_contig33.0.gff");
-      gffFiles.add("gff/derecta_dot_contig34.0.gff");
-      gffFiles.add("gff/derecta_dot_contig35a.gff");
-      gffFiles.add("gff/derecta_dot_contig36.0.gff");
-      gffFiles.add("gff/derecta_dot_contig37.0.gff");
-      gffFiles.add("gff/derecta_dot_contig38.0.gff");
+      int start = 0, stop = 0;
 
-      // fosmid files 22-42
-      fastaFiles.add("fasta/Fosmid22.txt");
-      fastaFiles.add("fasta/Fosmid23.txt");
-      fastaFiles.add("fasta/Fosmid24.txt");
-      fastaFiles.add("fasta/Fosmid25.txt");
-      fastaFiles.add("fasta/Fosmid26.txt");
-      fastaFiles.add("fasta/Fosmid27.txt");
-      fastaFiles.add("fasta/Fosmid28.txt");
-      fastaFiles.add("fasta/Fosmid29.txt");
-      fastaFiles.add("fasta/Fosmid30.txt");
-      fastaFiles.add("fasta/Fosmid31.txt");
-      fastaFiles.add("fasta/Fosmid32.txt");
-      fastaFiles.add("fasta/Fosmid33.txt");
-      fastaFiles.add("fasta/Fosmid34.txt");
-      fastaFiles.add("fasta/Fosmid35.txt");
-      fastaFiles.add("fasta/Fosmid36.txt");
-      fastaFiles.add("fasta/Fosmid37.txt");
-      fastaFiles.add("fasta/Fosmid38.txt");
-      fastaFiles.add("fasta/Fosmid39.txt");
-      fastaFiles.add("fasta/Fosmid40.txt");
-      fastaFiles.add("fasta/Fosmid41.txt");
-      fastaFiles.add("fasta/Fosmid42.txt");
-      gffFiles.add("gff/derecta_3Lcontrol_fosmid22a.gff");
-      gffFiles.add("gff/derecta_3Lcontrol_fosmid23a.gff");
-      gffFiles.add("gff/derecta_3Lcontrol_fosmid24a.gff");
-      gffFiles.add("gff/derecta_3Lcontrol_fosmid25a.gff");
-      gffFiles.add("gff/derecta_3Lcontrol_fosmid26a.gff");
-      gffFiles.add("gff/derecta_3Lcontrol_fosmid27a.gff");
-      gffFiles.add("gff/derecta_3Lcontrol_fosmid28a.gff");
-      gffFiles.add("gff/derecta_3Lcontrol_fosmid29a.gff");
-      gffFiles.add("gff/derecta_3Lcontrol_fosmid30a.gff");
-      gffFiles.add("gff/derecta_3Lcontrol_fosmid31a.gff");
-      gffFiles.add("gff/derecta_3Lcontrol_fosmid32a.gff");
-      gffFiles.add("gff/derecta_3Lcontrol_fosmid33a.gff");
-      gffFiles.add("gff/derecta_3Lcontrol_fosmid34a.gff");
-      gffFiles.add("gff/derecta_3Lcontrol_fosmid35a.gff");
-      gffFiles.add("gff/derecta_3Lcontrol_fosmid36a.gff");
-      gffFiles.add("gff/derecta_3Lcontrol_fosmid37a.gff");
-      gffFiles.add("gff/derecta_3Lcontrol_fosmid38a.gff");
-      gffFiles.add("gff/derecta_3Lcontrol_fosmid39a.gff");
-      gffFiles.add("gff/derecta_3Lcontrol_fosmid40a.gff");
-      gffFiles.add("gff/derecta_3Lcontrol_fosmid41a.gff");
-      gffFiles.add("gff/derecta_3Lcontrol_fosmid42a.gff");
+      if (args.length != 3)
+      {
+         System.err.println("Not enough arguments: <chromosome> <start> <stop>");
+         return;
+      }
+      
+      if (args[0].charAt(0) == 'c' ||
+          args[0].charAt(0) == 'C')
+      {
+         start = Integer.parseInt(args[1]);
+         stop = Integer.parseInt(args[2]);
+
+         if (start < 20 || start < 20 ||
+             stop > 38 || stop > 38 ||
+             start > stop)
+         {
+            System.err.println("Invalid range, 20-38 only");
+            return;
+         }
+         
+         // contig files 20-38
+         fastaFilesAll.add("fasta/contig20.txt");
+         fastaFilesAll.add("fasta/contig21.txt");
+         fastaFilesAll.add("fasta/contig22.txt");
+         //MISSING: fastaFiles.add("fasta/contig23.txt");
+         fastaFilesAll.add("fasta/contig24.txt");
+         fastaFilesAll.add("fasta/contig25.txt");
+         fastaFilesAll.add("fasta/contig26.txt");
+         fastaFilesAll.add("fasta/contig27.txt");
+         fastaFilesAll.add("fasta/contig28.txt");
+         fastaFilesAll.add("fasta/contig29.txt");
+         fastaFilesAll.add("fasta/contig30.txt");
+         fastaFilesAll.add("fasta/contig31.txt");
+         fastaFilesAll.add("fasta/contig32.txt");
+         fastaFilesAll.add("fasta/contig33.txt");
+         fastaFilesAll.add("fasta/contig34.txt");
+         fastaFilesAll.add("fasta/contig35.txt");
+         fastaFilesAll.add("fasta/contig36.txt");
+         fastaFilesAll.add("fasta/contig37.txt");
+         fastaFilesAll.add("fasta/contig38.txt");
+         gffFilesAll.add("gff/derecta_dot_contig20.0.gff");
+         gffFilesAll.add("gff/derecta_dot_contig21.0.gff");
+         gffFilesAll.add("gff/derecta_dot_contig22.0.gff");
+         //MISSING: gffFilesAll.add("gff/derecta_dot_contig23.0.gff");
+         gffFilesAll.add("gff/derecta_dot_contig24.0.gff");
+         gffFilesAll.add("gff/derecta_dot_contig25.0.gff");
+         gffFilesAll.add("gff/derecta_dot_contig26.0.gff");
+         gffFilesAll.add("gff/derecta_dot_contig27.0.gff");
+         gffFilesAll.add("gff/derecta_dot_contig28.0.gff");
+         gffFilesAll.add("gff/derecta_dot_contig29.0.gff");
+         gffFilesAll.add("gff/derecta_dot_contig30.0.gff");
+         gffFilesAll.add("gff/derecta_dot_contig31.0.gff");
+         gffFilesAll.add("gff/derecta_dot_contig32.0.gff");
+         gffFilesAll.add("gff/derecta_dot_contig33.0.gff");
+         gffFilesAll.add("gff/derecta_dot_contig34.0.gff");
+         gffFilesAll.add("gff/derecta_dot_contig35a.gff");
+         gffFilesAll.add("gff/derecta_dot_contig36.0.gff");
+         gffFilesAll.add("gff/derecta_dot_contig37.0.gff");
+         gffFilesAll.add("gff/derecta_dot_contig38.0.gff");
+         
+         for (int i = start-20; i <= stop-20; i++)
+         {
+            fastaFiles.add(fastaFilesAll.get(i));
+            gffFiles.add(gffFilesAll.get(i));
+         }
+
+         System.out.println("Merging contig files " + Integer.toString(start) +
+                            " to " + Integer.toString(stop) + "...");
+      }
+
+      else if (args[0].charAt(0) == 'f' ||
+               args[0].charAt(0) == 'F')
+      {
+         start = Integer.parseInt(args[1]);
+         stop = Integer.parseInt(args[2]);
+
+         if (start < 22 || start < 22 ||
+             stop > 42 || stop > 42 ||
+             start > stop)
+         {
+            System.err.println("Invalid range, 22-42 only");
+            return;
+         }
+ 
+         // fosmid files 22-42
+         fastaFilesAll.add("fasta/Fosmid22.txt");
+         fastaFilesAll.add("fasta/Fosmid23.txt");
+         fastaFilesAll.add("fasta/Fosmid24.txt");
+         fastaFilesAll.add("fasta/Fosmid25.txt");
+         fastaFilesAll.add("fasta/Fosmid26.txt");
+         fastaFilesAll.add("fasta/Fosmid27.txt");
+         fastaFilesAll.add("fasta/Fosmid28.txt");
+         fastaFilesAll.add("fasta/Fosmid29.txt");
+         fastaFilesAll.add("fasta/Fosmid30.txt");
+         fastaFilesAll.add("fasta/Fosmid31.txt");
+         fastaFilesAll.add("fasta/Fosmid32.txt");
+         fastaFilesAll.add("fasta/Fosmid33.txt");
+         fastaFilesAll.add("fasta/Fosmid34.txt");
+         fastaFilesAll.add("fasta/Fosmid35.txt");
+         fastaFilesAll.add("fasta/Fosmid36.txt");
+         fastaFilesAll.add("fasta/Fosmid37.txt");
+         fastaFilesAll.add("fasta/Fosmid38.txt");
+         fastaFilesAll.add("fasta/Fosmid39.txt");
+         fastaFilesAll.add("fasta/Fosmid40.txt");
+         fastaFilesAll.add("fasta/Fosmid41.txt");
+         fastaFilesAll.add("fasta/Fosmid42.txt");
+         gffFilesAll.add("gff/derecta_3Lcontrol_fosmid22a.gff");
+         gffFilesAll.add("gff/derecta_3Lcontrol_fosmid23a.gff");
+         gffFilesAll.add("gff/derecta_3Lcontrol_fosmid24a.gff");
+         gffFilesAll.add("gff/derecta_3Lcontrol_fosmid25a.gff");
+         gffFilesAll.add("gff/derecta_3Lcontrol_fosmid26a.gff");
+         gffFilesAll.add("gff/derecta_3Lcontrol_fosmid27a.gff");
+         gffFilesAll.add("gff/derecta_3Lcontrol_fosmid28a.gff");
+         gffFilesAll.add("gff/derecta_3Lcontrol_fosmid29a.gff");
+         gffFilesAll.add("gff/derecta_3Lcontrol_fosmid30a.gff");
+         gffFilesAll.add("gff/derecta_3Lcontrol_fosmid31a.gff");
+         gffFilesAll.add("gff/derecta_3Lcontrol_fosmid32a.gff");
+         gffFilesAll.add("gff/derecta_3Lcontrol_fosmid33a.gff");
+         gffFilesAll.add("gff/derecta_3Lcontrol_fosmid34a.gff");
+         gffFilesAll.add("gff/derecta_3Lcontrol_fosmid35a.gff");
+         gffFilesAll.add("gff/derecta_3Lcontrol_fosmid36a.gff");
+         gffFilesAll.add("gff/derecta_3Lcontrol_fosmid37a.gff");
+         gffFilesAll.add("gff/derecta_3Lcontrol_fosmid38a.gff");
+         gffFilesAll.add("gff/derecta_3Lcontrol_fosmid39a.gff");
+         gffFilesAll.add("gff/derecta_3Lcontrol_fosmid40a.gff");
+         gffFilesAll.add("gff/derecta_3Lcontrol_fosmid41a.gff");
+         gffFilesAll.add("gff/derecta_3Lcontrol_fosmid42a.gff");
+
+         for (int i = start-22; i <= stop-22; i++)
+         {
+            fastaFiles.add(fastaFilesAll.get(i));
+            gffFiles.add(gffFilesAll.get(i));
+         }
+                  
+         System.out.println("Merging fosmid files " + Integer.toString(start) +
+                            " to " + Integer.toString(stop) + "...");
+      }
+      else
+      {
+         System.err.println("Invalid chromosome type: 'c' or 'f' only");
+         return;
+      }
 
       // check file counts
       if (fastaFiles.size() != gffFiles.size() && fastaFiles.size() > 1)
@@ -114,14 +176,12 @@ public class Combine
       }
 
       // parse files
-      System.out.print("Parsing files...");
       for (int i = 0; i < fastaFiles.size(); i++)
       {
          String s = parseFASTA(fastaFiles.get(i));
          fasta.add(s);
          gff.add(parseGFF(gffFiles.get(i), s.length()));   
       }
-      System.out.println("done");
       
       // combine files
       String superFASTA = fasta.get(0);
@@ -132,13 +192,13 @@ public class Combine
       
       for (int i = 0; i < fasta.size()-1; i++)
       { 
-         System.out.print("Merging " + gffFiles.get(i) + "..."); 
+         /*System.out.print("Merging " + gffFiles.get(i) + "..."); 
          
          if (offset == -1)
             System.out.println("found no overlap");
          else
             System.out.println("found overlap at " + overlap);
-        
+        */
          overlap = -1;
          offset = -1;
          String fasta2 = fasta.get(i+1);

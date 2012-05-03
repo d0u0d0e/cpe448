@@ -1,0 +1,4 @@
+fosmid28	.	mRNA	13735	15910	.	-	.	gene_id "CG12377"; transcript_id "CG12377-RA";
+fosmid28	.	CDS	15376	15910	.	-	.	gene_id "CG12377"; transcript_id "CG12377-RA";
+fosmid28	.	CDS	14741	15170	.	-	.	gene_id "CG12377"; transcript_id "CG12377-RA";
+fosmid28	.	CDS	13732	14491	.	-	.	gene_id "CG12377"; transcript_id "CG12377-RA";

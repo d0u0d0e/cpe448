@@ -95,7 +95,6 @@ public class DNALib
       }
    }
 	
-   //should amino acids be labeled by 1 or 3 letter name?
 	private void createMap(){
 		aminoAcid aa = new aminoAcid("Alanine", 4);
 		aa.codons.add(new Codon("GCT"));
@@ -148,7 +147,7 @@ public class DNALib
 		aa = new aminoAcid("Histidine", 2);
 		aa.codons.add(new Codon("CAT"));
 		aa.codons.add(new Codon("CAC"));
-	    mapAdd("H", aa);
+	        mapAdd("H", aa);
 		
 		aa = new aminoAcid("Isoleucine", 3);
 		aa.codons.add(new Codon("ATC"));
@@ -226,146 +225,139 @@ public class DNALib
 	}
 	
    private void counts() {
-		int start = 0, end = 3;
-		String sub;
+      int start = 0, end = 3;
+      String sub;
 		
-		while(end <= sequence.length()) {
-			sub = sequence.substring(start, end);
-         try
-         {
+      while(end <= sequence.length()) {
+         sub = sequence.substring(start, end);
+
+         try {
             map.get(sub).codons.get(0).count++;
          }
-         catch (Exception e)
-         {
+         catch (Exception e) {
             this.error++;
          }
-			start += 3;
-			end += 3;
-		}
-	}
 
-/*
-	public double frequencyOptimalCodons(list of optimal codons){
-		return (num of optimal)/sum of opt and non-opt;
-		aminoAcid aa;
-		int sum = 0, opt = 0;
+         start += 3;
+	 end += 3;
+      }
+   }
+
+   public void histogram(String amino){
+      int total = 0;
+      aminoAcid aa = map.get(amino);
+      for(int i = 0; i < aa.codons.size(); i++)
+         total += aa.codons.get(i).count;
+
+      for(int i = 0; i < aa.codons.size(); i++)
+         System.out.println(aa.codons.get(i).name + "   " + aa.codons.get(i).count + "   "
+                            + (double)aa.codons.get(i).count / total);
+
+   }
+
+
+   public double frequencyOptimalCodons(ArrayList optimal){
+	aminoAcid aa;
+	double sum = 0, opt = 0;
 		
-		for(each opt codon) {
-		   aa = map.get(codon);
+	for(int i = 0; i < optimal.size(); i++) {
+	   aa = map.get(optimal.get(i));
 		   
-		   for(int i = 0; i < aa.codons.size(); i++) {
-		      sum += aa.codons.get(i).count;
-		      
-		      if(aa.codons.get(i).name.equals(codon)
-		         opt += aa.codons.get(i).count;
-		   }
-		}
-	}
-*/
-	
-	public double rcsu(String codon){
-	   double sum = 0, count = 0;
-	   DNALib.aminoAcid aa = map.get(codon);
-	   
-	   for(int i = 0; i < aa.codons.size(); i++) {
-		   sum += aa.codons.get(i).count;
-		   
-		   if(aa.codons.get(i).name.equals(codon))
-			   count = aa.codons.get(i).count;
+	   for(int j = 0; j < aa.codons.size(); j++) {
+	      sum += aa.codons.get(j).count;
+	      
+	      if(aa.codons.get(j).name.equals(optimal.get(i)))
+	         opt += aa.codons.get(j).count;
 	   }
+	}
+        return opt / sum;
+   }
+
+	
+   public double rcsu(String codon){
+	double sum = 0, count = 0;
+	DNALib.aminoAcid aa = map.get(codon);
 	   
-	   return (count)/(sum / aa.codons.size());
+	for(int i = 0; i < aa.codons.size(); i++) {
+	   sum += aa.codons.get(i).count;
+		   
+	   if(aa.codons.get(i).name.equals(codon))
+	   count = aa.codons.get(i).count;
 	}
+	   
+      return (count)/(sum / aa.codons.size());
+   }
 	
 
-	public double CAI(String codon){
-		double max = 0, cai = 1;
+   public double CAI(String codon){
+	double max = 0, cai = 1;
 		
-		for(aminoAcid aa : map.values())
-			for(Codon c : aa.codons)
-				if(c.count > max)
-					max = rcsu(c.name);
+	for(aminoAcid aa : map.values())
+	   for(Codon c : aa.codons)
+	      if(c.count > max)
+	         max = rcsu(c.name);
 		
-		for(aminoAcid aa : map.values())
-			for(Codon c : aa.codons)
-				cai *= rcsu(c.name) / max;
+	for(aminoAcid aa : map.values())
+	   for(Codon c : aa.codons)
+	      cai *= rcsu(c.name) / max;
 		 
-		 return nRoot(59, cai, 1);
-	}
+	 return nRoot(59, cai, 1);
+   }
 
 	
-	public void effectiveNumberCodons(){
-		
-	}
+   public void effectiveNumberCodons(){
+   }
 	
-	public double scaledChi2(String amino){
-		double chi = 0, E = 0, total = 0;
-		aminoAcid aa = map.get(amino);
+   public double scaledChi2(String amino){
+	double chi = 0, E = 0, total = 0;
+	aminoAcid aa = map.get(amino);
 		
-		for(Codon c : aa.codons)
-			E += c.count;
+	for(Codon c : aa.codons)
+	   E += c.count;
 		
-		// E == num occurences of amino acid in seq
-		for(Codon c : aa.codons){
-		   chi += (((double)c.count - E) * ((double)c.count - E) / E);
-		}
+	// E == num occurences of amino acid in seq
+	for(Codon c : aa.codons){
+	   chi += (((double)c.count - E) * ((double)c.count - E) / E);
+	}
 		
-		for(DNALib.aminoAcid aA : map.values()) {
-			if(aA.codons.size() != 1)
-				for(int i = 0; i < aA.codons.size(); i++)
-					total += aA.codons.get(i).count;
-		}
+	for(DNALib.aminoAcid aA : map.values()) {
+	   if(aA.codons.size() != 1)
+	      for(int i = 0; i < aA.codons.size(); i++)
+		total += aA.codons.get(i).count;
+	 }
 			
-		return chi/total;
-	}
+	return chi/total;
+   }
 
 	
-	public double enthropy(){
-		int A, T, C, G;
-		int L = sequence.length();
-		A = T = C = G = 0;
+   public double enthropy(){
+      double A, T, C, G;
+      int L = sequence.length();
+      A = T = C = G = 0;
 
         for(int i = 0; i < L; i++){
-        	char c = sequence.charAt(i);
+           char c = sequence.charAt(i);
         	
-        	switch(c){
-        	   case 'A':
-        	      A++;
-        	      break;
-        	   case 'T':
-         	      T++;
-         	      break;
-        	   case 'C':
-         	      C++;
-         	      break;
-        	   case 'G':
-         	      G++;
-         	      break;
-        	}
+           switch(c){
+              case 'A':
+                 A++;
+                 break;
+              case 'T':
+                 T++;
+                 break;
+              case 'C':
+                 C++;
+                 break;
+              case 'G':
+                  G++;
+                  break;
+           }
         }
         
         return -(A/L*log2(A/L) + C/L*log2(C/L) + T/L*log2(T/L) + G/L*log2(G/L));	
-	}
+   }
 	
 
-/*	
-	public double codonDensity(){
-		return 0;
-	}
-
-	public double geneDensity(){	
-       int genes = 0;
-		
-		for(both strands)
-		   if(gene)
-		      genes++;
-		   }
-		}
-		return genes/L;
-	}
-*/
-	
-	
 //supporting methods
 	public static double log2(double num){
 		return Math.log(num)/Math.log(2);

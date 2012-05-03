@@ -16,9 +16,6 @@ default: classes
 
 classes: $(CLASSES:.java=.class)
 
-combine: classes
-	java Combine 
-
 test: classes
 	@echo "Running Tests..."
 	java TestBM

@@ -1,0 +1,11 @@
+fosmid33	.	mRNA	18901	19669	.	+	.	gene_id "CG14456"; transcript_id "CG14456-RB";
+fosmid33	.	CDS	18901	18966	.	+	.	gene_id "CG14456"; transcript_id "CG14456-RB";
+fosmid33	.	CDS	19035	19349	.	+	.	gene_id "CG14456"; transcript_id "CG14456-RB";
+fosmid33	.	CDS	19412	19672	.	+	.	gene_id "CG14456"; transcript_id "CG14456-RB";
+fosmid33	.	mRNA	18901	19669	.	+	.	gene_id "CG14456"; transcript_id "CG14456-RA";
+fosmid33	.	CDS	18901	18966	.	+	.	gene_id "CG14456"; transcript_id "CG14456-RA";
+fosmid33	.	CDS	19035	19349	.	+	.	gene_id "CG14456"; transcript_id "CG14456-RA";
+fosmid33	.	CDS	19457	19672	.	+	.	gene_id "CG14456"; transcript_id "CG14456-RA";
+fosmid33	.	mRNA	17949	18600	.	-	.	gene_id "CG14455"; transcript_id "CG14455-RA";
+fosmid33	.	CDS	18523	18600	.	-	.	gene_id "CG14455"; transcript_id "CG14455-RA";
+fosmid33	.	CDS	17946	18452	.	-	.	gene_id "CG14455"; transcript_id "CG14455-RA";

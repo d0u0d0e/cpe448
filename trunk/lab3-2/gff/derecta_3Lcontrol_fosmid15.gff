@@ -1,0 +1,11 @@
+fosmid15	.	mRNA	28262	31768	.	+	.	gene_id "TyrR"; transcript_id "TyrR-RA";
+fosmid15	.	CDS	28262	28585	.	+	.	gene_id "TyrR"; transcript_id "TyrR-RA";
+fosmid15	.	CDS	29130	30218	.	+	.	gene_id "TyrR"; transcript_id "TyrR-RA";
+fosmid15	.	CDS	31379	31771	.	+	.	gene_id "TyrR"; transcript_id "TyrR-RA";
+fosmid15	.	mRNA	33753	34343	.	+	.	gene_id "CG14561"; transcript_id "CG14561-RA";
+fosmid15	.	CDS	33753	34346	.	+	.	gene_id "CG14561"; transcript_id "CG14561-RA";
+fosmid15	.	mRNA	35468	39391	.	-	.	gene_id "CG7139"; transcript_id "CG7139-RA";
+fosmid15	.	CDS	38696	39391	.	-	.	gene_id "CG7139"; transcript_id "CG7139-RA";
+fosmid15	.	CDS	36997	37789	.	-	.	gene_id "CG7139"; transcript_id "CG7139-RA";
+fosmid15	.	CDS	35592	36876	.	-	.	gene_id "CG7139"; transcript_id "CG7139-RA";
+fosmid15	.	CDS	35465	35537	.	-	.	gene_id "CG7139"; transcript_id "CG7139-RA";

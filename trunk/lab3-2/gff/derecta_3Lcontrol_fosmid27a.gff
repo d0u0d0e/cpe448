@@ -1,0 +1,10 @@
+fosmid27	.	mRNA	8574	9596	.	+	.	gene_id "CG11438"; transcript_id "CG11438-RA";
+fosmid27	.	CDS	8574	9599	.	+	.	gene_id "CG11438"; transcript_id "CG11438-RA";
+fosmid27	.	mRNA	11189	12100	.	+	.	gene_id "CG11437"; transcript_id "CG11437-RA";
+fosmid27	.	CDS	11189	12103	.	+	.	gene_id "CG11437"; transcript_id "CG11437-RA";
+fosmid27	.	mRNA	14267	15286	.	+	.	gene_id "CG11426"; transcript_id "CG11426-RA";
+fosmid27	.	CDS	14267	15289	.	+	.	gene_id "CG11426"; transcript_id "CG11426-RA";
+fosmid27	.	mRNA	16847	17761	.	+	.	gene_id "CG11425"; transcript_id "CG11425-RA";
+fosmid27	.	CDS	16847	17764	.	+	.	gene_id "CG11425"; transcript_id "CG11425-RA";
+fosmid27	.	mRNA	1943	2953	.	-	.	gene_id "laza"; transcript_id "laza-RA";
+fosmid27	.	CDS	1940	2953	.	-	.	gene_id "laza"; transcript_id "laza-RA";

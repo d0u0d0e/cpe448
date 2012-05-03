@@ -1,0 +1,17 @@
+fosmid31	.	mRNA	8231	8665	.	+	.	gene_id "CG6914"; transcript_id "CG6914-RA";
+fosmid31	.	CDS	8231	8668	.	+	.	gene_id "CG6914"; transcript_id "CG6914-RA";
+fosmid31	.	mRNA	43078	43679	.	+	.	gene_id "CG33767"; transcript_id "CG33767-RA";
+fosmid31	.	CDS	43078	43146	.	+	.	gene_id "CG33767"; transcript_id "CG33767-RA";
+fosmid31	.	CDS	43227	43682	.	+	.	gene_id "CG33767"; transcript_id "CG33767-RA";
+fosmid31	.	mRNA	43902	44483	.	+	.	gene_id "CG33768"; transcript_id "CG33768-RA";
+fosmid31	.	CDS	43902	43952	.	+	.	gene_id "CG33768"; transcript_id "CG33768-RA";
+fosmid31	.	CDS	44010	44486	.	+	.	gene_id "CG33768"; transcript_id "CG33768-RA";
+fosmid31	.	mRNA	44665	45255	.	+	.	gene_id "CG33769"; transcript_id "CG33769-RA";
+fosmid31	.	CDS	44665	44733	.	+	.	gene_id "CG33769"; transcript_id "CG33769-RA";
+fosmid31	.	CDS	44788	45258	.	+	.	gene_id "CG33769"; transcript_id "CG33769-RA";
+fosmid31	.	mRNA	45423	46035	.	+	.	gene_id "CG33770"; transcript_id "CG33770-RB";
+fosmid31	.	CDS	45423	45506	.	+	.	gene_id "CG33770"; transcript_id "CG33770-RB";
+fosmid31	.	CDS	45565	46038	.	+	.	gene_id "CG33770"; transcript_id "CG33770-RB";
+fosmid31	.	mRNA	46154	46743	.	+	.	gene_id "CG33771"; transcript_id "CG33771-RC";
+fosmid31	.	CDS	46154	46227	.	+	.	gene_id "CG33771"; transcript_id "CG33771-RC";
+fosmid31	.	CDS	46281	46746	.	+	.	gene_id "CG33771"; transcript_id "CG33771-RC";

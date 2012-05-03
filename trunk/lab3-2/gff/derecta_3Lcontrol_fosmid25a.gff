@@ -1,0 +1,4 @@
+fosmid25	.	mRNA	23685	23973	.	-	.	gene_id "Ten-m"; transcript_id "Ten-m-RB";
+fosmid25	.	CDS	23685	23973	.	-	.	gene_id "Ten-m"; transcript_id "Ten-m-RB";
+fosmid25	.	mRNA	23685	23973	.	-	.	gene_id "Ten-m"; transcript_id "Ten-m-RC";
+fosmid25	.	CDS	23685	23973	.	-	.	gene_id "Ten-m"; transcript_id "Ten-m-RC";

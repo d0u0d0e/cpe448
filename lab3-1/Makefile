@@ -16,9 +16,6 @@ default: classes
 
 classes: $(CLASSES:.java=.class)
 
-c1: classes
-	java Combine c 20 21
-
 c: classes
 	java Combine c 20 38
 

@@ -12,21 +12,32 @@ Raquel Kahler
 File List:
 BM.java - Original Boyer-Moore algorithm using good suffix and bad character rule
 BioOverlap.java - "True" solution suggested in email to find overlap in nucleotides
+Isoform.java - Represents an Isoform with mRNA/CDS
 Combine.java - Combines sets of FASTA/GFF files. Files needed by our group hardcoded
                into the source code for ease of use.
 TestBM.java - Tests the Boyer-Moore algorithm
 fasta/ - FASTA files for contig 20-38* and fosmid 22-42 
 gff/ - GFF files for contig 20-38* and fosmid 22-42
-*missing gff 23, thus the extra gap that will show up in our output
+***missing GFF 23, thus the extra gap that will show up in our output
 
 To compile: 
 -"make" or "javac *.java"
 
 To run:
 -Boyer-Moore Tests, "make test" or "java TestBM"
--File Combination, "make combine" or "java Combine"
+-Type "java Combine <chromosome> <start> <stop>" to merge the files.
+  example1: to merge fosmid 22-24 use "java Combine f 20 24"
+  example2: to merge contig 20-30 use "java Combine c 20 30"
+  note: max range for contig is 20-38 and fosmid is 22-42
 
 Output:
 -superFASTA#.txt and superGFF#.txt
 -variations#.csv - all variations
 # = splits when there are gaps in files
+
+Note: In the contigs/fosmids our BIO partners were assigned
+      to (contig 20-38, fosmid 22-42), no variations were 
+      found (confirmed with BLAST), thus the variations.csv 
+      remain empty. But to test that our code still checks for
+      them, the GFF files can be modified. i.e. remove a CDS 
+      line or change the CDS ranges

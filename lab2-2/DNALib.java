@@ -256,7 +256,7 @@ public class DNALib
    }
 
 
-   public double frequencyOptimalCodons(ArrayList optimal){
+   public double frequencyOptimalCodons(ArrayList<String> optimal){
 	aminoAcid aa;
 	double sum = 0, opt = 0;
 		
@@ -309,14 +309,12 @@ public class DNALib
       double F2, F3, F4, F6, Sa, Fval;
       int sum;
       F2 = F3 = F4 = F6 = 0;
-System.out.println();
       for(aminoAcid aa : map.values()) {
-System.out.println(F2 + "   " + F3 + "   " + F4 + "   " + F6);
          sum = 0;
          Sa = 0;
 
          for(int i = 0; i < aa.codons.size(); i++)
-            sum += aa.codons.get(i).count;   
+            sum += aa.codons.get(i).count;
 
          if(sum > 1) {
             for(int i = 0; i < aa.codons.size(); i++)
@@ -329,24 +327,24 @@ System.out.println(F2 + "   " + F3 + "   " + F4 + "   " + F6);
 
          switch(aa.codons.size()) {
             case(2):
-               F2 += (sum * Sa - 1) / (sum - 1);
+               F2 += Fval;
                break;
             case(3):
-               F3 += (sum * Sa - 1) / (sum - 1); 
+               F3 += Fval;
                break;
             case(4):
-               F4 += (sum * Sa - 1) / (sum - 1); 
+               F4 += Fval;
                break;
             case(6):
-               F6 += (sum * Sa - 1) / (sum - 1);
+               F6 += Fval;
                break;
-         }            
+         }
       }
-System.out.println(F2 + "   " + F3 + "   " + F4 + "   " + F6);
+
          F2 = F2 / 9;
          F4 = F4 / 5;
          F6 = F6 / 3;
-
+	         
          return 2 + 9/F2 + 1/F3 + 5/F4 + 3/F6;
    }
 	

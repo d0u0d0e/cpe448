@@ -35,6 +35,10 @@ public class DNALib {
             count = 0;
         }
     }
+    
+    public DNALib(String seq) {
+        this.seq = seq;
+    }
 
     public DNALib(String seq, ArrayList<Gene> geneList) {
         this.seq = seq;
@@ -45,7 +49,7 @@ public class DNALib {
     }
 
     // BASIC FUNCTIONALITY
-    double GCContent(int start, int stop) {
+    public double GCContent(int start, int stop) {
         int count = 0, total = 0;
         for (int i = start; i <= stop; i++) {
             if (i >= seq.length()) {

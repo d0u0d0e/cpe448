@@ -58,8 +58,7 @@ public class Controller {
         this.slide = slide;
     }
     
-    public void doCalculations() throws java.io.FileNotFoundException {
-        // FASTA File
+    public String readFasta() throws java.io.FileNotFoundException {
         StringBuffer seqBuffer = new StringBuffer();
         Scanner sc = new Scanner(fastaFile);
         sc.nextLine();
@@ -71,7 +70,12 @@ public class Controller {
                 seqBuffer = seqBuffer.append(c);
             }
         }
-        String seq = seqBuffer.toString();
+        return seqBuffer.toString();
+    }
+    
+    public void doCalculations() throws java.io.FileNotFoundException {
+        Scanner sc;
+        String seq = readFasta();
 
         // GFF File
         ArrayList<Gene> geneList = new ArrayList<Gene>();
@@ -309,6 +313,16 @@ public class Controller {
         }catch (Exception e){//Catch exception if any
             System.err.println("Error: " + e.getMessage());
         }
+    }
+    
+    public void computeGC(int start, int end ) throws java.io.FileNotFoundException {
+        String seq = readFasta();
+        DNALib lib = new DNALib(seq);
+        if (end > seq.length())
+            end = seq.length();
+        setMainWindowOutput(String.format("\nThe GC content of file %s from "
+                + "position %d to %d is: %.1f\n", fastaFile.getName(), start,
+                end, lib.GCContent(start, end)));
     }
 
     public void setMainWindowOutput(String text) {

@@ -3,6 +3,7 @@ package UI;
 import java.awt.event.ActionListener;
 
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -14,10 +15,7 @@ import javax.swing.WindowConstants;
 
 public class MainWindow extends JFrame {
    private static final String WINDOW_TITLE = "CSC 448 - Bioinformatics";
-   private static final String DEFAULT_TEXT = "To begin, under the Analysis " +
-           "menu select the Set Data Files option and enter a FASTA file and " +
-           "a GFF file. The Window and Slide options are optional. Their " +
-           "default values are 1000 and 100 respectively.\n\n";
+   private static final String DEFAULT_TEXT = "Output Area";
    private static final int FRAME_WIDTH = 500,
                             FRAME_HEIGHT = 600,
                             OUTPUT_WIDTH = 40,
@@ -62,6 +60,7 @@ public class MainWindow extends JFrame {
       mMenuBar = new JMenuBar();
       mMenuBar.add(initFileMenu());
       mMenuBar.add(initAnalysisMenu());
+      mMenuBar.add(initHelpMenu());
       
       mMainFrame.add(outputPanel);
 
@@ -97,11 +96,11 @@ public class MainWindow extends JFrame {
       JMenuItem dataFiles = new JMenuItem("Set Data Files");
       gcContent.addActionListener(new ActionListener() {
          public void actionPerformed(java.awt.event.ActionEvent e) {
-             JOptionPane.showMessageDialog(mMainFrame, "Temporarily disabled.");
-            //InputDialog gcContentDialog = new InputDialog(mMainFrame, "GC Content Input Parameters");
+             //JOptionPane.showMessageDialog(mMainFrame, "Temporarily disabled.");
+             InputDialog gcContentDialog = new InputDialog(mMainFrame, controller, "GC Content Input Parameters");
 
-            //gcContentDialog.init();
-            //gcContentDialog.setVisible(true);
+             gcContentDialog.init();
+             gcContentDialog.setVisible(true);
          }
       });
 
@@ -115,18 +114,35 @@ public class MainWindow extends JFrame {
       });
       JMenu analysisMenu = new JMenu("Analysis");
       
-      //analysisMenu.add(gcContent);
+      analysisMenu.add(gcContent);
       analysisMenu.add(dataFiles);
 
       return analysisMenu;
+   }
+   
+   private JMenu initHelpMenu() {
+       JMenuItem howTo = new JMenuItem("How to");
+       JMenu helpMenu = new JMenu("Help");
+       
+       howTo.addActionListener(new ActionListener() {
+           public void actionPerformed(java.awt.event.ActionEvent e) {
+               HowToDialog howToD = new HowToDialog(mMainFrame, "How To");
+               howToD.init();
+               howToD.setVisible(true);
+           }
+       });
+       
+       helpMenu.add(howTo);
+       return helpMenu;
    }
    
    private JPanel prepareOutputPanel(JTextArea mTextOutput) {
        JPanel panel = new JPanel();
        mTextOutput.setEditable(false);
        mTextOutput.setLineWrap(true);
-       mTextOutput.setText(DEFAULT_TEXT);
+       //mTextOutput.setText(DEFAULT_TEXT);
        JScrollPane outputPane = new JScrollPane(mTextOutput);
+       panel.add(new JLabel(DEFAULT_TEXT));
        panel.add(outputPane);
        return panel;
    }

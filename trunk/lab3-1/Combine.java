@@ -227,35 +227,38 @@ public class Combine
                   if ((idx = findIsoform(iso, gff2)) != -1)
                   {
                      int k;
-                     Isoform found = updateOffset(gff2.get(idx), offset);
+                     Isoform found = updateOffset(gff2.get(idx), overlap);
                      
-                     for (k = 0; k < iso.CDS.size() || k < found.CDS.size(); k++)
+                     for (k = 0; k < iso.CDS.size() && k < found.CDS.size(); k++)
                      {
                         // variations: different CDS values
-                        if (isHigher(found.CDS.get(k), iso.CDS.get(k)))
+                        if (difference(found.CDS.get(k), iso.CDS.get(k)) != 0)
                         {
+                           if (isHigher(found.CDS.get(k), iso.CDS.get(k)))
+                           {
+                              iso.CDS.set(k, found.CDS.get(k));
+                           }
                            if (!(vars.containsKey(iso.CDS.get(k).get(11))))
                            {
                               vars.put(iso.CDS.get(k).get(11), 1);
                               varCount++;
                            }
                            bp += difference(found.CDS.get(k), iso.CDS.get(k));
-                           iso.CDS.set(k, found.CDS.get(k));
                            outVar.write(iso.CDS.get(k).get(11) + ", " + iso.CDS.get(k).get(0) + ", " + iso.CDS.get(k).get(3) + ", " + iso.CDS.get(k).get(4) + "\n");
-                           outVar.write(found.CDS.get(k).get(11) + ", " + found.CDS.get(k).get(0) + ", " + found.CDS.get(k).get(3) + ", " + found.CDS.get(k).get(4) + "\n");
+                           outVar.write(found.CDS.get(k).get(11) + ", " + found.CDS.get(k).get(0) + ", " + found.CDS.get(k).get(3) + ", " + found.CDS.get(k).get(4) + "\n\n");
                         }
                      }
                      // variations: missing CDS
                      for (int x = k; x < iso.CDS.size(); x++)
                      {
                         outVar.write(iso.CDS.get(x).get(11) + ", " + iso.CDS.get(x).get(0) + ", " + iso.CDS.get(x).get(3) + ", " + iso.CDS.get(x).get(4) + "\n");
-                        outVar.write(found.CDS.get(0).get(11) + ", missing, missing, missing\n");
+                        outVar.write(found.CDS.get(0).get(11) + ", missing, missing, missing\n\n");
                      }          
                      for (int x = k; x < found.CDS.size(); x++)
-                     {
+                     {  
                         iso.CDS.add(found.CDS.get(x));
                         outVar.write(found.CDS.get(x).get(11) + ", " + found.CDS.get(x).get(0) + ", " + found.CDS.get(x).get(3) + ", " + found.CDS.get(x).get(4) + "\n");
-                        outVar.write(iso.CDS.get(0).get(11) + ", missing, missing, missing\n");
+                        outVar.write(iso.CDS.get(0).get(11) + ", missing, missing, missing\n\n");
                      }
 
                      gff2.remove(found);
@@ -265,7 +268,7 @@ public class Combine
             // go through remaining second gff file
             for (int j = 0; j < gff2.size(); j++)
             {
-               superGFF.add(updateOffset(gff2.get(j), offset));   
+               superGFF.add(updateOffset(gff2.get(j), overlap));   
             }
          }
          // overlap not found
@@ -291,7 +294,7 @@ public class Combine
       // add remaining
       combinedFASTAS.add(superFASTA);
       combinedGFFS.add(superGFF);
-      outVar.write("Total genes with variation: " + Integer.toString(varCount) + "\n");
+      outVar.write("Total isoforms with variation: " + Integer.toString(varCount) + "\n");
       outVar.write("Total differed bp: " + Integer.toString(bp));
       outVar.close(); 
 
@@ -371,211 +374,6 @@ public class Combine
       }
 
    }    
-      /*
-      String superFASTA = fasta.get(0);
-      ArrayList<String> superGFF = new ArrayList<String>();
-      ArrayList<String> gff1 = gff.get(0);
-      FileWriter fstreamVar = new FileWriter("variations" + Integer.toString(split) + ".csv");
-      BufferedWriter outVar = new BufferedWriter(fstreamVar);
-      
-      for (int i = 0; i < fasta.size()-1; i++)
-      { 
-         overlap = -1;
-         offset = -1;
-         String fasta2 = fasta.get(i+1);
-         ArrayList<String> gff2 = gff.get(i+1);
-        
-         if (minMatch > fasta2.length()-1)
-         {
-            System.err.println("Minimum match less than string length");
-            return;
-         }
-
-         // find largest overlap
-         offset = BioOverlap.getOffset(superFASTA, fasta2, minMatch);
-         overlap = superFASTA.length() - offset;
-
-         // overlap found
-         if (offset != -1)
-         {
-            superFASTA = superFASTA + fasta2.substring(offset, fasta2.length());
-
-            // combine GFF files
-            int k = 0; //second gff file
-
-            int flag = 0;
-            int z = 0, x = 0;
-            for (int j = 0; j < gff1.size(); j++)
-            {
-               ArrayList<String> p1 = parseLine(gff1.get(j));
-               ArrayList<String> p2, p2t;
-               int start1 = Integer.parseInt(p1.get(3));
-               int stop1 = Integer.parseInt(p1.get(4));
-               int start2, stop2;
-
-               // check for entry to negative orders
-               if (flag == 0 && p1.get(6).charAt(0) == '-')
-               {
-                  flag = 1;
-                  // add rest of first GFF file positives
-                  for (z = k; z < gff2.size() && parseLine(gff2.get(z)).get(6).charAt(0) == '+'; z++)
-                  {
-                     superGFF.add(repiece(updateOffset(parseLine(gff2.get(z)), overlap)));
-                  }
-                  
-                  for (x = gff2.size()-1; x > 0 && Integer.parseInt(parseLine(gff2.get(x)).get(3)) <= offset && parseLine(gff2.get(x)).get(6).charAt(0) == '-'; x--)
-                  {
-                  }
-                  k = ++x;
-                  
-                  for (int l = z; l < x; l++)
-                  {
-                     superGFF.add(repiece(updateOffset(parseLine(gff2.get(l)), overlap)));
-                  }
-               }
-               // overlaps
-               if (start1 >= overlap)
-               {
-                  if (k < gff2.size())
-                  {
-                     p2 = parseLine(gff2.get(k));
-                     start2 = Integer.parseInt(p2.get(3));
-                     stop2 = Integer.parseInt(p2.get(4));
-
-                     // variations found
-                     if (start1 != (start2 + overlap) || stop1 != (stop2 + overlap)
-                         || (!p1.get(9).equals(p2.get(9))))
-                     {
-                        // write variations to file
-                        outVar.write(p1.get(9) + ", " + p1.get(0) + ", " + p1.get(3) + ", " + p1.get(4) + "\n");
-                        p2t = updateOffset(p2, overlap);
-                        outVar.write(p2t.get(9) + ", " + p2t.get(0) + ", " + p2t.get(3) + ", " + p2t.get(4) + "\n");
-                        
-                        // total gene variations and bp
-                        if (!(vars.containsKey(p1.get(9))))
-                        {
-                           vars.put(p1.get(9), 1);
-                           varCount++;
-                        }
-                        if (!(vars.containsKey(p2.get(9))))
-                        {
-                           vars.put(p2.get(9), 1);
-                           varCount++;
-                        }
-                        bp += Math.abs(Math.abs(start1-stop1) - Math.abs(start2-stop2));
-                        
-                        
-                        // range mismatch only, add highest range
-                        if (p1.get(9).equals(p2.get(9)))
-                        { 
-                           if (Math.abs(start1 - stop1) < Math.abs(start1 - stop2 + overlap))
-                           {
-                              superGFF.add(repiece(p1));
-                           }
-                           else
-                           {
-                              superGFF.add(repiece(updateOffset(p2, overlap)));
-                           }
-                        }
-                        // gene mismatch, add both
-                        else
-                        { 
-                           superGFF.add(repiece(p1));
-                           superGFF.add(repiece(updateOffset(p2, overlap)));
-                        }
-                     }
-                     // no variation
-                     else
-                     {
-                        superGFF.add(repiece(updateOffset(p2, overlap)));
-                     }
-                     k++;
-                  }
-                  else
-                  {
-                     superGFF.add(repiece(p1));
-                  }
-               }
-               // not overlapping
-               else
-               {
-                  superGFF.add(repiece(p1));
-               }
-            }
-         
-            // add remaining genes of second GFF file
-            if (flag == 0) 
-            {
-               for (int j = k; j < gff2.size(); j++)
-               {
-                  superGFF.add(repiece(updateOffset(parseLine(gff2.get(j)), overlap)));
-               }
-            }
-
-            gff1 = superGFF;
-            superGFF = new ArrayList<String>();
-         }
-         // overlap not found
-         else
-         {
-            combinedFASTAS.add(superFASTA);
-            combinedGFFS.add(gff1); 
-            superGFF = new ArrayList<String>();
-            superFASTA = fasta.get(i+1);
-            gff1 = gff.get(i+1);
-            outVar.write("Total genes with variation: " + Integer.toString(varCount) + "\n");
-            outVar.write("Total differed bp: " + Integer.toString(bp));
-            outVar.close();
-            split++; 
-            fstreamVar = new FileWriter("variations" + Integer.toString(split) + ".csv");
-            outVar = new BufferedWriter(fstreamVar);
-            bp = 0;
-            varCount = 0;
-            vars = new HashMap<String, Integer>();
-         }
-      }
-
-      // add remaining
-      combinedFASTAS.add(superFASTA);
-      combinedGFFS.add(gff1); 
-      outVar.write("Total genes with variation: " + Integer.toString(varCount) + "\n");
-      outVar.write("Total differed bp: " + Integer.toString(bp));
-      outVar.close(); 
-
-      // output to file
-      for (int i = 0; i < combinedFASTAS.size(); i++)
-      { 
-         String outname = "superFASTA" + Integer.toString(i+1) + ".txt";
-         FileWriter fstream = new FileWriter(outname);
-         BufferedWriter out = new BufferedWriter(fstream);
-         String s = combinedFASTAS.get(i);
-         out.write("header\n");
-         // line break every 50 chars
-         for (int j = 0; j < s.length(); j+=50)
-         {
-            if (j + 50 > s.length()-1)
-            {
-               out.write(s.substring(j, s.length()-1) + "\n");
-            }
-            else
-            {
-               out.write(s.substring(j, j + 50) + "\n");
-            }
-         }
-         out.close();
-      }
-      for (int i = 0; i < combinedGFFS.size(); i++)
-      { 
-         String outname2 = "superGFF" + Integer.toString(i+1) + ".txt";
-         FileWriter fstream2 = new FileWriter(outname2);
-         BufferedWriter out2 = new BufferedWriter(fstream2);
-         for (String s : combinedGFFS.get(i))
-         {
-            out2.write(s + "\n");
-         }
-         out2.close();
-      }
-   }*/
 
    public static boolean isHigher(ArrayList<String> c1, ArrayList<String> c2)
    {  

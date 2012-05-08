@@ -1,0 +1,14 @@
+Team 6
+
+CSC 448
+Daniel Huang
+Ricardo Tijero
+Ben Tupas
+
+CHEM 441
+Melanie Regan 
+Raquel Kahler
+
+Instructions:
+To compile: using a terminal traverse to the folder containing the make file (lab2-1). Type "make" and press enter.
+To run: after compiling the files type "make run" and press enter.

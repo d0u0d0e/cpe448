@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 
-public class maiN {
+public class DNALibTest {
    public static void main(String[] args) {
       String sequence = "ATACTGCGATCATACTACGGCGTCGGATATAGCGCGATAAATTTGGCGCGGCGCTACGACGTACGATACGCTAGTCGTAGCGGGCGCGTTTTCGCGCTCGCGCCATATATATAC";
       DNALib dna = new 

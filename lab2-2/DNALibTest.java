@@ -2,66 +2,80 @@ import java.util.ArrayList;
 
 public class DNALibTest {
    public static void main(String[] args) {
-      String sequence = "ATACTGCGATCATACTACGGCGTCGGATATAGCGCGATAAATTTGGCGCGGCGCTACGACGTACGATACGCTAGTCGTAGCGGGCGCGTTTTCGCGCTCGCGCCATATATATAC";
-                       // I  L  R  S  Y  Y  G  V  G  Y  S  A  I  N  L  A  R  R  Y  D  V  R  Y  A  S  R  S  G  R  V  F  A  L  A  P  Y  I  Y
-      DNALib dna = new
-DNALib(sequence, null);
+      boolean passed = true;
+      String sequence = "ATGTACGTCACGTACTGA";
+                       // M  Y  V  T  Y  #
+      DNALib dna = new DNALib(sequence, null);
 
-// a = 25 t = 27 c = 30 g = 32
+      System.out.println("Test sequence: " + sequence);
 
-      String comp = "TATGACGCTAGTATGATGCCGCAGCCTATATCGCGCTATTTAAACCGCGCCGCGATGCTGCATGCTATGCGATCAGCATCGCCCGCGCAAAAGCGCGAGCGCGGTATATATATG";
+      String comp = "TACATGCAGTGCATGACT";
       if(!dna.complement(0, sequence.length()).equals(comp))
-         throw new AssertionError("complement method failed");
+         System.out.println("complement method failed");
 
-      String rev = "GTATATATATGGCGCGAGCGCGAAAACGCGCCCGCTACGACTAGCGTATCGTACGTCGTAGCGCCGCGCCAAATTTATCGCGCTATATCCGACGCCGTAGTATGATCGCAGTAT";
-      if(!dna.reverse(0, sequence.length()).equals(rev))
-         throw new AssertionError("reverse method failed");
+      String rev = "TCAGTACGTGACGTACAT";
+      if(!dna.reverse(0, sequence.length()).equals(rev)) {
+         System.out.println("reverse method failed");
+         passed = false;
+      }
 
-      if(dna.GCContent(0, sequence.length()) != (double)62/114 * 100)
-         throw new AssertionError("GCContent method failed");
+      if(dna.GCContent(0, sequence.length()) != (double)8/18 * 100) {
+         System.out.println("GCContent method failed");
+         passed = false;
+      }
 
-      System.out.println("Histogram for Isoleucine (I)");
+      System.out.println();
+      System.out.println("Histogram for Tyrosine (Y)");
       System.out.println("Expected results:");
-      DNALib.aminoAcid aa = dna.map.get("I");
+      DNALib.aminoAcid aa = dna.map.get("Y");
       int total = 0;
       for(int i = 0; i < aa.codons.size(); i++)
     	  total += aa.codons.get(i).count;
       
-      System.out.println("ATC   " + aa.codons.get(0).count + "   " + (double)aa.codons.get(0).count / total);
-      System.out.println("ATT   " + aa.codons.get(1).count + "   " + (double)aa.codons.get(1).count / total);
-      System.out.println("ATA   " + aa.codons.get(2).count + "   " + (double)aa.codons.get(2).count / total);
+      System.out.println("TAT   " + aa.codons.get(0).count + "   " + (double)aa.codons.get(0).count / total);
+      System.out.println("TAC   " + aa.codons.get(1).count + "   " + (double)aa.codons.get(1).count / total);
       
       System.out.println();
       System.out.println("Actual results:");
-      dna.histogram("I");
+      dna.histogram("Y");
       System.out.println();
 
-
       ArrayList<String> list = new ArrayList<String>();
-      list.add("TTG");
-      list.add("ATA");
-      if(dna.frequencyOptimalCodons(list) != (double)4/6)
-         throw new AssertionError("frequencyOptimalCodons method failed");
+      list.add("TAC");
+      if(dna.frequencyOptimalCodons(list) != (double)1)
+         System.out.println("frequencyOptimalCodons method failed");
 
-      if(dna.rcsu("TTG") != (double)1/((double)3/6))
-         throw new AssertionError("RCSU method failed");
-      
-//      System.out.println(dna.CAI("TTT"));
-//      System.out.println(dna.effectiveNumberCodons());
+      if(dna.rcsu("TAC") != (double)2) {
+         System.out.println("RCSU method failed");
+         passed = false;
+      }
 
-      if(dna.scaledChi2("I") != (double)6/38)
-    	  throw new AssertionError("scaledChi2 method failed");
+      if(dna.CAI("TAC") != (double)1) {
+         System.out.println("CAI method failed");
+         passed = false;
+      }
 
-      //A = 25  T = 27  C = 30  G = 32
-      double enthropy = -((double)25/114 * Math.log((double)25/114)/Math.log(2) + (double)27/114 * Math.log((double)27/114)/Math.log(2)
-    		                + (double)30/114 * Math.log((double)30/114)/Math.log(2) + (double)32/114*Math.log((double)32/114)/Math.log(2));
+      if(dna.effectiveNumberCodons() != (double)20) {
+         System.out.println("effectiveNumberCodons method failed");
+         passed = false;
+      }
 
-      if(dna.enthropy() != enthropy)
-    	  throw new AssertionError("enthropy method failed");
+      if(dna.scaledChi2("Y") != (double)2/5) {
+    	  System.out.println("scaledChi2 method failed");
+          passed = false;
+      }
 
+      //A = 5  T = 5  C = 4  G = 4
+      double enthropy = -((double)5/18 * Math.log((double)5/18)/Math.log(2) + (double)5/18 * Math.log((double)5/18)/Math.log(2)
+    		         + (double)4/18 * Math.log((double)4/18)/Math.log(2) + (double)4/18*Math.log((double)4/18)/Math.log(2));
 
+      if(dna.enthropy() != enthropy) {
+    	  System.out.println("enthropy method failed");
+          passed = false;
+      }
 
+      if(passed)
+         System.out.println("All tests have passed");
 
-      System.out.println("All tests have passed");
    }
 }

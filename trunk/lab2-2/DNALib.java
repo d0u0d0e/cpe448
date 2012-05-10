@@ -302,10 +302,11 @@ public class DNALib
 	         max = rcsu(c.name);
 		
 	for(aminoAcid aa : map.values())
-	   for(Codon c : aa.codons)
-	      cai *= rcsu(c.name) / max;
+           if(!aa.name.equals("Methionine") && !aa.name.equals("Tryptophane") && !aa.name.equals("Stop"))
+	      for(Codon c : aa.codons)
+	         cai *= rcsu(c.name) / max;
 		 
-	 return nRoot(59, cai, 1);
+	 return nRoot(59, cai, 0.0000000001);
    }
 
 	
@@ -334,7 +335,8 @@ public class DNALib
                F2 += Fval;
                break;
             case(3):
-               F3 += Fval;
+               if(!aa.name.equals("Stop"))
+                  F3 += Fval;
                break;
             case(4):
                F4 += Fval;

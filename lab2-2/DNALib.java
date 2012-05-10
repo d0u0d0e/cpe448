@@ -3,6 +3,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Collections;
+import java.util.Iterator;
 
 public class DNALib
 {
@@ -314,12 +315,18 @@ public class DNALib
       double F2, F3, F4, F6, Sa, Fval;
       int sum;
       F2 = F3 = F4 = F6 = 0;
-      for(aminoAcid aa : map.values()) {
+      Iterator iter = map.keySet().iterator();
+      while(iter.hasNext()) {
+         String s = (String)iter.next();
+
+         if(s.length() == 1) {
+            aminoAcid aa = map.get(s);
+
          sum = 0;
          Sa = 0;
-
-         for(int i = 0; i < aa.codons.size(); i++)
+         for(int i = 0; i < aa.codons.size(); i++) {
             sum += aa.codons.get(i).count;
+         }
 
          if(sum > 1) {
             for(int i = 0; i < aa.codons.size(); i++)
@@ -327,8 +334,9 @@ public class DNALib
 
             Fval = (sum * Sa - 1) / (sum - 1);
          }
-         else
+         else {
             Fval = 1;
+         }
 
          switch(aa.codons.size()) {
             case(2):
@@ -345,6 +353,7 @@ public class DNALib
                F6 += Fval;
                break;
          }
+        }
       }
 
          F2 = F2 / 9;

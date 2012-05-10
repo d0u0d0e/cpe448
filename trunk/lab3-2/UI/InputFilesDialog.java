@@ -40,7 +40,9 @@ public class InputFilesDialog extends JDialog {
     */
    private Container mPane = null, mOwner = null;
    private JDialog mDialog = null;
-   private JTextField mFasta, mGff, mWindow, mSlide;
+   private JTextField mFileRangeStart, mFileRangeEnd, mWindow, mSlide;
+   private JComboBox mFileType;
+   private String[] comboBoxOptions = {"Select one...", "Fosmid", "Contig"};
 
    public InputFilesDialog(Controller controller) {
       super();
@@ -58,8 +60,8 @@ public class InputFilesDialog extends JDialog {
 
       setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 
-      mFasta = new JTextField(20);
-      mGff = new JTextField(20);
+      mFileRangeStart = new JTextField(20);
+      mFileRangeEnd = new JTextField(20);
    }
 
    public InputFilesDialog(Frame owner, Controller controller, String title) {
@@ -79,10 +81,11 @@ public class InputFilesDialog extends JDialog {
 
       setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 
-      mFasta = new JTextField(20);
-      mGff = new JTextField(20);
+      mFileRangeStart = new JTextField(6);
+      mFileRangeEnd = new JTextField(6);
       mWindow = new JTextField(6);
       mSlide = new JTextField(6);
+      mFileType = new JComboBox(comboBoxOptions);
    }
 
    /**
@@ -90,11 +93,8 @@ public class InputFilesDialog extends JDialog {
     * input
     */
    public void init() {
-      JLabel fastaFileLabel = new JLabel("Select FASTA File:");
-      JPanel fastaFileField = prepareInputDataField(mFasta, fastaFileLabel);
-
-      JLabel gffFileLabel = new JLabel("Select GFF File:");
-      JPanel gffFileField = prepareInputDataField(mGff, gffFileLabel);
+      JLabel fileSelectionLb = new JLabel("Set file range and select file type:");
+      JPanel fileField = prepareInputDataField(mFileRangeStart, mFileRangeEnd, mFileType);
       
       JPanel windowField = prepareWindowSizeField("Window:", mWindow);
       JPanel slideField = prepareWindowSizeField("Slide:", mSlide);
@@ -104,9 +104,8 @@ public class InputFilesDialog extends JDialog {
       nucleotideRangeField.add(windowField);
       nucleotideRangeField.add(slideField);
       
-      mPane.add(fastaFileField);
-
-      mPane.add(gffFileField);
+      mPane.add(fileSelectionLb);
+      mPane.add(fileField);
 
       mPane.add(nucleotideRangeField);
       
@@ -119,49 +118,22 @@ public class InputFilesDialog extends JDialog {
     * Convenience method for constructing a JPanel that contains the JTextField
     * and file browse button used for selecting a file.
     */
-   private JPanel prepareInputDataField(JTextField dataField, JLabel label) {
+   private JPanel prepareInputDataField(JTextField start, JTextField end, JComboBox options) {
       JPanel dataFileField = new JPanel();
 
       dataFileField.setLayout(new FlowLayout(FlowLayout.LEADING));
+      
+      options.setSelectedIndex(0);
 
-      dataFileField.add(label);
-      dataFileField.add(dataField);
-      dataFileField.add(prepareBrowseButton(dataField));
+      dataFileField.add(new JLabel("Start:"));
+      dataFileField.add(start);
+      dataFileField.add(new JLabel("End:"));
+      dataFileField.add(end);
+      dataFileField.add(options);
 
       return dataFileField;
    }
 
-   /**
-    * Convenience method for creating a file browse button. This is abstracted
-    * so that it is not necessarily associated with the file field.
-    */
-   private JButton prepareBrowseButton(final JTextField fastaField) {
-      JButton fileBrowse = new JButton("Browse");
-
-      fileBrowse.addActionListener(new ActionListener() {
-
-         public void actionPerformed(ActionEvent e) {
-            JFileChooser chooser = new JFileChooser();
-            int returnVal = chooser.showOpenDialog(chooser);
-            
-            if (returnVal == JFileChooser.CANCEL_OPTION) {
-               System.out.println("cancelled");
-            }
-
-            else if (returnVal == JFileChooser.APPROVE_OPTION) {
-               File fastaFile = chooser.getSelectedFile();
-               fastaField.setText(fastaFile.getAbsolutePath());
-            }
-
-            else {
-               System.out.println("Encountered Unknown Error");
-               System.exit(0);
-            }
-         }
-      });
-
-      return fileBrowse;
-   }
    
     /**
     * Convenience method for creating JTextFields for the window size and slide
@@ -210,21 +182,26 @@ public class InputFilesDialog extends JDialog {
 
       okayButton.addActionListener(new ActionListener(){
          public void actionPerformed(ActionEvent e) {
-            if (mFasta.getText().equals("") || mGff.getText().equals("")) {
+            if (mFileRangeStart.getText().equals("") || mFileRangeEnd.getText().equals("")
+                    || mFileType.getSelectedIndex() == 0) {
                JOptionPane.showMessageDialog(mOwner,
-                "No FASTA or GFF file was selected",
+                "No Range was given, or file type not set.",
                 "Invalid File", JOptionPane.ERROR_MESSAGE);
                return;
             }
-            controller.setFastaFile(mFasta.getText());
-            controller.setGffFile(mGff.getText());
+            if (mFileType.getSelectedIndex() == 2)
+                controller.setContig(true);
+            else
+                controller.setContig(false);
+            
             if (!mWindow.getText().equals(""))
                 controller.setWindow(Integer.parseInt(mWindow.getText()));
             if (!mSlide.getText().equals(""))
                 controller.setSlide(Integer.parseInt(mSlide.getText()));
             try {
                 controller.setMainWindowOutput("Calculating...\n");
-                controller.doCalculations();
+                controller.doCalculations(Integer.valueOf(mFileRangeStart.getText()),
+                        Integer.valueOf(mFileRangeEnd.getText()));
             } catch (FileNotFoundException ex) {
                 Logger.getLogger(InputFilesDialog.class.getName()).log(Level.SEVERE, null, ex);
             }

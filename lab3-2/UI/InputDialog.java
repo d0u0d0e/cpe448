@@ -229,8 +229,7 @@ public class InputDialog extends JDialog {
             if (!mRangeEnd.getText().equals(""))
                 end = Integer.parseInt(mRangeEnd.getText());
             try {
-                control.setFastaFile(mFasta.getText());
-                control.computeGC(start, end);
+                control.computeGC(mFasta.getText(),start, end);
             } catch (FileNotFoundException ex) {
                 Logger.getLogger(InputFilesDialog.class.getName()).log(Level.SEVERE, null, ex);
             }

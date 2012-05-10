@@ -227,12 +227,16 @@ public class DNALib
    private void counts() {
       int start = 0, end = 3;
       String sub;
-		
+      aminoAcid aa;
+	
       while(end <= sequence.length()) {
          sub = sequence.substring(start, end);
+         aa = map.get(sub);
 
          try {
-            map.get(sub).codons.get(0).count++;
+            for(int i = 0; i < aa.codons.size(); i++)
+               if(aa.codons.get(i).name.equals(sub))
+                  aa.codons.get(i).count++;
          }
          catch (Exception e) {
             this.error++;
@@ -349,26 +353,24 @@ public class DNALib
    }
 	
    public double scaledChi2(String amino){
-	double chi = 0, E = 0, total = 0;
+	double chi = 0, E = 0, total = seq.length()/3;
 	aminoAcid aa = map.get(amino);
 		
 	for(Codon c : aa.codons)
-	   E += c.count;
-		
-	// E == num occurences of amino acid in seq
+		E += c.count;
+
+	E = (double)E/aa.codons.size();
+
+	// E == expected number of codons w/o bias
 	for(Codon c : aa.codons){
-	   chi += (((double)c.count - E) * ((double)c.count - E) / E);
+	   chi += (((double)c.count - E) * ((double)c.count - E)) / E;
 	}
-		
-	for(DNALib.aminoAcid aA : map.values()) {
-	   if(aA.codons.size() != 1)
-	      for(int i = 0; i < aA.codons.size(); i++)
-		total += aA.codons.get(i).count;
-	 }
-			
+
+	total -= map.get("M").codons.get(0).count;
+	total -= map.get("W").codons.get(0).count;
+
 	return chi/total;
    }
-
 	
    public double enthropy(){
       double A, T, C, G;

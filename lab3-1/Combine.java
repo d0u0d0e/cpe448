@@ -91,12 +91,12 @@ public class Combine
          System.out.println("Merging contig files " + Integer.toString(start) +
                             " to " + Integer.toString(stop) + "...");
          
-         if (start >= 23 || stop >= 23)
+         if (start <= 23 && stop >= 23)
          {
             stop--;
          }
 
-         for (int i = start-20; i <= stop-20; i++)
+         for (int i = start-20; i < stop-20; i++)
          {
             fastaFiles.add(fastaFilesAll.get(i));
             gffFiles.add(gffFilesAll.get(i));
@@ -161,7 +161,7 @@ public class Combine
          gffFilesAll.add("gff/derecta_3Lcontrol_fosmid41a.gff");
          gffFilesAll.add("gff/derecta_3Lcontrol_fosmid42a.gff");
 
-         for (int i = start-22; i <= stop-22; i++)
+         for (int i = start-22; i < stop-22; i++)
          {
             fastaFiles.add(fastaFilesAll.get(i));
             gffFiles.add(gffFilesAll.get(i));
@@ -234,10 +234,6 @@ public class Combine
                         // variations: different CDS values
                         if (difference(found.CDS.get(k), iso.CDS.get(k)) != 0)
                         {
-                           if (isHigher(found.CDS.get(k), iso.CDS.get(k)))
-                           {
-                              iso.CDS.set(k, found.CDS.get(k));
-                           }
                            if (!(vars.containsKey(iso.CDS.get(k).get(11))))
                            {
                               vars.put(iso.CDS.get(k).get(11), 1);
@@ -246,6 +242,10 @@ public class Combine
                            bp += difference(found.CDS.get(k), iso.CDS.get(k));
                            outVar.write(iso.CDS.get(k).get(11) + ", " + iso.CDS.get(k).get(0) + ", " + iso.CDS.get(k).get(3) + ", " + iso.CDS.get(k).get(4) + "\n");
                            outVar.write(found.CDS.get(k).get(11) + ", " + found.CDS.get(k).get(0) + ", " + found.CDS.get(k).get(3) + ", " + found.CDS.get(k).get(4) + "\n\n");
+                           if (isHigher(found.CDS.get(k), iso.CDS.get(k)))
+                           {
+                              iso.CDS.set(k, found.CDS.get(k));
+                           }
                         }
                      }
                      // variations: missing CDS

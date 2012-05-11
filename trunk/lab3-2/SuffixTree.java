@@ -1,18 +1,21 @@
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+
+
 
 public class SuffixTree {
 
    public class node {
       public node prev;
+      public char prevChar;
       public String label;
       public HashMap<Character, node> children;
    }
 	
    class Inner extends node {
       public boolean ldiverse;        //left diversity
-      char prevChar;                  //If children not left diverse then the left char is passed on to parent
-
+                                     //prevChar - if children are not left diverse, character is passed up to parent
       public Inner(String label, node n) {
          this.label = label;
          children = new HashMap<Character, node>();
@@ -22,7 +25,6 @@ public class SuffixTree {
 
    class Leaf extends node {
       ArrayList<Integer> suffixNum;
-      char prevChar;
 
       public Leaf(String label, int num, node n) {
          this.label = label;
@@ -38,11 +40,11 @@ public class SuffixTree {
    Inner root;
    int stringNum;
 
+   //creates empty tree
    public SuffixTree() {
       root = new Inner("root", null);
       stringNum = 0;
    }
-
 
    public void addString(String S) {
       int suffNum = 0;
@@ -60,7 +62,7 @@ public class SuffixTree {
       }
    }
 
-//recursively finds location to insert suffix
+ //recursively finds location to insert suffix
    public void insert(String sub, node n, int suffNum, char c) {
       if(n.children.containsKey(sub.charAt(0))) {  //current node contains character
          node child = n.children.get(sub.charAt(0));
@@ -96,8 +98,96 @@ public class SuffixTree {
 
          n.children.put(sub.charAt(0), l);
       }
+      
+      traverse(root);
+   }
+   
+   public void traverse(Inner in) {
+	   for(node n : in.children.values()) {
+		   if(n instanceof Inner) {
+			   traverse((Inner)n);
+			   
+			   if(((Inner)n).ldiverse)
+				   in.ldiverse = true;
+		   }
+	   }
+	   
+	   if(!in.ldiverse) {
+	      Iterator<node> iter = in.children.values().iterator();
+	      
+	      if(iter.hasNext()) {
+	    	  in.prevChar = iter.next().prevChar;
+	      
+	         while(iter.hasNext())
+	    	     if(in.prevChar != iter.next().prevChar)
+	    		     in.ldiverse = true;
+	      }
+	   }
+   }
+   
+   public node lca(node n1, node n2) {
+	   node ancestor = null, prev;
+	   ArrayList<node> ancestors = new ArrayList<node>();
+	   
+	   prev = n1.prev;
+	   while(prev != null) {
+		   ancestors.add(prev);
+		   prev = prev.prev;
+	   }
+	   
+	   prev = n2.prev;
+	   while(ancestor == null)
+		   if(ancestors.contains(prev))
+			   ancestor = prev;
+	   
+	   return ancestor;
+   }
+   
+   public String lce(String s1, String s2) {
+	   node common = lca(findLeaf(s1), findLeaf(s2));
+	   StringBuffer ext = new StringBuffer();
+	   
+	   while(common.label != "root"){
+		   ext.insert(0,  common.label);
+		   common = common.prev;
+	   }
+	   
+	   return ext.toString();
+   }
+   
+   public node findLeaf(String s){
+	   int ndx = 0, i;
+	   node n = root;
+	   
+	   while(ndx < s.length()) {
+		   if(!n.children.containsKey(s.charAt(ndx))) {
+			   return n;
+		   }
+		   else {
+			   n = n.children.get(s.charAt(ndx));
+			   i = 0;
+			   while(ndx < s.length() && ndx < n.label.length() && s.charAt(i) == n.label.charAt(i)) {
+		            i++;
+		            ndx++;
+			   }
+		   }
+	   }
+	   
+	   return n;
+   }
+   
+   public void append(node n, String edge, String leaf) {
+ //     n.children.put();
+   }
+   
+   public void split(String edge){
+       //how will edge be split?
    }
 
+   public void insert(String suffix /*, position*/) {
+	   
+   }
+   
    public void repeat() {
    }
 

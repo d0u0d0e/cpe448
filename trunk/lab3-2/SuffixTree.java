@@ -72,25 +72,33 @@ public class SuffixTree {
             i++;
 
 // i == position of mismatch
-         if(i < child.label.length()) {
-            String common = sub.substring(0, i);
-            Inner in = new Inner(common, n);        //create new inner node
+         if(i < sub.length()) { //insert branch
+            if(child.children.containsKey((sub.charAt(i)))) {
+               insert(sub.substring(i), child, suffNum, c);
+            }
+        	else {
+        	   if(child instanceof Inner) {
+        	      insert(sub.substring(i), child, suffNum, c);
+        	   }
+        	   else {
+                  String common = sub.substring(0, i);
+                  Inner in = new Inner(common, n);        //create new inner node
 
-            Leaf l = new Leaf(sub.substring(i), suffNum, n);
-            l.prevChar = c;
+                  Leaf l = new Leaf(sub.substring(i), suffNum, n);
+                  l.prevChar = c;
 
-            child.label = child.label.substring(i);
+                  child.label = child.label.substring(i);
 
-            in.children.put(l.label.charAt(0), l);          // add new leaf and child as child$
-            in.children.put(child.label.charAt(0), child);
+                  in.children.put(l.label.charAt(0), l);          // add new leaf and child as child$
+                  in.children.put(child.label.charAt(0), child);
 
-            n.children.put(sub.charAt(0), in);   //insert inner node as child of prev node
-
+                  n.children.put(sub.charAt(0), in);   //insert inner node as child of prev node
+        	   }
+        	}
          }
-         else {  // current node does not contain 1st character
-            insert(sub.substring(i), child, suffNum, c);
+         else {  // complete match
+        	 ((Leaf)child).suffixNum.add(suffNum);
          }
-
       }
       else {  // suffix is a leaf
          Leaf l = new Leaf(sub, suffNum, n);
@@ -175,19 +183,55 @@ public class SuffixTree {
 	   
 	   return n;
    }
-   
+
    public void append(node n, String edge, String leaf) {
- //     n.children.put();
+	  Inner in = new Inner(edge, n);
+	  Leaf l = new Leaf(leaf, 0, in);
+	  
+	  in.children.put(leaf.charAt(0), l);
+	  
+      if(n.children.containsKey((edge.charAt(0)))) {
+    	  //throw error?
+      }
+      else {
+    	  n.children.put(edge.charAt(0), in);
+      }
    }
    
    public void split(String edge){
        //how will edge be split?
    }
 
-   public void insert(String suffix /*, position*/) {
-	   
+   public void findMatch(node n, String s) {
+      if(n.children.containsKey(s.charAt(0))) {  //current node contains character
+         node child = n.children.get(s.charAt(0));
+         int i = 0;
+
+         while(i < s.length() && i < child.label.length() && s.charAt(i) == child.label.charAt(i))
+            i++;
+
+// i == position of mismatch
+         if(i < child.label.length()) {
+            System.out.println("no match found");
+         }
+         else {  //string is completely matched
+            matchedLeaves(child);
+         }
+      }
+      else {  // no match
+         System.out.println("no match found");
+      }   
    }
    
+   public void matchedLeaves(node n) {
+	   for(node nd : n.children.values()) {
+		   if(nd instanceof Inner)
+			   matchedLeaves(nd);
+		   else if(nd instanceof Leaf)
+		      System.out.println();
+	   }
+   }
+
    public void repeat() {
    }
 

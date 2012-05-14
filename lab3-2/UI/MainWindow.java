@@ -92,8 +92,11 @@ public class MainWindow extends JFrame {
     * return the initialized 'Analysis' menu.
     */
    private JMenu initAnalysisMenu() {
-      JMenuItem gcContent = new JMenuItem("Calculate GC Content");
-      JMenuItem dataFiles = new JMenuItem("Set Data Files");
+      JMenuItem gcContent = new JMenuItem("Lab2-1: GC content");
+      JMenuItem dataFiles = new JMenuItem("Lab2-2: DNA Manipulation");
+      JMenuItem dnaMerge = new JMenuItem("Lab3-1: DNA Merging");
+      JMenuItem dnaRepeats = new JMenuItem("Lab3-2: DNA Repeats/Palindromes");
+      
       gcContent.addActionListener(new ActionListener() {
          public void actionPerformed(java.awt.event.ActionEvent e) {
              //JOptionPane.showMessageDialog(mMainFrame, "Temporarily disabled.");
@@ -106,16 +109,34 @@ public class MainWindow extends JFrame {
 
       dataFiles.addActionListener(new ActionListener() {
          public void actionPerformed(java.awt.event.ActionEvent e) {
-             InputFilesDialog inputFilesDialog = new InputFilesDialog(mMainFrame, controller, "Input Files");
+             InputFilesDialog inputFilesDialog = new InputFilesDialog(mMainFrame, controller, "DNA Manipulation Input Files");
 
              inputFilesDialog.init();
              inputFilesDialog.setVisible(true);
+         }
+      });
+      dnaMerge.addActionListener(new ActionListener() {
+         public void actionPerformed(java.awt.event.ActionEvent e) {
+             DNAMergeDialog dnaMergeDialog = new DNAMergeDialog(mMainFrame, controller, "DNA Merge");
+
+             dnaMergeDialog.init();
+             dnaMergeDialog.setVisible(true);
+         }
+      });
+      dnaRepeats.addActionListener(new ActionListener() {
+         public void actionPerformed(java.awt.event.ActionEvent e) {
+             DNARepeatsDialog dnaRepeatsDialog = new DNARepeatsDialog(mMainFrame, controller, "DNA Repeats/Palindromes");
+
+             dnaRepeatsDialog.init();
+             dnaRepeatsDialog.setVisible(true);
          }
       });
       JMenu analysisMenu = new JMenu("Analysis");
       
       analysisMenu.add(gcContent);
       analysisMenu.add(dataFiles);
+      analysisMenu.add(dnaMerge);
+      analysisMenu.add(dnaRepeats);
 
       return analysisMenu;
    }

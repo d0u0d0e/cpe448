@@ -6,7 +6,7 @@ import java.util.Comparator;
 public class Repeat
 {
    String seq;
-   int min, max, fold;
+   int min, max, total, fold;
    SuffixTree tree;
    HashMap<Character, Double> probability;
    HashMap<String, Integer> repeats;
@@ -45,7 +45,8 @@ public class Repeat
       this.fold = fold;
 
       // get counts
-      double total = 0.0, A = 0.0, C = 0.0, T = 0.0, G = 0.0; 
+      int total = 0;
+      double A = 0.0, C = 0.0, T = 0.0, G = 0.0; 
 
       for (int i = 0; i < seq.length(); i++)
       {
@@ -60,6 +61,7 @@ public class Repeat
          else if (seq.charAt(i) == 'G')
             G++;
       }
+      this.total = total;
 
       // create probability hashmap and insert percentages
       this.probability = new HashMap<Character, Double>();
@@ -91,12 +93,12 @@ public class Repeat
             p *= probability.get(s.charAt(i));
          }
          
-         if ((p * seq.length() * fold) <= repeat)
+         if ((p * total * fold) <= repeat)
          {
             double selfProximity = getSelfProximity(s);  
             double geneProximity = getGeneProximity(s, geneList);  
-            double freq = 1.0 / (seq.length() / (double)repeat);
-            double expectedFreq = 1.0 / (seq.length() / (p * seq.length()));
+            double freq = 1.0 / (total / (double)repeat);
+            double expectedFreq = 1.0 / (total / (p * total));
             double percentFreq = freq / expectedFreq * 100;
             Unexpected ue = new Unexpected(s, s.length(), repeat, selfProximity, geneProximity, freq, expectedFreq, percentFreq);
             unexpected.add(ue);
@@ -176,7 +178,7 @@ public class Repeat
                {
                   min = start;
                }
-               if (min > start)
+               else if (min > start)
                {
                   min = start;
                }

@@ -220,5 +220,14 @@ public class STmain
       {
          System.out.println(ue.size + ", " + ue.freq + ", " + ue.expectedFreq + ", " + ue.percentFreq + ", " + ue.s + ", " + ue.selfAvgProximity + ", " + ue.selfStdProximity + ", " + ue.geneProximity);
       }
+
+      System.out.println("\nPalindromes:");
+      Palindrome pal = new Palindrome("ATCAACTGAT", 1, 10, 2);
+
+      pal.findPalindromes(pal.tree.root, "");
+      for (String s : pal.palindromes)
+      {
+         System.out.println(s);   
+      }
    }
 }

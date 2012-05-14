@@ -23,7 +23,7 @@ run:
 
 BioGUI.java:
 
-rep: classes
+test: classes
 	java STmain
 
 clean:

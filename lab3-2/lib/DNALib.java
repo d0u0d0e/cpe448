@@ -231,11 +231,16 @@ public class DNALib {
     private void counts() {
         int start = 0, end = 3;
         String sub;
+        aminoAcid aa;
 
         while (end <= sequence.length()) {
             sub = sequence.substring(start, end);
+            aa = map.get(sub);
+
             try {
-                map.get(sub).codons.get(0).count++;
+               for (int i=0; i < aa.codons.size(); i++)
+                  if (aa.codons.get(i).name.equals(sub))
+                     aa.codons.get(i).count++;
             } catch (Exception e) {
                 this.error++;
             }
@@ -628,6 +633,8 @@ public class DNALib {
             } 
          }
       }
+
+     
 
       for (String s : freq.keySet())
       {

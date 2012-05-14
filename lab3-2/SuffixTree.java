@@ -231,10 +231,4 @@ public class SuffixTree {
 		      System.out.println();
 	   }
    }
-
-   public void repeat() {
-   }
-
-   public void palindrome() {
-   }
 }

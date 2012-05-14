@@ -1,8 +1,9 @@
 UI= UI/*.java
 LIB= lib/*.java
 ALL= $(UI) \
-	 $(LIB)
-
+     $(LIB) \
+     *.java			
+     
 CC=javac
 ENGINE=java
 JFLAGS=-deprecation #-Xlint
@@ -22,9 +23,13 @@ run:
 
 BioGUI.java:
 
+rep: classes
+	java STmain
+
 clean:
 	@echo "-------------------------"
 	@echo "*** Cleaning Files..."
 	rm -f UI/*.class
 	rm -f lib/*.class
+	rm -f *.class
 	@echo "--------------------"

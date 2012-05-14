@@ -406,7 +406,7 @@ public class Controller {
             buf[4].append(lib.geneSize());
             buf[4].append("\n");
             buf[5].append("\nResults for file: " + fastaFiles.get(i) + "\n");
-            //buf[5].append(lib.codonFrequency());
+            buf[5].append(lib.codonFrequency());
             buf[5].append("\n");
         }
         try {

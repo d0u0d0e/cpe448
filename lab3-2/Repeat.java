@@ -2,6 +2,7 @@ import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.lang.Math;
 
 public class Repeat
 {
@@ -18,18 +19,20 @@ public class Repeat
       String s;
       int size;
       int repeat;
-      double selfProximity;
+      double selfAvgProximity;
+      double selfStdProximity;
       double geneProximity;
       double freq;
       double expectedFreq;
       double percentFreq;
 
-      public Unexpected(String s, int size, int repeat, double selfProximity, double geneProximity, double freq, double expectedFreq, double percentFreq)
+      public Unexpected(String s, int size, int repeat, double selfAvgProximity, double selfStdProximity, double geneProximity, double freq, double expectedFreq, double percentFreq)
       {
          this.s = s;
          this.size = size;
          this.repeat = repeat;
-         this.selfProximity = selfProximity;
+         this.selfAvgProximity = selfAvgProximity;
+         this.selfStdProximity = selfStdProximity;
          this.geneProximity = geneProximity;
          this.freq = freq;
          this.expectedFreq = expectedFreq;
@@ -95,12 +98,13 @@ public class Repeat
          
          if ((p * total * fold) <= repeat)
          {
-            double selfProximity = getSelfProximity(s);  
+            double selfAvgProximity = getSelfAvgProximity(s);  
+            double selfStdProximity = getSelfStdProximity(s, selfAvgProximity);  
             double geneProximity = getGeneProximity(s, geneList);  
             double freq = 1.0 / (total / (double)repeat);
             double expectedFreq = 1.0 / (total / (p * total));
             double percentFreq = freq / expectedFreq * 100;
-            Unexpected ue = new Unexpected(s, s.length(), repeat, selfProximity, geneProximity, freq, expectedFreq, percentFreq);
+            Unexpected ue = new Unexpected(s, s.length(), repeat, selfAvgProximity, selfStdProximity, geneProximity, freq, expectedFreq, percentFreq);
             unexpected.add(ue);
          }
       }
@@ -142,7 +146,26 @@ public class Repeat
          });
    }
 
-   public double getSelfProximity(String s)
+   public double getSelfStdProximity(String s, double mean)
+   {
+      double sumDev = 0.0;         
+      ArrayList<Integer> locs = locations.get(s);
+      Collections.sort(locs, new Comparator<Integer>()
+         {
+            public int compare(Integer a, Integer b)
+            {
+               return b - a;
+            }
+         });
+      for (int i = 0; i < locs.size() - 1; i++)
+      {
+         int l = locs.get(i) - locs.get(i+1);
+         sumDev += (l - mean) * (l - mean);
+      }
+      return Math.sqrt(sumDev / (locs.size() - 2));
+   }
+
+   public double getSelfAvgProximity(String s)
    {
       double sum = 0.0;
       ArrayList<Integer> locs = locations.get(s);

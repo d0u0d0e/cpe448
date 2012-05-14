@@ -213,7 +213,7 @@ public class STmain
       System.out.println("Repeats:");
       System.out.println("trying to create tree...");
       SuffixTree tree = new SuffixTree();
-      seq = "AATTTTAAATTTTAAAAAAAAAAAAAAAAA";
+//      seq = "AATTTTAAATTTTAAAAAAAAAAAAAAAAA";
       tree.addString(seq);
       System.out.println("finished creating tree");
       Repeat rep = new Repeat(seq, 1, 3, 2);

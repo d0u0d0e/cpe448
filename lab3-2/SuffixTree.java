@@ -2,8 +2,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
-
-
 public class SuffixTree {
 
    public class node {
@@ -24,14 +22,13 @@ public class SuffixTree {
    }
 
    class Leaf extends node {
-      ArrayList<Integer> suffixNum;
+      HashMap<Integer, Integer> suffixNum;
 
       public Leaf(String label, int num, node n) {
          this.label = label;
          children = new HashMap<Character, node>();
-         suffixNum = new ArrayList<Integer>();
-         suffixNum.add(0, null);
-         suffixNum.add(stringNum, new Integer(num));
+         suffixNum = new HashMap<Integer, Integer>();
+         suffixNum.put(new Integer(stringNum), new Integer(num));
          prev = n;
       }
    }
@@ -63,7 +60,7 @@ public class SuffixTree {
    }
 
  //recursively finds location to insert suffix
-   public void insert(String sub, node n, int suffNum, char c) {
+   public void insert(String sub, node n, int suffNum, char prevChar) {
       if(n.children.containsKey(sub.charAt(0))) {  //current node contains character
          node child = n.children.get(sub.charAt(0));
          int i = 0;
@@ -72,37 +69,39 @@ public class SuffixTree {
             i++;
 
 // i == position of mismatch
-         if(i < sub.length()) { //insert branch
-            if(child.children.containsKey((sub.charAt(i)))) {
-               insert(sub.substring(i), child, suffNum, c);
+         if(i < sub.length()) {      //insert branch or leaf
+        	 if(i == child.label.length()) {
+        		 if(child.children.containsKey((sub.charAt(i)))) {  //follow path to next node
+                    insert(sub.substring(i), child, suffNum, prevChar);
+                 }
+        		 else {  // remaining substring becomes leaf
+        			Leaf l = new Leaf(sub.substring(i), suffNum, n);
+        			l.prevChar = prevChar;
+        			
+        			child.children.put(l.label.charAt(0), l);
+        		 }
+        	 }
+        	 else {          //mismatch in middle of both strings
+                Inner in = new Inner(sub.substring(0, i), n);        //create new inner node
+
+                Leaf l = new Leaf(sub.substring(i), suffNum, n);
+                l.prevChar = prevChar;
+
+                child.label = child.label.substring(i);
+
+                in.children.put(l.label.charAt(0), l);          // add new leaf and child as child$
+                in.children.put(child.label.charAt(0), child);
+
+                n.children.put(sub.charAt(0), in);   //insert inner node as child of prev node
             }
-        	else {
-        	   if(child instanceof Inner) {
-        	      insert(sub.substring(i), child, suffNum, c);
-        	   }
-        	   else {
-                  String common = sub.substring(0, i);
-                  Inner in = new Inner(common, n);        //create new inner node
-
-                  Leaf l = new Leaf(sub.substring(i), suffNum, n);
-                  l.prevChar = c;
-
-                  child.label = child.label.substring(i);
-
-                  in.children.put(l.label.charAt(0), l);          // add new leaf and child as child$
-                  in.children.put(child.label.charAt(0), child);
-
-                  n.children.put(sub.charAt(0), in);   //insert inner node as child of prev node
-        	   }
-        	}
          }
          else {  // complete match
-        	 ((Leaf)child).suffixNum.add(suffNum);
+        	 ((Leaf)child).suffixNum.put(new Integer(stringNum), new Integer(suffNum));
          }
       }
       else {  // suffix is a leaf
          Leaf l = new Leaf(sub, suffNum, n);
-         l.prevChar = c;
+         l.prevChar = prevChar;
 
          n.children.put(sub.charAt(0), l);
       }

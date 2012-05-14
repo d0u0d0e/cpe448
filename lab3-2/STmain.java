@@ -211,12 +211,8 @@ public class STmain
          });
       
       System.out.println("Repeats:");
-      System.out.println("trying to create tree...");
-      SuffixTree tree = new SuffixTree();
-//      seq = "AATTTTAAATTTTAAAAAAAAAAAAAAAAA";
-      tree.addString(seq);
-      System.out.println("finished creating tree");
-      Repeat rep = new Repeat(seq, 1, 3, 2);
+      //Repeat rep = new Repeat("AATTTTAAATTTTAAAAAAAAAAAAAAAAA", 1, 3, 2);
+      Repeat rep = new Repeat(seq, 6, 12, 10);
       rep.findUnexpected(rep.tree.root, geneList);
 
       System.out.println("Size, Frequency, Expected Frequency, % More than Expected, Sequence, Average Distances, Standard Deviation, Distance to Nearest Gene");

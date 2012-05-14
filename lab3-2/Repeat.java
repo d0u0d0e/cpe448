@@ -75,7 +75,9 @@ public class Repeat
       
       // create tree
       this.tree = new SuffixTree();
+      System.out.print("Trying to create tree...");
       this.tree.addString(seq);
+      System.out.println("Finished creating tree");
 
       // create repeats hashmap and unexpected arraylist
       this.repeats = new HashMap<String, Integer>();

@@ -30,10 +30,10 @@ public class HowToDialog extends JDialog {
    private static final String FORMAT_START = "<div style=\"width:360px; "
            + "word-wrap: break-word; font-size:16\">";
    private static final String FORMAT_END = "</div>";
-   private static final String GC_HOW_TO_TEXT =
+   private static final String LAB2_1_HOW_TO_TEXT =
            "<HR><h2>Lab 2-1: DNA Analysis: GC Percent</h2><p>" +
            "To calculate the GC content of a DNA strand, under the <b>Analysis</b> "+
-           "menu select the <b>Calculate GC Content</b> option. A window will "+
+           "menu select the <b>Lab2-1: GC Content</b> option. A window will "+
            "pop up prompting you for a FASTA file and a range of the strand "+
            "for which the GC content is to be calculated. Click on the <b>Browse</b> " +
            "button to select a FASTA file. The range is optional. If left "+
@@ -41,15 +41,27 @@ public class HowToDialog extends JDialog {
            "end of the strand.</p>" +
            "<p><b>Output:</b><br />"+
            "The output will be displayed in the main window.</p><br />";
-   private static final String LAB2_HOW_TO_TEXT = 
+   private static final String LAB2_2_HOW_TO_TEXT = 
            "<HR><h2>Lab 2-2: DNA Analysis: DNA Manipulation, Codon Usage Bias, and Gene Density</h2><p>"+
-           "To begin, under the <b>Analysis</b> menu select the <b>Set Data " +
-           "Files</b> option and enter a FASTA file and a GFF file. The <b>Window</b> " +
-           "and <b>Slide</b> options are optional. Their default values are 1000 " +
-           "and 100 respectively.</p>"+
+           "To begin, under the <b>Analysis</b> menu select the <b>Lab2-2: DNA " +
+           "Manipulation</b> option. A window will pop up prompting you for a range, " +
+           "file type, slide, and window. Enter the range of the presset files you "+
+           "want to run the calculations for (EX: the numbers 24 and 28 with the "+
+           "file type set to <b>contig</b> will run the calculations on contigs" +
+           "24 to 28 inclusive). The <b>Window</b> and <b>Slide</b> options are " +
+           "optional. Their default values are 1000 and 100 respectively.</p>"+
            "<p><b>Output:</b><br />"+
            "The output will go to separate files which names will be listed in the " +
            "output box of the main window. The files will be writen to the folder " +
+           "from which the program was run.</p><br />";
+   private static final String LAB3_1_HOW_TO_TEXT =
+           "<HR><h2>Lab 3-1: DNA Merging</h2><p>" +
+           "To Merge DNA FASTA files, under the <b>Analysis</b> menu select the " +
+           "<b>Lab3-1: DNA Merging</b> option. A window will pop up prompting " +
+           "you for a range and a file type. Enter the range and type of the "+
+           "presset files you would like to combine and click <b>Okay</b>.</p>"+
+           "<p><b>Output:</b><br />"+
+           "The output will go to separate files which will be writen to the folder " +
            "from which the program was run.</p><br />";
    private static final int DIALOG_WIDTH = 500,
                             DIALOG_HEIGHT = 400;
@@ -95,7 +107,7 @@ public class HowToDialog extends JDialog {
        mTextOutput.setLayout(new FlowLayout());
        mTextOutput.setContentType("text/html");
        mTextOutput.setText("<html>" + HEADER + FORMAT_START
-               + GC_HOW_TO_TEXT + LAB2_HOW_TO_TEXT
+               + LAB2_1_HOW_TO_TEXT + LAB2_2_HOW_TO_TEXT + LAB3_1_HOW_TO_TEXT
                + FORMAT_END + "</html>");
        mTextOutput.setCaretPosition(0);
        JScrollPane outputPane = new JScrollPane(mTextOutput);

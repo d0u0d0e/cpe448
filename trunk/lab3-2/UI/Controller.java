@@ -157,7 +157,7 @@ public class Controller {
                 stop--;
             }
 
-            for (int i = start - 20; i < stop - 20; i++) {
+            for (int i = start - 20; i <= stop - 20; i++) {
                 fastaFiles.add(fastaContigsAll.get(i));
                 gffFiles.add(gffContigsAll.get(i));
             }
@@ -169,7 +169,7 @@ public class Controller {
                 return -1;
             }
 
-            for (int i = start - 22; i < stop - 22; i++) {
+            for (int i = start - 22; i <= stop - 22; i++) {
                 fastaFiles.add(fastaFosmidsAll.get(i));
                 gffFiles.add(gffFosmidsAll.get(i));
             }
@@ -202,9 +202,8 @@ public class Controller {
         StringBuffer seqBuffer = new StringBuffer();
         Scanner sc = new Scanner(fastaFile);
         sc.nextLine();
-        sc.useDelimiter("");
 
-        while (sc.hasNextLine()) {
+        while (sc.hasNext()) {
             String c = sc.next();
             if (!c.equals("\n")) {
                 seqBuffer = seqBuffer.append(c);
@@ -297,10 +296,11 @@ public class Controller {
     }
 
     public void doCalculations(int start, int stop) throws java.io.FileNotFoundException {
-        ArrayList<Gene> geneList = new ArrayList<Gene>();
-        ArrayList<String> idList = new ArrayList<String>();
+        ArrayList<Gene> geneList;
+        ArrayList<String> idList;
         StringBuffer[] buf = new StringBuffer[6];
         DNALib lib;
+        String seq;
 
         if (setFilesInRange(start, stop) == -1) {
             setMainWindowOutput("Invalid Range of files\n");
@@ -311,7 +311,9 @@ public class Controller {
             buf[i] = new StringBuffer();
 
         for (int i = 0; i < fastaFiles.size(); i++) {
-            String seq = readFasta(new File(fastaFiles.get(i)));
+            geneList = new ArrayList<Gene>();
+            idList = new ArrayList<String>();
+            seq = readFasta(new File(fastaFiles.get(i)));
             readGFF(new File(gffFiles.get(i)), geneList, idList);
 
             // Exons and Introns within Genes
@@ -384,7 +386,9 @@ public class Controller {
 
 
             // Initialize DNA Libarary
+            //System.out.println(geneList.);
             lib = new DNALib(seq, geneList);
+            //buf[5].append(lib.codonFrequency());
 
             // Basic Functionality
             //System.out.println("GC-content: " + lib.GCContent(start, stop));
@@ -408,6 +412,7 @@ public class Controller {
             buf[5].append("\nResults for file: " + fastaFiles.get(i) + "\n");
             buf[5].append(lib.codonFrequency());
             buf[5].append("\n");
+            lib.getError();
         }
         try {
             String dirName = "results";
@@ -423,7 +428,7 @@ public class Controller {
             out.write(buf[0].toString());
             out.close();
             System.out.print("\n");
-            gui.setOutput("File: GCContOverlap" + FILE_EXTENSION + " writen. "
+            setMainWindowOutput("File: GCContOverlap" + FILE_EXTENSION + " writen. "
                     + "Format: (start, stop, GC)\n");
 
             fstream = new FileWriter("GCContNonOverLap" + FILE_EXTENSION);
@@ -433,7 +438,7 @@ public class Controller {
             out.write(buf[1].toString());
             out.close();
             System.out.print("\n");
-            gui.setOutput("File: GCContNonOverlap" + FILE_EXTENSION + " writen. "
+            setMainWindowOutput("File: GCContNonOverlap" + FILE_EXTENSION + " writen. "
                     + "Format: (start, stop, GC)\n");
 
             // 2.2.1. Gene Density
@@ -444,7 +449,7 @@ public class Controller {
             out.write(buf[2].toString());
             out.close();
             System.out.print("\n");
-            gui.setOutput("File: GeneDensity" + FILE_EXTENSION + " writen.\n");
+            setMainWindowOutput("File: GeneDensity" + FILE_EXTENSION + " writen.\n");
 
             // 2.2.2 Gene GC-Content
             fstream = new FileWriter("GeneGCCont" + FILE_EXTENSION);
@@ -454,7 +459,7 @@ public class Controller {
             out.write(buf[3].toString());
             out.close();
             System.out.print("\n");
-            gui.setOutput("File: GeneGCCont" + FILE_EXTENSION + " writen. "
+            setMainWindowOutput("File: GeneGCCont" + FILE_EXTENSION + " writen. "
                     + "Format: (gene, start, stop, GC)\n");
 
             // 2.2.3 Gene Size 
@@ -465,7 +470,7 @@ public class Controller {
             out.write(buf[4].toString());
             out.close();
             System.out.print("\n");
-            gui.setOutput("File: GeneSize" + FILE_EXTENSION + " writen. "
+            setMainWindowOutput("File: GeneSize" + FILE_EXTENSION + " writen. "
                     + "Format: (gene, start, stop, size)\n");
 
             // 2.2.4 Codon Frequency
@@ -476,10 +481,10 @@ public class Controller {
             out.write(buf[5].toString());
             out.close();
             System.out.print("\n");
-            gui.setOutput("File: CodonFrequency" + FILE_EXTENSION + " writen. "
+            setMainWindowOutput("File: CodonFrequency" + FILE_EXTENSION + " writen. "
                     + "Format: (codon, amino acid, frequency, ratio)\n");
 
-            gui.setOutput("Done.\n");
+            setMainWindowOutput("Done.\n");
         } catch (Exception e) {//Catch exception if any
             System.err.println("Error: " + e.getMessage());
         }
@@ -496,6 +501,22 @@ public class Controller {
                 end, lib.GCContent(start, end)));
     }
 
+    public void combineFiles(int start, int stop) {
+        if (setFilesInRange(start, stop) == -1) {
+            setMainWindowOutput("Invalid Range of files\n");
+            return;
+        }
+        setMainWindowOutput("Merging "+ (contig ?"contig":"fosmid") +" files " + start + " to " + stop + "...\n");
+        Combine c = new Combine();
+        try {
+            c.combineFiles(fastaFiles, gffFiles);
+        }
+        catch (Exception e) {
+            System.err.println("ERROR: " + e.getMessage());
+        }
+        setMainWindowOutput("Merging complete.\n");
+    }
+    
     public void setMainWindowOutput(String text) {
         gui.setOutput(text);
     }

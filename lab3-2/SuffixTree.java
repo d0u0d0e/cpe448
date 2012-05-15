@@ -84,7 +84,7 @@ public class SuffixTree {
                      sub = sub.substring(i);
                   }
                   else {               //remaining substring becomes leaf
-                     Leaf l = new Leaf(sub.substring(i), suffNum, current);
+                     Leaf l = new Leaf(sub.substring(i-1), suffNum, current);
                      l.prevChar = prevChar;
 
                      child.children.put(l.label.charAt(0), l);
@@ -94,11 +94,10 @@ public class SuffixTree {
                }
                else { //common sequence splits to 2
                   Inner in = new Inner(sub.substring(0, i), current);        //create new inner node
-
-                  Leaf l = new Leaf(sub.substring(i), suffNum, current);
+                  Leaf l = new Leaf(sub.substring(i-1), suffNum, current);
                   l.prevChar = prevChar;
 
-                  child.label = child.label.substring(i);
+ //                 child.label = child.label.substring(i);
 
                   in.children.put(l.label.charAt(0), l);          // add new leaf and child as child of new inner node
                   in.children.put(child.label.charAt(0), child);

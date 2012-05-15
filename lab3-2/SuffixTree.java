@@ -30,6 +30,8 @@ public class SuffixTree {
          suffixNum = new HashMap<Integer, Integer>();
          suffixNum.put(new Integer(stringNum), new Integer(num));
          prev = n;
+
+         leaves.add(this);
       }
    }
    
@@ -49,6 +51,7 @@ public class SuffixTree {
       String sub = S.concat("$");
       stringNum++;
       char c = '\n';
+
       for(int i = 0; i < sub.length(); i++) {
          suffNum++;
 
@@ -57,6 +60,8 @@ public class SuffixTree {
 
          insert(sub.substring(i), root, suffNum, c);
       }
+
+      traverse(root);
    }
 
  //recursively finds location to insert suffix
@@ -99,7 +104,7 @@ public class SuffixTree {
                   in.children.put(l.label.charAt(0), l);          // add new leaf and child as child of new inner node
                   in.children.put(child.label.charAt(0), child);
 
-                  n.children.put(sub.charAt(0), in);   //insert inner node as child of prev node
+                  current.children.put(sub.charAt(0), in);   //insert inner node as child of prev node
 
                   inserted = true;
                }
@@ -119,8 +124,6 @@ public class SuffixTree {
             inserted = true;
          }
       }
-
-      traverse(root);
    }
 
 //original code

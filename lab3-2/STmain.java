@@ -211,8 +211,8 @@ public class STmain
          });
       
       System.out.println("Repeats:");
-      //Repeat rep = new Repeat("AATTTTAAATTTTAAAAAAAAAAAAAAAAA", 1, 3, 2);
-      Repeat rep = new Repeat(seq, 6, 12, 10);
+      Repeat rep = new Repeat("AATTTTAAATTTTAAAAAAAAAAAAAAAAA", 1, 3, 2);
+      //Repeat rep = new Repeat(seq, 6, 12, 10);
       rep.findUnexpected(rep.tree.root, geneList);
 
       System.out.println("Size, Frequency, Expected Frequency, % More than Expected, Sequence, Average Distances, Standard Deviation, Distance to Nearest Gene");
@@ -222,12 +222,16 @@ public class STmain
       }
 
       System.out.println("\nPalindromes:");
-      Palindrome pal = new Palindrome("ATCAACTGAT", 1, 10, 2);
+      Palindrome pal = new Palindrome("AAATTT", 1, 20, 2);
+      //Palindrome pal = new Palindrome("AAATTT", 1, 10, 2);
 
       pal.findPalindromes(pal.tree.root, "");
-      for (String s : pal.palindromes)
+     /* for (String s : pal.palindromes)
       {
-         System.out.println(s);   
-      }
+         for (int i = 0; i < pal.locations1.get(s).size(); i++)
+         {
+            System.out.println(s + " [" + pal.locations1.get(s).get(i) + ", " + pal.locations2.get(s).get(i) + "]");   
+         }
+      }*/
    }
 }

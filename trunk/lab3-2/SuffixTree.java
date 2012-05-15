@@ -36,6 +36,7 @@ public class SuffixTree {
    ArrayList<Leaf> leaves = new ArrayList<Leaf>();
    Inner root;
    int stringNum;
+//int meh = 0;
 
    //creates empty tree
    public SuffixTree() {
@@ -48,7 +49,6 @@ public class SuffixTree {
       String sub = S.concat("$");
       stringNum++;
       char c = '\n';
-
       for(int i = 0; i < sub.length(); i++) {
          suffNum++;
 
@@ -61,12 +61,72 @@ public class SuffixTree {
 
  //recursively finds location to insert suffix
    public void insert(String sub, node n, int suffNum, char prevChar) {
-      if(n.children.containsKey(sub.charAt(0))) {  //current node contains character
-         node child = n.children.get(sub.charAt(0));
-         int i = 0;
+//System.out.println(meh++);
+      node current = n;
+      boolean inserted = false;
 
+      while(!inserted) {
+         if(current.children.containsKey(sub.charAt(0))) {  //current node contains character
+            node child = current.children.get(sub.charAt(0));
+            int i = 0;
+
+            while(i < sub.length() && i < child.label.length() && sub.charAt(i) == child.label.charAt(i))
+               i++;
+
+            if(i < sub.length()) {
+               if(i == child.label.length()) {              //complete match with inner node
+                  if(child.children.containsKey(sub.charAt(i))) {           //follow path down
+                     current = child.children.get(sub.charAt(i));
+                  }
+                  else {               //remaining substring becomes leaf
+                     Leaf l = new Leaf(sub.substring(i), suffNum, current);
+                     l.prevChar = prevChar;
+
+                     child.children.put(l.label.charAt(0), l);
+
+                     inserted = true;
+                  }
+               }
+               else { //common sequence splits to 2
+                  Inner in = new Inner(sub.substring(0, i), current);        //create new inner node
+
+                  Leaf l = new Leaf(sub.substring(i), suffNum, current);
+                  l.prevChar = prevChar;
+
+                  child.label = child.label.substring(i);
+
+                  in.children.put(l.label.charAt(0), l);          // add new leaf and child as child of new inner node
+                  in.children.put(child.label.charAt(0), child);
+
+                  n.children.put(sub.charAt(0), in);   //insert inner node as child of prev node
+
+                  inserted = true;
+               }
+            }
+            else {   //complete match, add to list of suffixes
+               ((Leaf)child).suffixNum.put(new Integer(stringNum), new Integer(suffNum));
+               inserted = true;
+            }
+
+         }
+         else {       //no path to follow, create leaf
+            Leaf l = new Leaf(sub, suffNum, current);
+            l.prevChar = prevChar;
+
+            current.children.put(sub.charAt(0), l);
+
+            inserted = true;
+         }
+      }
+
+      traverse(root);
+   }
+
+//original code
+/*
          while(i < sub.length() && i < child.label.length() && sub.charAt(i) == child.label.charAt(i))
             i++;
+
 
 // i == position of mismatch
          if(i < sub.length()) {      //insert branch or leaf
@@ -89,7 +149,7 @@ public class SuffixTree {
 
                 child.label = child.label.substring(i);
 
-                in.children.put(l.label.charAt(0), l);          // add new leaf and child as child$
+                in.children.put(l.label.charAt(0), l);          // add new leaf and child as child of new inner node
                 in.children.put(child.label.charAt(0), child);
 
                 n.children.put(sub.charAt(0), in);   //insert inner node as child of prev node
@@ -108,28 +168,29 @@ public class SuffixTree {
       
       traverse(root);
    }
-   
+*/   
    public void traverse(Inner in) {
-	   for(node n : in.children.values()) {
-		   if(n instanceof Inner) {
-			   traverse((Inner)n);
-			   
-			   if(((Inner)n).ldiverse)
-				   in.ldiverse = true;
-		   }
-	   }
+      for(node n : in.children.values()) {
+         if(n instanceof Inner) {
+            if(!((Inner)n).ldiverse)
+               traverse((Inner)n);
+
+            if(((Inner)n).ldiverse)
+               in.ldiverse = true;
+         }
+      }
 	   
-	   if(!in.ldiverse) {
-	      Iterator<node> iter = in.children.values().iterator();
+      if(!in.ldiverse) {
+         Iterator<node> iter = in.children.values().iterator();
 	      
-	      if(iter.hasNext()) {
-	    	  in.prevChar = iter.next().prevChar;
+         if(iter.hasNext()) {
+            in.prevChar = iter.next().prevChar;
 	      
-	         while(iter.hasNext())
-	    	     if(in.prevChar != iter.next().prevChar)
-	    		     in.ldiverse = true;
-	      }
-	   }
+            while(iter.hasNext())
+               if(in.prevChar != iter.next().prevChar)
+                  in.ldiverse = true;
+	 }
+      }
    }
    
    public node lca(node n1, node n2) {
@@ -231,3 +292,5 @@ public class SuffixTree {
 	   }
    }
 }
+
+

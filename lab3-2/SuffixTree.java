@@ -38,7 +38,6 @@ public class SuffixTree {
    ArrayList<Leaf> leaves = new ArrayList<Leaf>();
    Inner root;
    int stringNum;
-//int meh = 0;
 
    //creates empty tree
    public SuffixTree() {
@@ -66,7 +65,7 @@ public class SuffixTree {
 
  //recursively finds location to insert suffix
    public void insert(String sub, node n, int suffNum, char prevChar) {
-//System.out.println(meh++);
+
       node current = n;
       boolean inserted = false;
 

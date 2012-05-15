@@ -77,6 +77,7 @@ public class SuffixTree {
                if(i == child.label.length()) {              //complete match with inner node
                   if(child.children.containsKey(sub.charAt(i))) {           //follow path down
                      current = child.children.get(sub.charAt(i));
+                     sub = sub.substring(i);
                   }
                   else {               //remaining substring becomes leaf
                      Leaf l = new Leaf(sub.substring(i), suffNum, current);

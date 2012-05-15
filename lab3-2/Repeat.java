@@ -40,7 +40,7 @@ public class Repeat
       }
    }
 
-   public Repeat(String seq, int min, int max, int fold)
+   public Repeat(String seq, int min, int max, int fold, ArrayList<Gene> geneList)
    {
       this.seq = seq;
       this.min = min;
@@ -83,11 +83,9 @@ public class Repeat
       this.repeats = new HashMap<String, Integer>();
       this.locations = new HashMap<String, ArrayList<Integer>>();
       this.unexpected = new ArrayList<Unexpected>();
-   }
-
-   public void findUnexpected(SuffixTree.node root, ArrayList<Gene> geneList)
-   {
-      findRepeats(root, "");
+      
+      // find repeats
+      findRepeats(tree.root, "");
       for (String s : repeats.keySet())
       {
          int repeat = repeats.get(s);

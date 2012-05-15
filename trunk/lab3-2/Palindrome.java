@@ -34,6 +34,9 @@ public class Palindrome
      
       // find palindromes 
       findPalindromes(tree.root, "");
+
+      // gaps
+      // not implemented yet
    }
 
    public void findPalindromes(SuffixTree.node root, String s)

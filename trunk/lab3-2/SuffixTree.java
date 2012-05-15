@@ -80,7 +80,7 @@ public class SuffixTree {
             if(i < sub.length()) {
                if(i == child.label.length()) {              //complete match with inner node
                   if(child.children.containsKey(sub.charAt(i))) {           //follow path down
-                     current = child.children.get(sub.charAt(i));
+                     current = child;
                      sub = sub.substring(i);
                   }
                   else {               //remaining substring becomes leaf

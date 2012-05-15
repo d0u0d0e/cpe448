@@ -125,53 +125,6 @@ public class SuffixTree {
       }
    }
 
-//original code
-/*
-         while(i < sub.length() && i < child.label.length() && sub.charAt(i) == child.label.charAt(i))
-            i++;
-
-
-// i == position of mismatch
-         if(i < sub.length()) {      //insert branch or leaf
-        	 if(i == child.label.length()) {
-        		 if(child.children.containsKey((sub.charAt(i)))) {  //follow path to next node
-                    insert(sub.substring(i), child, suffNum, prevChar);
-                 }
-        		 else {  // remaining substring becomes leaf
-        			Leaf l = new Leaf(sub.substring(i), suffNum, n);
-        			l.prevChar = prevChar;
-        			
-        			child.children.put(l.label.charAt(0), l);
-        		 }
-        	 }
-        	 else {          //mismatch in middle of both strings
-                Inner in = new Inner(sub.substring(0, i), n);        //create new inner node
-
-                Leaf l = new Leaf(sub.substring(i), suffNum, n);
-                l.prevChar = prevChar;
-
-                child.label = child.label.substring(i);
-
-                in.children.put(l.label.charAt(0), l);          // add new leaf and child as child of new inner node
-                in.children.put(child.label.charAt(0), child);
-
-                n.children.put(sub.charAt(0), in);   //insert inner node as child of prev node
-            }
-         }
-         else {  // complete match
-        	 ((Leaf)child).suffixNum.put(new Integer(stringNum), new Integer(suffNum));
-         }
-      }
-      else {  // suffix is a leaf
-         Leaf l = new Leaf(sub, suffNum, n);
-         l.prevChar = prevChar;
-
-         n.children.put(sub.charAt(0), l);
-      }
-      
-      traverse(root);
-   }
-*/   
    public void traverse(Inner in) {
       for(node n : in.children.values()) {
          if(n instanceof Inner) {

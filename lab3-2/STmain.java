@@ -211,25 +211,25 @@ public class STmain
          });
       
       System.out.println("Repeats:");
-      Repeat rep = new Repeat("AATTTTAAATTTTAAAAAAAAAAAAAAAAA", 1, 3, 2, geneList);
-      //Repeat rep = new Repeat(seq, 6, 12, 10);
+      //Repeat rep = new Repeat("AATTTAAAAAAACCCAAAAA", 1, 10, 2, geneList);
+      Repeat rep = new Repeat(seq, 6, 12, 10, geneList);
 
-      System.out.println("Size, Frequency, Expected Frequency, % More than Expected, Sequence, Average Distances, Standard Deviation, Distance to Nearest Gene");
+      System.out.println("Size, Repeats, Frequency, Expected Frequency, % More than Expected, Sequence, Average Distances, Standard Deviation, Distance to Nearest Gene");
       for (Repeat.Unexpected ue : rep.unexpected)
       {
-         System.out.println(ue.size + ", " + ue.freq + ", " + ue.expectedFreq + ", " + ue.percentFreq + ", " + ue.s + ", " + ue.selfAvgProximity + ", " + ue.selfStdProximity + ", " + ue.geneProximity);
+         System.out.printf("%d, %f, %f, %f, %s, %f, %f, %f\n", ue.size, ue.freq, ue.expectedFreq, ue.percentFreq, ue.s, ue.selfAvgProximity, ue.selfStdProximity, ue.geneProximity);
       }
 
       System.out.println("\nPalindromes:");
-      Palindrome pal = new Palindrome("AAAGGACCGCTACAGTAACCCCCCGGGGGGATTTATATATATTATTTTGGCCTTT", 1, 20, 0, 10);
-      //Palindrome pal = new Palindrome("AAATTT", 1, 10, 0, 10);
-
+      //Palindrome pal = new Palindrome("AAAGGACCGCTACAGTAACCCCCCGGGGGGATTTATATATATTATTTTGGCCTTT", 2, 12, 0, 5);
+      Palindrome pal = new Palindrome("AAATTT", 1, 10, 0, 10);
+      //Palindrome pal = new Palindrome(seq, 1, 10, 0, 10);
       System.out.println("Sequence, Reverse Complement of Sequence, Length, Gap, Location 1, Location 2"); 
       for (String s : pal.gapPalindromes)
       {
          for (int i = 0; i < pal.gapLocations1.get(s).size(); i++)
          {
-            System.out.println(s + ", " + Palindrome.reverseComplement(s) + ", " + s.length() + ", " +  Math.abs(pal.gapLocations1.get(s).get(i)-pal.gapLocations2.get(s).get(i)) + ", " + pal.gapLocations1.get(s).get(i) + ", " + pal.gapLocations2.get(s).get(i));   
+            System.out.printf("%s, %s, %d, %d, %d, %d\n", s, Palindrome.reverseComplement(s), s.length(), Math.abs(pal.gapLocations1.get(s).get(i)-pal.gapLocations2.get(s).get(i)), pal.gapLocations1.get(s).get(i), pal.gapLocations2.get(s).get(i));   
          }
       }
    }

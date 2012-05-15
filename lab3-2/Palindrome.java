@@ -3,11 +3,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.lang.Math;
+import java.util.Arrays;
 
 public class Palindrome
 {
    String seq;
-   int min, max, minGap, maxGap;
+   int min, max, minGap, maxGap, total;
    SuffixTree tree;
    ArrayList<String> palindromes;
    ArrayList<String> gapPalindromes;
@@ -26,11 +27,20 @@ public class Palindrome
 
       // create tree
       this.tree = new SuffixTree();
-      this.tree.addString(seq);
       System.out.println("Adding: " + seq);
-      this.tree.addString(reverseComplement(seq));
+      this.tree.addString(seq);
       System.out.println("Adding: " + reverseComplement(seq));
+      this.tree.addString(reverseComplement(seq));
       
+      for (int i = 0; i < seq.length(); i++)
+      {
+         if (seq.charAt(i) != 'N')
+         {
+            total++;
+         }
+      }
+      this.total = total;
+
       // create palindrome hashmap and locations hashmaps
       this.palindromes = new ArrayList<String>();
       this.locations1 = new HashMap<String, ArrayList<Integer>>();
@@ -94,24 +104,57 @@ public class Palindrome
          }
          else
          {
-            if (((SuffixTree.Leaf)n).suffixNum.size() == 2)
+            for (SuffixTree.node m : root.children.values())
             {
-               String p = s + n.label;
-               p = p.substring(0, p.length()-1);
-               if (!(locations1.keySet().contains(s + n.label)))
+               if (m instanceof SuffixTree.Leaf)
                {
-                  locations1.put(p, new ArrayList<Integer>());
-                  locations2.put(p, new ArrayList<Integer>());
+                  HashMap<Integer, Integer> suffixNum1 = ((SuffixTree.Leaf)n).suffixNum;
+                  HashMap<Integer, Integer> suffixNum2 = ((SuffixTree.Leaf)m).suffixNum;
+                  ArrayList<Integer> keys1 = new ArrayList<Integer>(Arrays.asList(suffixNum1.keySet().toArray(new Integer[0])));
+                  ArrayList<Integer> keys2 = new ArrayList<Integer>(Arrays.asList(suffixNum2.keySet().toArray(new Integer[0])));
+                  
+                  if (m == n)
+                  {
+                     // perfect palindromes
+                     if (keys1.size() == 2)
+                     {
+                        if (!(locations1.keySet().contains(s)))
+                        {
+                           locations1.put(s, new ArrayList<Integer>());
+                           locations2.put(s, new ArrayList<Integer>());
+                           palindromes.add(s);
+                        }
+                        locations1.get(s).add(((SuffixTree.Leaf)n).suffixNum.get(1));
+                        locations2.get(s).add(((SuffixTree.Leaf)n).suffixNum.get(2));
+                     }
+                  }
+                  else
+                  {
+                     for (int i = 0; i < keys1.size(); i++)
+                     {
+                        for (int j = 0; j < keys2.size(); j++)
+                        {
+                           if (keys1.get(i) != keys2.get(j))
+                           {
+                              if (!(locations1.keySet().contains(s)))
+                              {
+                                 locations1.put(s, new ArrayList<Integer>());
+                                 locations2.put(s, new ArrayList<Integer>());
+                                 palindromes.add(s);
+                              }
+                              locations1.get(s).add(suffixNum1.get(keys1.get(i)));
+                              locations2.get(s).add(total - suffixNum2.get(keys2.get(j)));
+                           }
+                        }
+                     }
+                  }
                }
-               palindromes.add(p);
-               locations1.get(p).add(((SuffixTree.Leaf)n).suffixNum.get(1));
-               locations2.get(p).add(((SuffixTree.Leaf)n).suffixNum.get(2));
             }
          }
       }
       return;
    }
-   
+  
    public static String reverseComplement(String s) 
    {
       StringBuffer seqBuffer = new StringBuffer();

@@ -102,7 +102,7 @@ public class Repeat
             double selfStdProximity = getSelfStdProximity(s, selfAvgProximity);  
             double geneProximity = getGeneProximity(s, geneList);  
             double freq = 1.0 / (total / (double)repeat);
-            double expectedFreq = 1.0 / (total / (p * total));
+            double expectedFreq = 1.0 / ((double)total / (p * total));
             double percentFreq = freq / expectedFreq * 100;
             Unexpected ue = new Unexpected(s, s.length(), repeat, selfAvgProximity, selfStdProximity, geneProximity, freq, expectedFreq, percentFreq);
             unexpected.add(ue);
@@ -162,7 +162,7 @@ public class Repeat
          int l = locs.get(i) - locs.get(i+1);
          sumDev += (l - mean) * (l - mean);
       }
-      return Math.sqrt(sumDev / (locs.size() - 2));
+      return Math.sqrt(sumDev / (locs.size() - 1));
    }
 
    public double getSelfAvgProximity(String s)
@@ -196,7 +196,7 @@ public class Repeat
          {
             if (!g.id.equals("Intergenic"))
             {
-               int start = g.points.get(0).start;
+               int start = Math.abs(g.points.get(0).start - i);
                if (min == 0)
                {
                   min = start;

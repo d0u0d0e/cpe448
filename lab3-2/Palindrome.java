@@ -16,6 +16,7 @@ public class Palindrome
    HashMap<String, ArrayList<Integer>> locations2;
    HashMap<String, ArrayList<Integer>> gapLocations1;
    HashMap<String, ArrayList<Integer>> gapLocations2;
+   HashMap<String, ArrayList<SuffixTree.Leaf>> children;
 
    public Palindrome(String seq, int min, int max, int minGap, int maxGap)
    {
@@ -47,13 +48,61 @@ public class Palindrome
       this.locations2 = new HashMap<String, ArrayList<Integer>>();
      
       // find palindromes 
+      this.children = new HashMap<String, ArrayList<SuffixTree.Leaf>>();
       findPalindromes(tree.root, "");
 
+      for (String s : palindromes)
+      {
+         ArrayList<SuffixTree.Leaf> c = children.get(s);
+         
+         for (int i = 0; i < c.size(); i++)
+         {
+            for (int j = 0; j < c.size(); j++)
+            {
+               HashMap<Integer, Integer> suffixNum1 = c.get(i).suffixNum;
+               HashMap<Integer, Integer> suffixNum2 = c.get(j).suffixNum;
+               ArrayList<Integer> keys1 = new ArrayList<Integer>(Arrays.asList(suffixNum1.keySet().toArray(new Integer[0])));
+               ArrayList<Integer> keys2 = new ArrayList<Integer>(Arrays.asList(suffixNum2.keySet().toArray(new Integer[0])));
+               if (c.get(i) == c.get(j))
+               {
+                  // perfect palindromes
+                  if (keys1.size() == 2)
+                  {
+                     if (!(locations1.keySet().contains(s)))
+                     {
+                        locations1.put(s, new ArrayList<Integer>());
+                        locations2.put(s, new ArrayList<Integer>());
+                     }
+                     locations1.get(s).add(suffixNum1.get(1));
+                     locations2.get(s).add(suffixNum2.get(2));
+                  }
+               }
+               for (int k = 0; k < keys1.size(); k++)
+               {
+                  for (int l = 0; l < keys2.size(); l++)
+                  {
+                     if (keys1.get(k) != keys2.get(l))
+                     {
+                        if (!(locations1.keySet().contains(s)))
+                        {
+                           locations1.put(s, new ArrayList<Integer>());
+                           locations2.put(s, new ArrayList<Integer>());
+                        }
+                        locations1.get(s).add(suffixNum1.get(keys1.get(k)));
+                        locations2.get(s).add(total - suffixNum2.get(keys2.get(l)));
+                     }
+                  }
+               }
+            }
+         }
+      }
       // gaps
       this.gapPalindromes = new ArrayList<String>();
       this.gapLocations1 = new HashMap<String, ArrayList<Integer>>();
       this.gapLocations2 = new HashMap<String, ArrayList<Integer>>();
       findGapPalindromes();
+
+
    }
 
    public void findGapPalindromes()
@@ -104,6 +153,21 @@ public class Palindrome
          }
          else
          {
+         /*   if (((SuffixTree.Leaf)n).suffixNum.keySet().contains(1) 
+                && ((SuffixTree.Leaf)n).suffixNum.keySet().contains(2))
+               System.out.println("Child: " + "[1, " + ((SuffixTree.Leaf)n).suffixNum.get(1) + "] , [2, " + ((SuffixTree.Leaf)n).suffixNum.get(1) + "]");
+            else if (((SuffixTree.Leaf)n).suffixNum.keySet().contains(1))
+               System.out.println("Child: " + "[1, " + ((SuffixTree.Leaf)n).suffixNum.get(1) + "]");
+            else if (((SuffixTree.Leaf)n).suffixNum.keySet().contains(2))
+               System.out.println("Child: " + "[2, " + ((SuffixTree.Leaf)n).suffixNum.get(2) + "]");
+           */ 
+            if (!children.keySet().contains(s))
+            {
+               children.put(s, new ArrayList<SuffixTree.Leaf>());
+               palindromes.add(s);
+            }
+            children.get(s).add((SuffixTree.Leaf)n);
+            /*
             for (SuffixTree.node m : root.children.values())
             {
                if (m instanceof SuffixTree.Leaf)
@@ -149,7 +213,7 @@ public class Palindrome
                      }
                   }
                }
-            }
+            }*/
          }
       }
       return;

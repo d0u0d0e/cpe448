@@ -211,7 +211,6 @@ public class STmain
          });
       
       System.out.println("Repeats:");
-      //Repeat rep = new Repeat("AATTTAAAAAAACCCAAAAA", 1, 10, 2, geneList);
       Repeat rep = new Repeat(seq, 6, 12, 10, geneList);
 
       System.out.println("Size, Repeats, Frequency, Expected Frequency, % More than Expected, Sequence, Average Distances, Standard Deviation, Distance to Nearest Gene");
@@ -221,8 +220,6 @@ public class STmain
       }
 
       System.out.println("\nPalindromes:");
-      //Palindrome pal = new Palindrome("AAAGGACCGCTACAGTAACCCCCCGGGGGGATTTATATATATTATTTTGGCCTTT", 2, 12, 0, 5);
-      //Palindrome pal = new Palindrome("AAATTT", 1, 10, 0, 10);
       Palindrome pal = new Palindrome(seq, 15, 30, 20, 50);
       System.out.println("Sequence, Reverse Complement of Sequence, Length, Gap, Location 1, Location 2"); 
       for (String s : pal.gapPalindromes)

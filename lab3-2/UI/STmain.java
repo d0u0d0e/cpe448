@@ -1,3 +1,4 @@
+package UI;
 import java.util.Scanner;
 import java.io.File;
 import java.lang.StringBuffer;
@@ -7,6 +8,7 @@ import java.lang.String;
 import java.lang.Math;
 import java.util.Comparator;
 import java.util.Collections;
+import lib.Gene;
 
 public class STmain
 {

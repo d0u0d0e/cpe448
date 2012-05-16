@@ -28,9 +28,7 @@ public class Palindrome
 
       // create tree
       this.tree = new SuffixTree();
-      //System.out.println("Adding: " + seq);
       this.tree.addString(seq);
-      //System.out.println("Adding: " + reverseComplement(seq));
       this.tree.addString(reverseComplement(seq));
       
       for (int i = 0; i < seq.length(); i++)
@@ -168,14 +166,6 @@ public class Palindrome
             }
             if (!children.get(s).contains((SuffixTree.Leaf)n))
             {
-   /*            if (((SuffixTree.Leaf)n).suffixNum.keySet().contains(1) 
-                   && ((SuffixTree.Leaf)n).suffixNum.keySet().contains(2))
-                  System.out.println("Child: " + "[1, " + ((SuffixTree.Leaf)n).suffixNum.get(1) + "] , [2, " + ((SuffixTree.Leaf)n).suffixNum.get(1) + "]");
-               else if (((SuffixTree.Leaf)n).suffixNum.keySet().contains(1))
-                  System.out.println("Child: " + "[1, " + ((SuffixTree.Leaf)n).suffixNum.get(1) + "]");
-               else if (((SuffixTree.Leaf)n).suffixNum.keySet().contains(2))
-                  System.out.println("Child: " + "[2, " + ((SuffixTree.Leaf)n).suffixNum.get(2) + "]");
-   */
                children.get(s).add((SuffixTree.Leaf)n);
             }
          }

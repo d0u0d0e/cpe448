@@ -225,7 +225,7 @@ public class SuffixTree {
          while(i < s.length() && i < child.label.length() && s.charAt(i) == child.label.charAt(i))
             i++;
 
-// i == position of mismatch
+         // i == position of mismatch
          if(i < child.label.length()) {
             System.out.println("no match found");
          }

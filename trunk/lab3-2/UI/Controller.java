@@ -9,6 +9,7 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -294,29 +295,8 @@ public class Controller {
             }
         }
     }
-
-    public void doCalculations(int start, int stop) throws java.io.FileNotFoundException {
-        ArrayList<Gene> geneList;
-        ArrayList<String> idList;
-        StringBuffer[] buf = new StringBuffer[6];
-        DNALib lib;
-        String seq;
-
-        if (setFilesInRange(start, stop) == -1) {
-            setMainWindowOutput("Invalid Range of files\n");
-            return;
-        }
-
-        for (int i = 0; i < buf.length;i++)
-            buf[i] = new StringBuffer();
-
-        for (int i = 0; i < fastaFiles.size(); i++) {
-            geneList = new ArrayList<Gene>();
-            idList = new ArrayList<String>();
-            seq = readFasta(new File(fastaFiles.get(i)));
-            readGFF(new File(gffFiles.get(i)), geneList, idList);
-
-            // Exons and Introns within Genes
+    public void createGeneList(String seq, ArrayList<Gene> geneList) {        
+        // Exons and Introns within Genes
 
             int min;
             int max;
@@ -383,6 +363,32 @@ public class Controller {
                     return a.start - b.start;
                 }
             });
+        
+    }
+
+    public void doCalculations(int start, int stop) throws java.io.FileNotFoundException {
+        ArrayList<Gene> geneList;
+        ArrayList<String> idList;
+        StringBuffer[] buf = new StringBuffer[6];
+        DNALib lib;
+        String seq;
+
+        if (setFilesInRange(start, stop) == -1) {
+            setMainWindowOutput("Invalid Range of files\n");
+            return;
+        }
+
+        for (int i = 0; i < buf.length;i++)
+            buf[i] = new StringBuffer();
+
+        for (int i = 0; i < fastaFiles.size(); i++) {
+            idList = new ArrayList<String>();
+            geneList = new ArrayList<Gene>();
+            seq = readFasta(new File(fastaFiles.get(i)));
+            readGFF(new File(gffFiles.get(i)), geneList, idList);
+
+            createGeneList(seq, geneList);
+            
 
 
             // Initialize DNA Libarary
@@ -515,6 +521,98 @@ public class Controller {
             System.err.println("ERROR: " + e.getMessage());
         }
         setMainWindowOutput("Merging complete.\n");
+    }
+    
+    public void findRepeats(int start, int stop, int minLeng, int maxLeng,
+            int kfold) throws java.io.FileNotFoundException {
+        ArrayList<Gene> geneList;
+        ArrayList<String> idList;
+        String seq;
+        Repeat r;
+        StringBuffer buf = new StringBuffer();
+        File fOut;
+
+        if (setFilesInRange(start, stop) == -1) {
+            setMainWindowOutput("Invalid Range of files\n");
+            return;
+        }
+
+        for (int i = 0; i < fastaFiles.size(); i++) {
+            idList = new ArrayList<String>();
+            geneList = new ArrayList<Gene>();
+            seq = readFasta(new File(fastaFiles.get(i)));
+            readGFF(new File(gffFiles.get(i)), geneList, idList);
+
+            createGeneList(seq, geneList);
+            r = new Repeat(seq, minLeng, maxLeng, kfold, geneList);
+            buf.append("Output for file " + fastaFiles.get(i) + "\n");
+            buf.append("Size, Repeats, Frequency, Expected Frequency, % More than Expected, Sequence, Average Distances, Standard Deviation, Distance to Nearest Gene\n");
+      for (Repeat.Unexpected ue : r.unexpected)
+      {
+         buf.append(String.format("%d, %f, %f, %f, %s, %f, %f, %f\n", ue.size, ue.freq, ue.expectedFreq, ue.percentFreq, ue.s, ue.selfAvgProximity, ue.selfStdProximity, ue.geneProximity));
+      }
+      buf.append("\n");
+        }
+        try {
+            FileWriter fstream;
+            BufferedWriter out;
+
+            // 2.2. GC-Content Regions
+            fstream = new FileWriter("Repeats" + FILE_EXTENSION);
+            out = new BufferedWriter(fstream);
+            
+            out.write(buf.toString());
+            out.close();
+        }
+        catch(Exception e) {
+            System.err.println(e);
+        }
+        setMainWindowOutput("\nDone. Output was written to Repeats.csv\n");
+
+    }
+    
+    public void findPalindromes(int start, int stop, int minLeng, int maxLeng,
+            int minGap, int maxGap) throws java.io.FileNotFoundException {
+        String seq;
+        Palindrome p;
+        StringBuffer buf = new StringBuffer();
+
+        if (setFilesInRange(start, stop) == -1) {
+            setMainWindowOutput("Invalid Range of files\n");
+            return;
+        }
+
+        for (int ndx = 0; ndx < fastaFiles.size(); ndx++) {
+            seq = readFasta(new File(fastaFiles.get(ndx)));
+            p = new Palindrome(seq, minLeng, maxLeng, minGap, maxGap);
+            
+            buf.append("Output for file " + fastaFiles.get(ndx) + "\n");
+            buf.append("Sequence, Reverse Complement of Sequence, Length, Gap, Location 1, Location 2\n"); 
+      for (String s : p.gapPalindromes)
+      {
+         for (int i = 0; i < p.gapLocations1.get(s).size(); i++)
+         {
+            buf.append(String.format("%s, %s, %d, %d, %d, %d\n", s, Palindrome.reverseComplement(s), s.length(), Math.abs(p.gapLocations1.get(s).get(i)-p.gapLocations2.get(s).get(i)) - s.length(), p.gapLocations1.get(s).get(i), p.gapLocations2.get(s).get(i)));   
+         }
+      }
+      buf.append("\n");
+        }
+        try {
+            FileWriter fstream;
+            BufferedWriter out;
+
+            // 2.2. GC-Content Regions
+            fstream = new FileWriter("Palindromes" + FILE_EXTENSION);
+            out = new BufferedWriter(fstream);
+            
+            out.write(buf.toString());
+            out.close();
+        }
+        catch(Exception e) {
+            System.err.println(e);
+        }
+        
+        setMainWindowOutput("\nDone. Output was written to Palindromes.csv\n");
     }
     
     public void setMainWindowOutput(String text) {

@@ -1,8 +1,7 @@
 UI= UI/*.java
 LIB= lib/*.java
 ALL= $(UI) \
-     $(LIB) \
-     *.java			
+     $(LIB) 
      
 CC=javac
 ENGINE=java
@@ -16,7 +15,7 @@ classes: $(ALL)
 	$(CC) $(JFLAGS) $^ 
 	@echo "------------------"
 
-run:
+run: classes
 	@echo "running..."
 	$(ENGINE) UI/BioGUI
 	@echo "finished running."
@@ -31,5 +30,4 @@ clean:
 	@echo "*** Cleaning Files..."
 	rm -f UI/*.class
 	rm -f lib/*.class
-	rm -f *.class
 	@echo "--------------------"

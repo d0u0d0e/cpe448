@@ -32,7 +32,7 @@ public class DNARepeatsDialog extends JDialog {
    /*
     * CONSTANTS
     */
-   private final int DIALOG_HEIGHT = 200, DIALOG_WIDTH = 500;
+   private final int DIALOG_HEIGHT = 270, DIALOG_WIDTH = 500;
 
    private Controller controller;
    /*
@@ -40,9 +40,11 @@ public class DNARepeatsDialog extends JDialog {
     */
    private Container mPane = null, mOwner = null;
    private JDialog mDialog = null;
-   private JTextField mFileRangeStart, mFileRangeEnd, mWindow, mSlide;
+   private JTextField mFileRangeStart, mFileRangeEnd, mMin, mMax, mFold, mMinGap, mMaxGap;
    private JComboBox mFileType;
    private String[] comboBoxOptions = {"Select one...", "Fosmid", "Contig"};
+   private JComboBox mMethodOptions;
+   private String[] mMethodStrings = {"Select one...", "Repeats", "Palindroms"};
 
    public DNARepeatsDialog(Controller controller) {
       super();
@@ -83,34 +85,39 @@ public class DNARepeatsDialog extends JDialog {
 
       mFileRangeStart = new JTextField(6);
       mFileRangeEnd = new JTextField(6);
-      mWindow = new JTextField(6);
-      mSlide = new JTextField(6);
+      mMin = new JTextField(6);
+      mMax = new JTextField(6);
+      mFold = new JTextField(6);
+      mMinGap = new JTextField(6);
+      mMaxGap = new JTextField(6);
+      mMethodOptions = new JComboBox(mMethodStrings);
       mFileType = new JComboBox(comboBoxOptions);
    }
 
+   public JTextField getMinGap(){return mMinGap;}
+   public JTextField getMaxGap(){return mMaxGap;}
+   public JTextField getFold(){return mFold;}
+   
    /**
     * Method for initializing a default Dialog window ready for GC Content
     * input
     */
    public void init() {
-      JLabel fileSelectionLb = new JLabel("Set file range and select file type:");
-      JPanel fileField = prepareInputDataField(mFileRangeStart, mFileRangeEnd, mFileType);
-      
-      JPanel windowField = prepareWindowSizeField("Window:", mWindow);
-      JPanel slideField = prepareWindowSizeField("Slide:", mSlide);
+      String fileInputInfo = "Set file range and select file type:";
+      String variablesInfo = "Enter the minimum and maximun repeats/palindroms to look for:";
+      JPanel fileField = prepareInputFilesField(mFileRangeStart, mFileRangeEnd, mFileType);
 
-      JPanel nucleotideRangeField = new JPanel();
-      nucleotideRangeField.setLayout(new FlowLayout(FlowLayout.LEADING));
-      nucleotideRangeField.add(windowField);
-      nucleotideRangeField.add(slideField);
+      JPanel inputVariables = prepareInputValuesField(mMin, "Min", mMax, "Max", null, true);
+      JPanel palindromValues = prepareInputValuesField(mMinGap, "Min Gap", mMaxGap, "Max Gap", mFold, false);
+      JPanel operationOptions = prepareOperationOptions(mMethodOptions);
       
-      //mPane.add(fileSelectionLb);
-      //mPane.add(fileField);
-
-      //mPane.add(nucleotideRangeField);
-      
+      mPane.add(prepareStandAloneLabel(fileInputInfo));
+      mPane.add(fileField);
+      mPane.add(prepareStandAloneLabel(variablesInfo));
+      mPane.add(inputVariables);
+      mPane.add(operationOptions);
+      mPane.add(palindromValues);
       mPane.add(initControls());
-
       mPane.validate();
    }
 
@@ -118,7 +125,7 @@ public class DNARepeatsDialog extends JDialog {
     * Convenience method for constructing a JPanel that contains the JTextField
     * and file browse button used for selecting a file.
     */
-   private JPanel prepareInputDataField(JTextField start, JTextField end, JComboBox options) {
+   private JPanel prepareInputFilesField(JTextField start, JTextField end, JComboBox options) {
       JPanel dataFileField = new JPanel();
 
       dataFileField.setLayout(new FlowLayout(FlowLayout.LEADING));
@@ -140,15 +147,63 @@ public class DNARepeatsDialog extends JDialog {
     * parameters. This is abstracted so that it may be called
     * for both the window and the slide text fields.
     */
-   private JPanel prepareWindowSizeField(String labelPrefix, JTextField windowSize) {
-      JPanel windowSizePanel = new JPanel();
+   private JPanel prepareInputValuesField(JTextField minLength, String minLabel,
+           JTextField maxLength, String maxLabel, JTextField kFold, boolean enabled) {
+      JPanel aPanel = new JPanel();
 
-      windowSizePanel.setLayout(new FlowLayout());
+      aPanel.setLayout(new FlowLayout(FlowLayout.LEADING));
 
-      windowSizePanel.add(new JLabel(labelPrefix));
-      windowSizePanel.add(windowSize);
-
-      return windowSizePanel;
+      aPanel.add(new JLabel(minLabel));
+      aPanel.add(minLength);
+      aPanel.add(new JLabel(maxLabel));
+      aPanel.add(maxLength);
+      if(!enabled){
+          minLength.setEnabled(false);
+          maxLength.setEnabled(false);
+          kFold.setEnabled(false);
+          aPanel.add(new JLabel("Fold"));
+          aPanel.add(kFold);
+      }
+      
+      return aPanel;
+   }
+   
+   private JPanel prepareOperationOptions(JComboBox options) {
+       JPanel opField = new JPanel();
+       options.addActionListener(new ActionListener(){
+           public void actionPerformed(ActionEvent e) {
+               JComboBox cb = (JComboBox)e.getSource();
+               int i = cb.getSelectedIndex();
+               if (i == 2) {
+                   mMinGap.setEnabled(true);
+                   mMaxGap.setEnabled(true);
+                   mFold.setEnabled(false);
+               } else if (i == 1) {
+                   mMinGap.setEnabled(false);
+                   mMaxGap.setEnabled(false);
+                   mFold.setEnabled(true);
+               } else {
+                   mMinGap.setEnabled(false);
+                   mMaxGap.setEnabled(false);
+                   mFold.setEnabled(false);
+               }
+           }
+       });
+       opField.setLayout(new FlowLayout(FlowLayout.LEADING));
+       opField.add(new JLabel("Find"));
+       opField.add(options);
+       
+       return opField;
+   }
+   
+   private JPanel prepareStandAloneLabel(String s) {
+       JPanel holder = new JPanel();
+       
+       holder.setLayout(new FlowLayout(FlowLayout.LEADING));
+       
+       holder.add(new JLabel(s));
+       
+       return holder;
    }
 
    /**
@@ -189,19 +244,46 @@ public class DNARepeatsDialog extends JDialog {
                 "Invalid File", JOptionPane.ERROR_MESSAGE);
                return;
             }
+            if (mMin.getText().equals("") || mMax.getText().equals("") || mMethodOptions.getSelectedIndex() == 0) {
+                JOptionPane.showMessageDialog(mOwner,
+                "Min or max repeat/palindrom length not set, or Operation not selected.",
+                "Invalid input", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
             if (mFileType.getSelectedIndex() == 2)
                 controller.setContig(true);
             else
                 controller.setContig(false);
             
-            if (!mWindow.getText().equals(""))
-                controller.setWindow(Integer.parseInt(mWindow.getText()));
-            if (!mSlide.getText().equals(""))
-                controller.setSlide(Integer.parseInt(mSlide.getText()));
             try {
-                controller.setMainWindowOutput("Calculating...\n");
-                controller.doCalculations(Integer.valueOf(mFileRangeStart.getText()),
-                        Integer.valueOf(mFileRangeEnd.getText()));
+            if(mMethodOptions.getSelectedIndex() == 1){
+                if (mFold.getText().equals("")) {
+                    JOptionPane.showMessageDialog(mOwner,
+                    "\'Fold\' field not set.",
+                    "Invalid input", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                controller.setMainWindowOutput("Searching for Repeats...");
+                controller.findRepeats(Integer.valueOf(mFileRangeStart.getText()),
+                        Integer.valueOf(mFileRangeEnd.getText()),
+                        Integer.valueOf(mMin.getText()),
+                        Integer.valueOf(mMax.getText()),
+                        Integer.valueOf(mFold.getText()));
+            } else if (mMethodOptions.getSelectedIndex() == 2) {
+                if (mMinGap.getText().equals("") || mMaxGap.getText().equals("")) {
+                    JOptionPane.showMessageDialog(mOwner,
+                    "Min of max gap not set.",
+                    "Invalid input", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                controller.setMainWindowOutput("Searching for Palindormes...");
+                controller.findPalindromes(Integer.valueOf(mFileRangeStart.getText()),
+                        Integer.valueOf(mFileRangeEnd.getText()),
+                        Integer.valueOf(mMin.getText()),
+                        Integer.valueOf(mMax.getText()),
+                        Integer.valueOf(mMinGap.getText()),
+                        Integer.valueOf(mMaxGap.getText()));
+            }
             } catch (FileNotFoundException ex) {
                 Logger.getLogger(InputFilesDialog.class.getName()).log(Level.SEVERE, null, ex);
             }

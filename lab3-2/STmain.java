@@ -222,14 +222,14 @@ public class STmain
 
       System.out.println("\nPalindromes:");
       //Palindrome pal = new Palindrome("AAAGGACCGCTACAGTAACCCCCCGGGGGGATTTATATATATTATTTTGGCCTTT", 2, 12, 0, 5);
-      Palindrome pal = new Palindrome("AAATTT", 1, 10, 0, 10);
-      //Palindrome pal = new Palindrome(seq, 1, 10, 0, 10);
+      //Palindrome pal = new Palindrome("AAATTT", 1, 10, 0, 10);
+      Palindrome pal = new Palindrome(seq, 15, 30, 20, 50);
       System.out.println("Sequence, Reverse Complement of Sequence, Length, Gap, Location 1, Location 2"); 
       for (String s : pal.gapPalindromes)
       {
          for (int i = 0; i < pal.gapLocations1.get(s).size(); i++)
          {
-            System.out.printf("%s, %s, %d, %d, %d, %d\n", s, Palindrome.reverseComplement(s), s.length(), Math.abs(pal.gapLocations1.get(s).get(i)-pal.gapLocations2.get(s).get(i)), pal.gapLocations1.get(s).get(i), pal.gapLocations2.get(s).get(i));   
+            System.out.printf("%s, %s, %d, %d, %d, %d\n", s, Palindrome.reverseComplement(s), s.length(), Math.abs(pal.gapLocations1.get(s).get(i)-pal.gapLocations2.get(s).get(i)) - s.length(), pal.gapLocations1.get(s).get(i), pal.gapLocations2.get(s).get(i));   
          }
       }
    }

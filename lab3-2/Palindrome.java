@@ -28,9 +28,9 @@ public class Palindrome
 
       // create tree
       this.tree = new SuffixTree();
-      System.out.println("Adding: " + seq);
+      //System.out.println("Adding: " + seq);
       this.tree.addString(seq);
-      System.out.println("Adding: " + reverseComplement(seq));
+      //System.out.println("Adding: " + reverseComplement(seq));
       this.tree.addString(reverseComplement(seq));
       
       for (int i = 0; i < seq.length(); i++)
@@ -73,8 +73,12 @@ public class Palindrome
                         locations1.put(s, new ArrayList<Integer>());
                         locations2.put(s, new ArrayList<Integer>());
                      }
-                     locations1.get(s).add(suffixNum1.get(1));
-                     locations2.get(s).add(suffixNum2.get(2));
+                     if (!(locations1.get(s).contains(suffixNum1.get(1))
+                          && locations1.get(s).contains(suffixNum1.get(2)))) 
+                     {
+                        locations1.get(s).add(suffixNum1.get(1));
+                        locations2.get(s).add(total-suffixNum2.get(2));
+                     }
                   }
                }
                for (int k = 0; k < keys1.size(); k++)
@@ -88,8 +92,12 @@ public class Palindrome
                            locations1.put(s, new ArrayList<Integer>());
                            locations2.put(s, new ArrayList<Integer>());
                         }
-                        locations1.get(s).add(suffixNum1.get(keys1.get(k)));
-                        locations2.get(s).add(total - suffixNum2.get(keys2.get(l)));
+                        if (!(locations1.get(s).contains(suffixNum1.get(keys1.get(k)))
+                             && locations1.get(s).contains(suffixNum1.get(keys1.get(k))))) 
+                        {
+                           locations1.get(s).add(suffixNum1.get(keys1.get(k)));
+                           locations2.get(s).add(total - suffixNum2.get(keys2.get(l)));
+                        }
                      }
                   }
                }
@@ -111,7 +119,7 @@ public class Palindrome
       {
          for (int i = 0; i < locations1.get(s).size(); i++)
          {
-            int gap = Math.abs(locations1.get(s).get(i) - locations2.get(s).get(i));
+            int gap = Math.abs(locations1.get(s).get(i) - locations2.get(s).get(i)) - s.length();
             if (gap >= minGap && gap <= maxGap)
             {
                if (!(gapLocations1.keySet().contains(s)))
@@ -153,67 +161,23 @@ public class Palindrome
          }
          else
          {
-         /*   if (((SuffixTree.Leaf)n).suffixNum.keySet().contains(1) 
-                && ((SuffixTree.Leaf)n).suffixNum.keySet().contains(2))
-               System.out.println("Child: " + "[1, " + ((SuffixTree.Leaf)n).suffixNum.get(1) + "] , [2, " + ((SuffixTree.Leaf)n).suffixNum.get(1) + "]");
-            else if (((SuffixTree.Leaf)n).suffixNum.keySet().contains(1))
-               System.out.println("Child: " + "[1, " + ((SuffixTree.Leaf)n).suffixNum.get(1) + "]");
-            else if (((SuffixTree.Leaf)n).suffixNum.keySet().contains(2))
-               System.out.println("Child: " + "[2, " + ((SuffixTree.Leaf)n).suffixNum.get(2) + "]");
-           */ 
             if (!children.keySet().contains(s))
             {
                children.put(s, new ArrayList<SuffixTree.Leaf>());
                palindromes.add(s);
             }
-            children.get(s).add((SuffixTree.Leaf)n);
-            /*
-            for (SuffixTree.node m : root.children.values())
+            if (!children.get(s).contains((SuffixTree.Leaf)n))
             {
-               if (m instanceof SuffixTree.Leaf)
-               {
-                  HashMap<Integer, Integer> suffixNum1 = ((SuffixTree.Leaf)n).suffixNum;
-                  HashMap<Integer, Integer> suffixNum2 = ((SuffixTree.Leaf)m).suffixNum;
-                  ArrayList<Integer> keys1 = new ArrayList<Integer>(Arrays.asList(suffixNum1.keySet().toArray(new Integer[0])));
-                  ArrayList<Integer> keys2 = new ArrayList<Integer>(Arrays.asList(suffixNum2.keySet().toArray(new Integer[0])));
-                  
-                  if (m == n)
-                  {
-                     // perfect palindromes
-                     if (keys1.size() == 2)
-                     {
-                        if (!(locations1.keySet().contains(s)))
-                        {
-                           locations1.put(s, new ArrayList<Integer>());
-                           locations2.put(s, new ArrayList<Integer>());
-                           palindromes.add(s);
-                        }
-                        locations1.get(s).add(((SuffixTree.Leaf)n).suffixNum.get(1));
-                        locations2.get(s).add(((SuffixTree.Leaf)n).suffixNum.get(2));
-                     }
-                  }
-                  else
-                  {
-                     for (int i = 0; i < keys1.size(); i++)
-                     {
-                        for (int j = 0; j < keys2.size(); j++)
-                        {
-                           if (keys1.get(i) != keys2.get(j))
-                           {
-                              if (!(locations1.keySet().contains(s)))
-                              {
-                                 locations1.put(s, new ArrayList<Integer>());
-                                 locations2.put(s, new ArrayList<Integer>());
-                                 palindromes.add(s);
-                              }
-                              locations1.get(s).add(suffixNum1.get(keys1.get(i)));
-                              locations2.get(s).add(total - suffixNum2.get(keys2.get(j)));
-                           }
-                        }
-                     }
-                  }
-               }
-            }*/
+   /*            if (((SuffixTree.Leaf)n).suffixNum.keySet().contains(1) 
+                   && ((SuffixTree.Leaf)n).suffixNum.keySet().contains(2))
+                  System.out.println("Child: " + "[1, " + ((SuffixTree.Leaf)n).suffixNum.get(1) + "] , [2, " + ((SuffixTree.Leaf)n).suffixNum.get(1) + "]");
+               else if (((SuffixTree.Leaf)n).suffixNum.keySet().contains(1))
+                  System.out.println("Child: " + "[1, " + ((SuffixTree.Leaf)n).suffixNum.get(1) + "]");
+               else if (((SuffixTree.Leaf)n).suffixNum.keySet().contains(2))
+                  System.out.println("Child: " + "[2, " + ((SuffixTree.Leaf)n).suffixNum.get(2) + "]");
+   */
+               children.get(s).add((SuffixTree.Leaf)n);
+            }
          }
       }
       return;

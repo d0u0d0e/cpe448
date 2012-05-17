@@ -96,7 +96,7 @@ public class Combine
             stop--;
          }
 
-         for (int i = start-20; i < stop-20; i++)
+         for (int i = start-20; i <= stop-20; i++)
          {
             fastaFiles.add(fastaFilesAll.get(i));
             gffFiles.add(gffFilesAll.get(i));
@@ -161,7 +161,7 @@ public class Combine
          gffFilesAll.add("gff/derecta_3Lcontrol_fosmid41a.gff");
          gffFilesAll.add("gff/derecta_3Lcontrol_fosmid42a.gff");
 
-         for (int i = start-22; i < stop-22; i++)
+         for (int i = start-22; i <= stop-22; i++)
          {
             fastaFiles.add(fastaFilesAll.get(i));
             gffFiles.add(gffFilesAll.get(i));
@@ -206,7 +206,10 @@ public class Combine
          // find largest overlap
          offset = BioOverlap.getOffset(superFASTA, fasta2, minMatch);
          overlap = superFASTA.length() - offset;
-
+         if (offset != -1)
+            System.out.println(fastaFiles.get(i+1) + ": found overlap");
+         else
+            System.out.println(fastaFiles.get(i+1) + ": no overlap");
          // overlap found
          if (offset != -1)
          {
@@ -220,8 +223,8 @@ public class Combine
                Isoform iso = superGFF.get(j);
 
                // isoform within overlapping region
-               if (iso.mRNA.get(6).charAt(0) == '+' && Integer.parseInt(iso.mRNA.get(3)) >= overlap ||
-                   iso.mRNA.get(6).charAt(0) == '-' && Integer.parseInt(iso.mRNA.get(4)) >= overlap)
+               if ((iso.mRNA.get(6).charAt(0) == '+' && Integer.parseInt(iso.mRNA.get(3)) >= overlap) ||
+                   (iso.mRNA.get(6).charAt(0) == '-' && Integer.parseInt(iso.mRNA.get(4)) >= overlap) )
                {
                   // matching isoform found between files
                   if ((idx = findIsoform(iso, gff2)) != -1)
@@ -240,8 +243,8 @@ public class Combine
                               varCount++;
                            }
                            bp += difference(found.CDS.get(k), iso.CDS.get(k));
-                           outVar.write(iso.CDS.get(k).get(11) + ", " + iso.CDS.get(k).get(0) + ", " + iso.CDS.get(k).get(3) + ", " + iso.CDS.get(k).get(4) + "\n");
-                           outVar.write(found.CDS.get(k).get(11) + ", " + found.CDS.get(k).get(0) + ", " + found.CDS.get(k).get(3) + ", " + found.CDS.get(k).get(4) + "\n\n");
+                           outVar.write(iso.CDS.get(k).get(11) + ", CDS, " + iso.CDS.get(k).get(0) + ", " + iso.CDS.get(k).get(3) + ", " + iso.CDS.get(k).get(4) + "\n");
+                           outVar.write(found.CDS.get(k).get(11) + ", CDS, " + found.CDS.get(k).get(0) + ", " + found.CDS.get(k).get(3) + ", " + found.CDS.get(k).get(4) + "\n\n");
                            if (isHigher(found.CDS.get(k), iso.CDS.get(k)))
                            {
                               iso.CDS.set(k, found.CDS.get(k));
@@ -251,17 +254,37 @@ public class Combine
                      // variations: missing CDS
                      for (int x = k; x < iso.CDS.size(); x++)
                      {
-                        outVar.write(iso.CDS.get(x).get(11) + ", " + iso.CDS.get(x).get(0) + ", " + iso.CDS.get(x).get(3) + ", " + iso.CDS.get(x).get(4) + "\n");
-                        outVar.write(found.CDS.get(0).get(11) + ", missing, missing, missing\n\n");
+                        outVar.write(iso.CDS.get(x).get(11) + ", CDS, " + iso.CDS.get(x).get(0) + ", " + iso.CDS.get(x).get(3) + ", " + iso.CDS.get(x).get(4) + "\n");
+                        outVar.write(found.CDS.get(0).get(11) + ", CDS, " + gffFiles.get(i+1) + " missing, missing\n\n");
+                        if (!(vars.containsKey(iso.CDS.get(x).get(11))))
+                        {
+                           vars.put(iso.CDS.get(x).get(11), 1);
+                           varCount++;
+                        }
                      }          
                      for (int x = k; x < found.CDS.size(); x++)
                      {  
                         iso.CDS.add(found.CDS.get(x));
-                        outVar.write(found.CDS.get(x).get(11) + ", " + found.CDS.get(x).get(0) + ", " + found.CDS.get(x).get(3) + ", " + found.CDS.get(x).get(4) + "\n");
-                        outVar.write(iso.CDS.get(0).get(11) + ", missing, missing, missing\n\n");
+                        outVar.write(iso.CDS.get(0).get(11) + ", CDS, " + gffFiles.get(i)  + ",  missing, missing\n\n");
+                        outVar.write(found.CDS.get(x).get(11) + ", CDS, " + found.CDS.get(x).get(0) + ", " + found.CDS.get(x).get(3) + ", " + found.CDS.get(x).get(4) + "\n");
+                        if (!(vars.containsKey(found.CDS.get(x).get(11))))
+                        {
+                           vars.put(found.CDS.get(x).get(11), 1);
+                           varCount++;
+                        }
                      }
 
                      gff2.remove(found);
+                  }
+                  else
+                  {
+                     outVar.write(iso.mRNA.get(11) + ", mRNA, " + iso.mRNA.get(0) + ", " + iso.mRNA.get(3) + ", " + iso.mRNA.get(4) + "\n");
+                     outVar.write(iso.mRNA.get(11) + ", mRNA, " + gffFiles.get(i+1) + ", missing, missing\n\n");
+                     if (!(vars.containsKey(iso.mRNA.get(11))))
+                     {
+                        vars.put(iso.mRNA.get(11), 1);
+                        varCount++;
+                     }
                   }
                }
             }

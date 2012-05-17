@@ -32,9 +32,10 @@ public class DNARepeatsDialog extends JDialog {
    /*
     * CONSTANTS
     */
-   private final int DIALOG_HEIGHT = 270, DIALOG_WIDTH = 500;
+   private final int DIALOG_HEIGHT = 300, DIALOG_WIDTH = 500;
 
    private Controller controller;
+   private File[] fastaFiles, gffFiles;
    /*
     * GUI Components
     */
@@ -83,8 +84,8 @@ public class DNARepeatsDialog extends JDialog {
 
       setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 
-      mFileRangeStart = new JTextField(6);
-      mFileRangeEnd = new JTextField(6);
+      mFileRangeStart = new JTextField(20);
+      mFileRangeEnd = new JTextField(20);
       mMin = new JTextField(6);
       mMax = new JTextField(6);
       mFold = new JTextField(6);
@@ -105,14 +106,16 @@ public class DNARepeatsDialog extends JDialog {
    public void init() {
       String fileInputInfo = "Set file range and select file type:";
       String variablesInfo = "Enter the minimum and maximun repeats/palindroms to look for:";
-      JPanel fileField = prepareInputFilesField(mFileRangeStart, mFileRangeEnd, mFileType);
+      //JPanel fileField = prepareInputFilesField(mFileRangeStart, mFileRangeEnd, mFileType);
 
       JPanel inputVariables = prepareInputValuesField(mMin, "Min", mMax, "Max", null, true);
       JPanel palindromValues = prepareInputValuesField(mMinGap, "Min Gap", mMaxGap, "Max Gap", mFold, false);
       JPanel operationOptions = prepareOperationOptions(mMethodOptions);
       
       mPane.add(prepareStandAloneLabel(fileInputInfo));
-      mPane.add(fileField);
+      //mPane.add(fileField);
+      mPane.add(prepareInputFilesField(mFileRangeStart, "FASTA", true));
+      mPane.add(prepareInputFilesField(mFileRangeEnd, "GFF", false));
       mPane.add(prepareStandAloneLabel(variablesInfo));
       mPane.add(inputVariables);
       mPane.add(operationOptions);
@@ -140,7 +143,59 @@ public class DNARepeatsDialog extends JDialog {
 
       return dataFileField;
    }
+   
+   /**
+    * Convenience method for constructing a JPanel that contains the JTextField
+    * and file browse button used for selecting a file.
+    */
+   private JPanel prepareInputFilesField(JTextField fileField, String fieldName, boolean fasta) {
+      JPanel dataFileField = new JPanel();
 
+      dataFileField.setLayout(new FlowLayout(FlowLayout.LEADING));
+      
+      dataFileField.add(new JLabel(fieldName));
+      dataFileField.add(fileField);
+      dataFileField.add(prepareBrowseButton(fileField, fasta));
+
+      return dataFileField;
+   }
+
+   /**
+    * Convenience method for creating a file browse button. This is abstracted
+    * so that it is not necessarily associated with the fasta file field.
+    */
+   private JButton prepareBrowseButton(final JTextField fastaField, final boolean fasta) {
+      JButton fileBrowse = new JButton("Browse");
+
+      fileBrowse.addActionListener(new ActionListener() {
+
+         public void actionPerformed(ActionEvent e) {
+            JFileChooser chooser = new JFileChooser();
+            chooser.setMultiSelectionEnabled(true);
+            int returnVal = chooser.showOpenDialog(chooser);
+            
+            if (returnVal == JFileChooser.CANCEL_OPTION) {
+               System.out.println("cancelled");
+            }
+
+            else if (returnVal == JFileChooser.APPROVE_OPTION) {
+               File[] files = chooser.getSelectedFiles();
+               if (fasta)
+                   fastaFiles = files;
+               else
+                   gffFiles = files;
+               fastaField.setText(files.length + " files selected.");
+            }
+
+            else {
+               System.out.println("Encountered Unknown Error");
+               System.exit(0);
+            }
+         }
+      });
+
+      return fileBrowse;
+   }
    
     /**
     * Convenience method for creating JTextFields for the window size and slide
@@ -225,6 +280,7 @@ public class DNARepeatsDialog extends JDialog {
 
       return dialogControls;
    }
+   
 
    /**
     * Convenience method for creating the okay button at the bottom of the
@@ -237,10 +293,9 @@ public class DNARepeatsDialog extends JDialog {
 
       okayButton.addActionListener(new ActionListener(){
          public void actionPerformed(ActionEvent e) {
-            if (mFileRangeStart.getText().equals("") || mFileRangeEnd.getText().equals("")
-                    || mFileType.getSelectedIndex() == 0) {
+            if (fastaFiles == null || gffFiles == null) {
                JOptionPane.showMessageDialog(mOwner,
-                "No Range was given, or file type not set.",
+                "No FASTA or GFF files selected.",
                 "Invalid File", JOptionPane.ERROR_MESSAGE);
                return;
             }
@@ -250,11 +305,8 @@ public class DNARepeatsDialog extends JDialog {
                 "Invalid input", JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            if (mFileType.getSelectedIndex() == 2)
-                controller.setContig(true);
-            else
-                controller.setContig(false);
-            
+            controller.setFastaFile(fastaFiles);
+            controller.setGffFile(gffFiles);
             try {
             if(mMethodOptions.getSelectedIndex() == 1){
                 if (mFold.getText().equals("")) {
@@ -264,8 +316,7 @@ public class DNARepeatsDialog extends JDialog {
                     return;
                 }
                 controller.setMainWindowOutput("Searching for Repeats...");
-                controller.findRepeats(Integer.valueOf(mFileRangeStart.getText()),
-                        Integer.valueOf(mFileRangeEnd.getText()),
+                controller.findRepeats(
                         Integer.valueOf(mMin.getText()),
                         Integer.valueOf(mMax.getText()),
                         Integer.valueOf(mFold.getText()));
@@ -277,8 +328,7 @@ public class DNARepeatsDialog extends JDialog {
                     return;
                 }
                 controller.setMainWindowOutput("Searching for Palindormes...");
-                controller.findPalindromes(Integer.valueOf(mFileRangeStart.getText()),
-                        Integer.valueOf(mFileRangeEnd.getText()),
+                controller.findPalindromes(
                         Integer.valueOf(mMin.getText()),
                         Integer.valueOf(mMax.getText()),
                         Integer.valueOf(mMinGap.getText()),

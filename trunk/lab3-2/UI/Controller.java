@@ -26,8 +26,8 @@ public class Controller {
 
     private static final String FILE_EXTENSION = ".csv";
     private MainWindow gui;
-    private File fastaFile;
-    private File gffFile;
+    private File[] fastaFileArr;
+    private File[] gffFileArr;
     private int window;
     private int slide;
     private boolean contig;
@@ -183,12 +183,12 @@ public class Controller {
         this.contig = contig;
     }
 
-    public void setFastaFile(String fastaFileName) {
-        this.fastaFile = new File(fastaFileName);
+    public void setFastaFile(File[] fastaFiles) {
+        this.fastaFileArr = fastaFiles;
     }
 
-    public void setGffFile(String gffFileName) {
-        this.gffFile = new File(gffFileName);
+    public void setGffFile(File[] gffFiles) {
+        this.gffFileArr = gffFiles;
     }
 
     public void setWindow(int window) {
@@ -366,26 +366,21 @@ public class Controller {
         
     }
 
-    public void doCalculations(int start, int stop) throws java.io.FileNotFoundException {
+    public void doCalculations() throws java.io.FileNotFoundException {
         ArrayList<Gene> geneList;
         ArrayList<String> idList;
         StringBuffer[] buf = new StringBuffer[6];
         DNALib lib;
         String seq;
 
-        if (setFilesInRange(start, stop) == -1) {
-            setMainWindowOutput("Invalid Range of files\n");
-            return;
-        }
-
         for (int i = 0; i < buf.length;i++)
             buf[i] = new StringBuffer();
 
-        for (int i = 0; i < fastaFiles.size(); i++) {
+        for (int i = 0; i < fastaFileArr.length; i++) {
             idList = new ArrayList<String>();
             geneList = new ArrayList<Gene>();
-            seq = readFasta(new File(fastaFiles.get(i)));
-            readGFF(new File(gffFiles.get(i)), geneList, idList);
+            seq = readFasta(fastaFileArr[i]);
+            readGFF(gffFileArr[i], geneList, idList);
 
             createGeneList(seq, geneList);
             
@@ -400,22 +395,22 @@ public class Controller {
             //System.out.println("GC-content: " + lib.GCContent(start, stop));
             //System.out.println("Complement: " + lib.complement(start, stop));
             //System.out.println("Reverse: " + lib.reverse(start, stop));
-            buf[0].append("\nResults for file: " + fastaFiles.get(i) + "\n");
+            buf[0].append("\nResults for file: " + fastaFileArr[i].getName() + "\n");
             buf[0].append(lib.overlap(window, slide));
             buf[0].append("\n");
-            buf[1].append("\nResults for file: " + fastaFiles.get(i) + "\n");
+            buf[1].append("\nResults for file: " + fastaFileArr[i].getName() + "\n");
             buf[1].append(lib.nonoverlap(window));
             buf[1].append("\n");
-            buf[2].append("\nResults for file: " + fastaFiles.get(i) + "\n");
+            buf[2].append("\nResults for file: " + fastaFileArr[i].getName() + "\n");
             buf[2].append(lib.geneDensity());
             buf[2].append("\n");
-            buf[3].append("\nResults for file: " + fastaFiles.get(i) + "\n");
+            buf[3].append("\nResults for file: " + fastaFileArr[i].getName() + "\n");
             buf[3].append(lib.geneGC());
             buf[3].append("\n");
-            buf[4].append("\nResults for file: " + fastaFiles.get(i) + "\n");
+            buf[4].append("\nResults for file: " + fastaFileArr[i].getName() + "\n");
             buf[4].append(lib.geneSize());
             buf[4].append("\n");
-            buf[5].append("\nResults for file: " + fastaFiles.get(i) + "\n");
+            buf[5].append("\nResults for file: " + fastaFileArr[i].getName() + "\n");
             buf[5].append(lib.codonFrequency());
             buf[5].append("\n");
             lib.getError();
@@ -507,15 +502,11 @@ public class Controller {
                 end, lib.GCContent(start, end)));
     }
 
-    public void combineFiles(int start, int stop) {
-        if (setFilesInRange(start, stop) == -1) {
-            setMainWindowOutput("Invalid Range of files\n");
-            return;
-        }
-        setMainWindowOutput("Merging "+ (contig ?"contig":"fosmid") +" files " + start + " to " + stop + "...\n");
+    public void combineFiles() {
+        setMainWindowOutput("Merging files...\n");
         Combine c = new Combine();
         try {
-            c.combineFiles(fastaFiles, gffFiles);
+            c.combineFiles(fastaFileArr, gffFileArr);
         }
         catch (Exception e) {
             System.err.println("ERROR: " + e.getMessage());
@@ -523,29 +514,28 @@ public class Controller {
         setMainWindowOutput("Merging complete.\n");
     }
     
-    public void findRepeats(int start, int stop, int minLeng, int maxLeng,
+    public void findRepeats(int minLeng, int maxLeng,
             int kfold) throws java.io.FileNotFoundException {
         ArrayList<Gene> geneList;
         ArrayList<String> idList;
         String seq;
         Repeat r;
         StringBuffer buf = new StringBuffer();
-        File fOut;
-
+/*
         if (setFilesInRange(start, stop) == -1) {
             setMainWindowOutput("Invalid Range of files\n");
             return;
         }
-
-        for (int i = 0; i < fastaFiles.size(); i++) {
+*/
+        for (int i = 0; i < fastaFileArr.length; i++) {
             idList = new ArrayList<String>();
             geneList = new ArrayList<Gene>();
-            seq = readFasta(new File(fastaFiles.get(i)));
-            readGFF(new File(gffFiles.get(i)), geneList, idList);
+            seq = readFasta(fastaFileArr[i]);
+            readGFF(gffFileArr[i], geneList, idList);
 
             createGeneList(seq, geneList);
             r = new Repeat(seq, minLeng, maxLeng, kfold, geneList);
-            buf.append("Output for file " + fastaFiles.get(i) + "\n");
+            buf.append("Output for file " + fastaFileArr[i].getName() + "\n");
             buf.append("Size, Repeats, Frequency, Expected Frequency, % More than Expected, Sequence, Average Distances, Standard Deviation, Distance to Nearest Gene\n");
       for (Repeat.Unexpected ue : r.unexpected)
       {
@@ -571,22 +561,22 @@ public class Controller {
 
     }
     
-    public void findPalindromes(int start, int stop, int minLeng, int maxLeng,
+    public void findPalindromes(int minLeng, int maxLeng,
             int minGap, int maxGap) throws java.io.FileNotFoundException {
         String seq;
         Palindrome p;
         StringBuffer buf = new StringBuffer();
-
+/*
         if (setFilesInRange(start, stop) == -1) {
             setMainWindowOutput("Invalid Range of files\n");
             return;
         }
-
-        for (int ndx = 0; ndx < fastaFiles.size(); ndx++) {
-            seq = readFasta(new File(fastaFiles.get(ndx)));
+*/
+        for (int ndx = 0; ndx < fastaFileArr.length; ndx++) {
+            seq = readFasta(fastaFileArr[ndx]);
             p = new Palindrome(seq, minLeng, maxLeng, minGap, maxGap);
             
-            buf.append("Output for file " + fastaFiles.get(ndx) + "\n");
+            buf.append("Output for file " + fastaFileArr[ndx].getName() + "\n");
             buf.append("Sequence, Reverse Complement of Sequence, Length, Gap, Location 1, Location 2\n"); 
       for (String s : p.gapPalindromes)
       {

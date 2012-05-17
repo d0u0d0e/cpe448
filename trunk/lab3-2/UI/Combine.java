@@ -1,8 +1,4 @@
 package UI;
-
-import lib.Isoform;
-import lib.BioOverlap;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
@@ -12,13 +8,16 @@ import java.util.ArrayList;
 import java.lang.Math;
 import java.util.Comparator;
 import java.util.Collections;
+import lib.BioOverlap;
+import lib.Isoform;
 
 public class Combine
 {
-   public Combine() {
+   public Combine () {
        
    }
-   public static void combineFiles(ArrayList<String> fastaFiles, ArrayList<String> gffFiles) throws IOException
+           
+   public void combineFiles(File[] fastaFiles, File[] gffFiles) throws IOException
    {
       ArrayList<String> fasta = new ArrayList<String>();
       ArrayList<ArrayList<Isoform>> gff = new ArrayList<ArrayList<Isoform>>();
@@ -31,11 +30,11 @@ public class Combine
       int offset = -1, overlap = -1, split = 1;
 
       // parse files
-      for (int i = 0; i < fastaFiles.size(); i++)
+      for (int i = 0; i < fastaFiles.length; i++)
       {
-         String s = parseFASTA(fastaFiles.get(i));
+         String s = parseFASTA(fastaFiles[i]);
          fasta.add(s);
-         gff.add(parseGFF(gffFiles.get(i)));   
+         gff.add(parseGFF(gffFiles[i]));   
       }
       
       // combine files
@@ -60,7 +59,10 @@ public class Combine
          // find largest overlap
          offset = BioOverlap.getOffset(superFASTA, fasta2, minMatch);
          overlap = superFASTA.length() - offset;
-
+         if (offset != -1)
+            System.out.println(fastaFiles[i+1].getName() + ": found overlap");
+         else
+            System.out.println(fastaFiles[i+1].getName() + ": no overlap");
          // overlap found
          if (offset != -1)
          {
@@ -74,8 +76,8 @@ public class Combine
                Isoform iso = superGFF.get(j);
 
                // isoform within overlapping region
-               if (iso.mRNA.get(6).charAt(0) == '+' && Integer.parseInt(iso.mRNA.get(3)) >= overlap ||
-                   iso.mRNA.get(6).charAt(0) == '-' && Integer.parseInt(iso.mRNA.get(4)) >= overlap)
+               if ((iso.mRNA.get(6).charAt(0) == '+' && Integer.parseInt(iso.mRNA.get(3)) >= overlap) ||
+                   (iso.mRNA.get(6).charAt(0) == '-' && Integer.parseInt(iso.mRNA.get(4)) >= overlap) )
                {
                   // matching isoform found between files
                   if ((idx = findIsoform(iso, gff2)) != -1)
@@ -88,34 +90,54 @@ public class Combine
                         // variations: different CDS values
                         if (difference(found.CDS.get(k), iso.CDS.get(k)) != 0)
                         {
-                           if (isHigher(found.CDS.get(k), iso.CDS.get(k)))
-                           {
-                              iso.CDS.set(k, found.CDS.get(k));
-                           }
                            if (!(vars.containsKey(iso.CDS.get(k).get(11))))
                            {
                               vars.put(iso.CDS.get(k).get(11), 1);
                               varCount++;
                            }
                            bp += difference(found.CDS.get(k), iso.CDS.get(k));
-                           outVar.write(iso.CDS.get(k).get(11) + ", " + iso.CDS.get(k).get(0) + ", " + iso.CDS.get(k).get(3) + ", " + iso.CDS.get(k).get(4) + "\n");
-                           outVar.write(found.CDS.get(k).get(11) + ", " + found.CDS.get(k).get(0) + ", " + found.CDS.get(k).get(3) + ", " + found.CDS.get(k).get(4) + "\n\n");
+                           outVar.write(iso.CDS.get(k).get(11) + ", CDS, " + iso.CDS.get(k).get(0) + ", " + iso.CDS.get(k).get(3) + ", " + iso.CDS.get(k).get(4) + "\n");
+                           outVar.write(found.CDS.get(k).get(11) + ", CDS, " + found.CDS.get(k).get(0) + ", " + found.CDS.get(k).get(3) + ", " + found.CDS.get(k).get(4) + "\n\n");
+                           if (isHigher(found.CDS.get(k), iso.CDS.get(k)))
+                           {
+                              iso.CDS.set(k, found.CDS.get(k));
+                           }
                         }
                      }
                      // variations: missing CDS
                      for (int x = k; x < iso.CDS.size(); x++)
                      {
-                        outVar.write(iso.CDS.get(x).get(11) + ", " + iso.CDS.get(x).get(0) + ", " + iso.CDS.get(x).get(3) + ", " + iso.CDS.get(x).get(4) + "\n");
-                        outVar.write(found.CDS.get(0).get(11) + ", missing, missing, missing\n\n");
+                        outVar.write(iso.CDS.get(x).get(11) + ", CDS, " + iso.CDS.get(x).get(0) + ", " + iso.CDS.get(x).get(3) + ", " + iso.CDS.get(x).get(4) + "\n");
+                        outVar.write(found.CDS.get(0).get(11) + ", CDS, " + gffFiles[i+1].getName() + " missing, missing\n\n");
+                        if (!(vars.containsKey(iso.CDS.get(x).get(11))))
+                        {
+                           vars.put(iso.CDS.get(x).get(11), 1);
+                           varCount++;
+                        }
                      }          
                      for (int x = k; x < found.CDS.size(); x++)
                      {  
                         iso.CDS.add(found.CDS.get(x));
-                        outVar.write(found.CDS.get(x).get(11) + ", " + found.CDS.get(x).get(0) + ", " + found.CDS.get(x).get(3) + ", " + found.CDS.get(x).get(4) + "\n");
-                        outVar.write(iso.CDS.get(0).get(11) + ", missing, missing, missing\n\n");
+                        outVar.write(iso.CDS.get(0).get(11) + ", CDS, " + gffFiles[i+1].getName()  + ",  missing, missing\n\n");
+                        outVar.write(found.CDS.get(x).get(11) + ", CDS, " + found.CDS.get(x).get(0) + ", " + found.CDS.get(x).get(3) + ", " + found.CDS.get(x).get(4) + "\n");
+                        if (!(vars.containsKey(found.CDS.get(x).get(11))))
+                        {
+                           vars.put(found.CDS.get(x).get(11), 1);
+                           varCount++;
+                        }
                      }
 
                      gff2.remove(found);
+                  }
+                  else
+                  {
+                     outVar.write(iso.mRNA.get(11) + ", mRNA, " + iso.mRNA.get(0) + ", " + iso.mRNA.get(3) + ", " + iso.mRNA.get(4) + "\n");
+                     outVar.write(iso.mRNA.get(11) + ", mRNA, " + gffFiles[i+1].getName() + ", missing, missing\n\n");
+                     if (!(vars.containsKey(iso.mRNA.get(11))))
+                     {
+                        vars.put(iso.mRNA.get(11), 1);
+                        varCount++;
+                     }
                   }
                }
             }
@@ -257,12 +279,12 @@ public class Combine
       return -1;
    }
 
-   public static String parseFASTA(String fileName) throws IOException
+   public static String parseFASTA(File fileName) throws IOException
    {
       Scanner sc;
       try
       {
-         sc = new Scanner(new File(fileName));
+         sc = new Scanner(fileName);
       }
       catch (IOException e)
       {
@@ -279,7 +301,7 @@ public class Combine
       return result;     
    }
     
-   public static ArrayList<Isoform> parseGFF(String fileName) throws IOException
+   public static ArrayList<Isoform> parseGFF(File fileName) throws IOException
    {
       ArrayList<Isoform> isoList = new ArrayList<Isoform>();
       ArrayList<String> parsedLine = new ArrayList<String>();
@@ -288,7 +310,7 @@ public class Combine
 
       try
       {
-         sc = new Scanner(new File(fileName));
+         sc = new Scanner(fileName);
       }
       catch (IOException e)
       {

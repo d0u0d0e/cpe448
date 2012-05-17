@@ -34,6 +34,7 @@ public class DNAMergeDialog extends JDialog {
     */
    private final int DIALOG_HEIGHT = 200, DIALOG_WIDTH = 500;
 
+   private File[] fastaFiles, gffFiles;
    private Controller controller;
    /*
     * GUI Components
@@ -81,8 +82,8 @@ public class DNAMergeDialog extends JDialog {
 
       setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 
-      mFileRangeStart = new JTextField(6);
-      mFileRangeEnd = new JTextField(6);
+      mFileRangeStart = new JTextField(20);
+      mFileRangeEnd = new JTextField(20);
       mWindow = new JTextField(6);
       mSlide = new JTextField(6);
       mFileType = new JComboBox(comboBoxOptions);
@@ -93,8 +94,7 @@ public class DNAMergeDialog extends JDialog {
     * input
     */
    public void init() {
-      JLabel fileSelectionLb = new JLabel("Set file range and select file type:");
-      JPanel fileField = prepareInputDataField(mFileRangeStart, mFileRangeEnd, mFileType);
+      JPanel fileFieldLabel = prepareStandAloneLabel("Select FASTA and GFF files:");
       
       JPanel windowField = prepareWindowSizeField("Window:", mWindow);
       JPanel slideField = prepareWindowSizeField("Slide:", mSlide);
@@ -104,10 +104,9 @@ public class DNAMergeDialog extends JDialog {
       nucleotideRangeField.add(windowField);
       nucleotideRangeField.add(slideField);
       
-      mPane.add(fileSelectionLb);
-      mPane.add(fileField);
-
-      //mPane.add(nucleotideRangeField);
+      mPane.add(fileFieldLabel);
+      mPane.add(prepareInputFilesField(mFileRangeStart, "FASTA", true));
+      mPane.add(prepareInputFilesField(mFileRangeEnd, "GFF", false));
       
       mPane.add(initControls());
 
@@ -133,7 +132,69 @@ public class DNAMergeDialog extends JDialog {
 
       return dataFileField;
    }
+   private JPanel prepareStandAloneLabel(String s) {
+       JPanel holder = new JPanel();
+       
+       holder.setLayout(new FlowLayout(FlowLayout.LEADING));
+       
+       holder.add(new JLabel(s));
+       
+       return holder;
+   }
 
+   /**
+    * Convenience method for constructing a JPanel that contains the JTextField
+    * and file browse button used for selecting a file.
+    */
+   private JPanel prepareInputFilesField(JTextField fileField, String fieldName, boolean fasta) {
+      JPanel dataFileField = new JPanel();
+
+      dataFileField.setLayout(new FlowLayout(FlowLayout.LEADING));
+      
+      dataFileField.add(new JLabel(fieldName));
+      dataFileField.add(fileField);
+      dataFileField.add(prepareBrowseButton(fileField, fasta));
+
+      return dataFileField;
+   }
+
+   /**
+    * Convenience method for creating a file browse button. This is abstracted
+    * so that it is not necessarily associated with the fasta file field.
+    */
+   private JButton prepareBrowseButton(final JTextField fastaField, final boolean fasta) {
+      JButton fileBrowse = new JButton("Browse");
+
+      fileBrowse.addActionListener(new ActionListener() {
+
+         public void actionPerformed(ActionEvent e) {
+            JFileChooser chooser = new JFileChooser();
+            chooser.setMultiSelectionEnabled(true);
+            int returnVal = chooser.showOpenDialog(chooser);
+            
+            if (returnVal == JFileChooser.CANCEL_OPTION) {
+               System.out.println("cancelled");
+            }
+
+            else if (returnVal == JFileChooser.APPROVE_OPTION) {
+               File[] files = chooser.getSelectedFiles();
+               if (fasta)
+                   fastaFiles = files;
+               else
+                   gffFiles = files;
+               fastaField.setText(files.length + " files selected.");
+            }
+
+            else {
+               System.out.println("Encountered Unknown Error");
+               System.exit(0);
+            }
+         }
+      });
+
+      return fileBrowse;
+   }
+   
    
     /**
     * Convenience method for creating JTextFields for the window size and slide
@@ -182,21 +243,16 @@ public class DNAMergeDialog extends JDialog {
 
       okayButton.addActionListener(new ActionListener(){
          public void actionPerformed(ActionEvent e) {
-            if (mFileRangeStart.getText().equals("") || mFileRangeEnd.getText().equals("")
-                    || mFileType.getSelectedIndex() == 0) {
+            if (fastaFiles == null || gffFiles == null) {
                JOptionPane.showMessageDialog(mOwner,
-                "No Range was given, or file type not set.",
+                "No FASTA files of GFF files were set.",
                 "Invalid File", JOptionPane.ERROR_MESSAGE);
                return;
             }
-            if (mFileType.getSelectedIndex() == 2)
-                controller.setContig(true);
-            else
-                controller.setContig(false);
-            
+            controller.setFastaFile(fastaFiles);
+            controller.setGffFile(gffFiles);
             try {
-                controller.combineFiles(Integer.valueOf(mFileRangeStart.getText()),
-                        Integer.valueOf(mFileRangeEnd.getText()));
+                controller.combineFiles();
             } catch (Exception ex) {
                 Logger.getLogger(InputFilesDialog.class.getName()).log(Level.SEVERE, null, ex);
             }

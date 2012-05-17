@@ -64,7 +64,7 @@ public class SuffixTree {
       traverse(root);
    }
 
- //recursively finds location to insert suffix
+ //finds location to insert suffix
    public void insert(String sub, node n, int suffNum, char prevChar) {
 
       node current = n;
@@ -153,16 +153,20 @@ public class SuffixTree {
 	   node ancestor = null, prev;
 	   ArrayList<node> ancestors = new ArrayList<node>();
 	   
-	   prev = n1.prev;
+	   prev = n1;
 	   while(prev != null) {
 		   ancestors.add(prev);
 		   prev = prev.prev;
 	   }
 	   
-	   prev = n2.prev;
-	   while(ancestor == null)
-		   if(ancestors.contains(prev))
-			   ancestor = prev;
+	   prev = n2;
+	   while(ancestor == null) {
+	      if(ancestors.contains(prev))
+		   ancestor = prev;
+
+              prev = prev.prev;
+
+           }
 	   
 	   return ancestor;
    }
@@ -170,7 +174,7 @@ public class SuffixTree {
    public String lce(String s1, String s2) {
 	   node common = lca(findLeaf(s1), findLeaf(s2));
 	   StringBuffer ext = new StringBuffer();
-	   
+
 	   while(common.label != "root"){
 		   ext.insert(0,  common.label);
 		   common = common.prev;
@@ -182,21 +186,22 @@ public class SuffixTree {
    public node findLeaf(String s){
 	   int ndx = 0, i;
 	   node n = root;
-	   
+	   s = s.concat("$");
+
 	   while(ndx < s.length()) {
-		   if(!n.children.containsKey(s.charAt(ndx))) {
-			   return n;
-		   }
-		   else {
-			   n = n.children.get(s.charAt(ndx));
-			   i = 0;
-			   while(ndx < s.length() && ndx < n.label.length() && s.charAt(i) == n.label.charAt(i)) {
-		            i++;
-		            ndx++;
-			   }
-		   }
-	   }
-	   
+ 	      if(n.children.containsKey(s.charAt(ndx))) {
+		   n = n.children.get(s.charAt(ndx));
+		   i = 0;
+		   while(ndx < s.length() && i < n.label.length() && s.charAt(ndx) == n.label.charAt(i)) {
+	              i++;
+	              ndx++;
+	           }
+	      }
+              else {
+                 return n;
+              }
+           }
+
 	   return n;
    }
 
@@ -218,35 +223,56 @@ public class SuffixTree {
        //how will edge be split?
    }
 
-   public void findMatch(node n, String s) {
-      if(n.children.containsKey(s.charAt(0))) {  //current node contains character
-         node child = n.children.get(s.charAt(0));
-         int i = 0;
+   public void findMatch(node n, String sub) {
+      boolean done = false;
+      node current = n;
 
-         while(i < s.length() && i < child.label.length() && s.charAt(i) == child.label.charAt(i))
-            i++;
+      while(!done) {
+         if(current.children.containsKey(sub.charAt(0))) {  //current node contains character
+             node child = current.children.get(sub.charAt(0));
+             int i = 0;
 
-         // i == position of mismatch
-         if(i < child.label.length()) {
-            System.out.println("no match found");
-         }
-         else {  //string is completely matched
-            matchedLeaves(child);
-         }
-      }
-      else {  // no match
-         System.out.println("no match found");
-      }   
+             while(i < sub.length() && i < child.label.length() && sub.charAt(i) == child.label.charAt(i))
+                i++;
+
+             if(i < sub.length()) {
+                if(i == child.label.length()) {              //complete match with inner node
+                   if(child.children.containsKey(sub.charAt(i))) {           //follow path down
+                      current = child;
+                      sub = sub.substring(i);
+                   }
+                   else {        // no match for remaining string
+                      System.out.println("no match");
+                      done = true;
+                   }
+                }
+                else { //common sequence splits to 2
+                   System.out.println("no match");
+                   done = true;
+                }
+             }
+             else {   //complete match, add to list of suffixes
+                matchedLeaves(current);
+                done = true;
+             }
+
+          }
+          else {       //no path to follow
+             System.out.println("no match");
+             done = true;
+          }
+       }
    }
    
    public void matchedLeaves(node n) {
 	   for(node nd : n.children.values()) {
 		   if(nd instanceof Inner)
 			   matchedLeaves(nd);
-		   else if(nd instanceof Leaf)
-		      System.out.println();
+		   else if(nd instanceof Leaf) {
+                      for(Integer i : ((Leaf)nd).suffixNum.keySet())
+		         System.out.println("found: string = " + i + "   suffix # = " + 
+((Leaf)nd).suffixNum.get(i));
+                   }
 	   }
    }
 }
-
-

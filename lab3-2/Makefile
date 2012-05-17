@@ -23,7 +23,7 @@ run: classes
 BioGUI.java:
 
 test: classes
-	java STmain
+	java UI/STTest
 
 clean:
 	@echo "-------------------------"

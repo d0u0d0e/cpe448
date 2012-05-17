@@ -89,7 +89,9 @@ public class Repeat
       for (String s : repeats.keySet())
       {
          int repeat = repeats.get(s);
+         try {
          double p = probability.get(s.charAt(0));
+         
          
          for (int i = 1; i < s.length(); i++)
          {
@@ -106,6 +108,10 @@ public class Repeat
             double percentFreq = freq / expectedFreq * 100;
             Unexpected ue = new Unexpected(s, s.length(), repeat, selfAvgProximity, selfStdProximity, geneProximity, freq, expectedFreq, percentFreq);
             unexpected.add(ue);
+         }
+         }
+         catch (Exception e) {
+             System.err.println(s.charAt(0));
          }
       }
 

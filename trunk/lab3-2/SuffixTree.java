@@ -57,16 +57,16 @@ public class SuffixTree {
          if(i > 0)
             c = S.charAt(i - 1);
 
-         insert(sub.substring(i), root, suffNum, c);
+         insert(sub.substring(i), suffNum, c);
       }
 
       traverse(root);
    }
 
  //finds location to insert suffix
-   public void insert(String sub, node n, int suffNum, char prevChar) {
+   public void insert(String sub, int suffNum, char prevChar) {
 
-      node current = n;
+      node current = root;
       boolean inserted = false;
 
       while(!inserted) {
@@ -94,10 +94,11 @@ public class SuffixTree {
                }
                else { //common sequence splits to 2
                   Inner in = new Inner(sub.substring(0, i), current);        //create new inner node
-                  Leaf l = new Leaf(sub.substring(i), suffNum, current);
+                  Leaf l = new Leaf(sub.substring(i), suffNum, in);
                   l.prevChar = prevChar;
 
                   child.label = child.label.substring(i);
+                  child.prev = in;
 
                   in.children.put(l.label.charAt(0), l);          // add new leaf and child as child of new inner node
                   in.children.put(child.label.charAt(0), child);
@@ -157,7 +158,7 @@ public class SuffixTree {
 		   ancestors.add(prev);
 		   prev = prev.prev;
 	   }
-	   
+
 	   prev = n2;
 	   while(ancestor == null) {
 	      if(ancestors.contains(prev))
@@ -178,19 +179,23 @@ public class SuffixTree {
 		   ext.insert(0,  common.label);
 		   common = common.prev;
 	   }
+
+           if(ext.length() == 0)
+              ext.append("**no lce for the two strings**");
 	   
 	   return ext.toString();
    }
    
    public node findLeaf(String s){
-	   int ndx = 0, i;
+	   int ndx = 0, i = 4;
 	   node n = root;
 	   s = s.concat("$");
 
 	   while(ndx < s.length()) {
- 	      if(n.children.containsKey(s.charAt(ndx))) {
+ 	      if(i == n.label.length() && n.children.containsKey(s.charAt(ndx))) {
 		   n = n.children.get(s.charAt(ndx));
 		   i = 0;
+
 		   while(ndx < s.length() && i < n.label.length() && s.charAt(ndx) == n.label.charAt(i)) {
 	              i++;
 	              ndx++;
@@ -211,7 +216,7 @@ public class SuffixTree {
 	  in.children.put(leaf.charAt(0), l);
 	  
       if(n.children.containsKey((edge.charAt(0)))) {
-    	  //throw error?
+    	  System.out.println("node already contains '" + edge.charAt(0) + "' branch");
       }
       else {
     	  n.children.put(edge.charAt(0), in);
@@ -222,9 +227,9 @@ public class SuffixTree {
        //how will edge be split?
    }
 
-   public void findMatch(node n, String sub) {
+   public void findMatch(String sub) {
       boolean done = false;
-      node current = n;
+      node current = root;
 
       while(!done) {
          if(current.children.containsKey(sub.charAt(0))) {  //current node contains character
@@ -251,7 +256,7 @@ public class SuffixTree {
                 }
              }
              else {   //complete match, add to list of suffixes
-                matchedLeaves(current);
+                matchedLeaves(child);
                 done = true;
              }
 
@@ -264,14 +269,21 @@ public class SuffixTree {
    }
    
    public void matchedLeaves(node n) {
+        if(n instanceof Inner) {
 	   for(node nd : n.children.values()) {
 		   if(nd instanceof Inner)
 			   matchedLeaves(nd);
 		   else if(nd instanceof Leaf) {
                       for(Integer i : ((Leaf)nd).suffixNum.keySet())
-		         System.out.println("found: string = " + i + "   suffix # = " + 
-((Leaf)nd).suffixNum.get(i));
+		         System.out.println("found: string = " + i + ",  position = " + ((Leaf)nd).suffixNum.get(i));
                    }
 	   }
+        }
+        else {
+           Integer suff = ((Leaf)n).suffixNum.keySet().iterator().next();
+           
+           System.out.println("found: string = " + suff + ",  position = " + ((Leaf)n).suffixNum.get(suff));
+        }
    }
 }
+

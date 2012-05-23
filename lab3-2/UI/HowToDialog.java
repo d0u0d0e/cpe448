@@ -44,11 +44,10 @@ public class HowToDialog extends JDialog {
    private static final String LAB2_2_HOW_TO_TEXT = 
            "<HR><h2>Lab 2-2: DNA Analysis: DNA Manipulation, Codon Usage Bias, and Gene Density</h2><p>"+
            "To begin, under the <b>Analysis</b> menu select the <b>Lab2-2: DNA " +
-           "Manipulation</b> option. A window will pop up prompting you for a range, " +
-           "file type, slide, and window. Enter the range of the presset files you "+
-           "want to run the calculations for (EX: the numbers 24 and 28 with the "+
-           "file type set to <b>contig</b> will run the calculations on contigs" +
-           "24 to 28 inclusive). The <b>Window</b> and <b>Slide</b> options are " +
+           "Manipulation</b> option. A window will pop up prompting you for 2 files, " +
+           "a slide value, and window size. You can select one or multiple FASTA files "+
+           "along with their corresponding GFF files. "+
+           "The <b>Window</b> and <b>Slide</b> options are " +
            "optional. Their default values are 1000 and 100 respectively.</p>"+
            "<p><b>Output:</b><br />"+
            "The output will go to separate files which names will be listed in the " +
@@ -58,17 +57,18 @@ public class HowToDialog extends JDialog {
            "<HR><h2>Lab 3-1: DNA Merging</h2><p>" +
            "To merge DNA FASTA files, under the <b>Analysis</b> menu select the " +
            "<b>Lab3-1: DNA Merging</b> option. A window will pop up prompting " +
-           "you for a range and a file type. Enter the range and type of the "+
-           "presset files you would like to combine and click <b>Okay</b>.</p>"+
-           "<p><b>Output:</b><br />"+
+           "you for FASTA and GFF files. Select the FASTA files that you would "+
+           "like to combine along with the corresponding GFF files and click "+
+           "<b>Okay</b>.</p><p>"+
+           "<b>Output:</b><br />"+
            "The output will go to separate files which will be writen to the folder " +
            "from which the program was run.</p><br />";
    private static final String LAB3_2_HOW_TO_TEXT =
            "<HR><h2>Lab 3-2: Repeat Search and Palindrome Discovery</h2><p>" +
            "To find repeats/palindromes, under the <b>Analysis</b> menu select the " +
            "<b>Lab3-2: DNA Repeats</b> option. A window will pop up prompting " +
-           "you for a range and a file type (among other things). Ender the " +
-           "range and type of the presset files you would like to find repeats/" +
+           "you for FASTA and GFF files (among other things). Select the FASTA" +
+           "files along with the corresponding GFF files you would like to find repeats/" +
            "palindromes for. Enter the minimum and maximum length of the repeat/"+
            "palindrome. Select what you would like to search for in the files " +
            "(repeats or palindromes). For repeats enter the \'fold\' value. For " +

@@ -521,12 +521,7 @@ public class Controller {
         String seq;
         Repeat r;
         StringBuffer buf = new StringBuffer();
-/*
-        if (setFilesInRange(start, stop) == -1) {
-            setMainWindowOutput("Invalid Range of files\n");
-            return;
-        }
-*/
+
         for (int i = 0; i < fastaFileArr.length; i++) {
             idList = new ArrayList<String>();
             geneList = new ArrayList<Gene>();
@@ -536,10 +531,10 @@ public class Controller {
             createGeneList(seq, geneList);
             r = new Repeat(seq, minLeng, maxLeng, kfold, geneList);
             buf.append("Output for file " + fastaFileArr[i].getName() + "\n");
-            buf.append("Size, Repeats, Frequency, Expected Frequency, % More than Expected, Sequence, Average Distances, Standard Deviation, Distance to Nearest Gene\n");
+            buf.append("Size, Repeats, Frequency, Expected Frequency, % More than Expected, Sequence, Average Repeat Distances, Stdev Repeat Distances, Average Gene Distance, Stdev Gene Distances\n");
       for (Repeat.Unexpected ue : r.unexpected)
       {
-         buf.append(String.format("%d, %f, %f, %f, %s, %f, %f, %f\n", ue.size, ue.freq, ue.expectedFreq, ue.percentFreq, ue.s, ue.selfAvgProximity, ue.selfStdProximity, ue.geneProximity));
+         buf.append(String.format("%d, %d, %f, %f, %f, %s, %f, %f, %f, %f\n", ue.size, ue.repeat, ue.freq, ue.expectedFreq, ue.percentFreq, ue.s, ue.selfAvgProximity, ue.selfStdProximity, ue.geneAvgProximity, ue.geneStdProximity));
       }
       buf.append("\n");
         }
@@ -566,12 +561,7 @@ public class Controller {
         String seq;
         Palindrome p;
         StringBuffer buf = new StringBuffer();
-/*
-        if (setFilesInRange(start, stop) == -1) {
-            setMainWindowOutput("Invalid Range of files\n");
-            return;
-        }
-*/
+
         for (int ndx = 0; ndx < fastaFileArr.length; ndx++) {
             seq = readFasta(fastaFileArr[ndx]);
             p = new Palindrome(seq, minLeng, maxLeng, minGap, maxGap);

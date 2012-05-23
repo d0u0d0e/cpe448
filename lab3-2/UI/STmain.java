@@ -215,10 +215,10 @@ public class STmain
       System.out.println("Repeats:");
       Repeat rep = new Repeat(seq, 6, 12, 10, geneList);
 
-      System.out.println("Size, Repeats, Frequency, Expected Frequency, % More than Expected, Sequence, Average Distances, Standard Deviation, Distance to Nearest Gene");
+      System.out.println("Size, Repeats, Frequency, Expected Frequency, % More than Expected, Sequence, Average Repeat Distances, Stdev Repeat Distances, Average Gene Distance, Stdev Gene Distances");
       for (Repeat.Unexpected ue : rep.unexpected)
       {
-         System.out.printf("%d, %f, %f, %f, %s, %f, %f, %f\n", ue.size, ue.freq, ue.expectedFreq, ue.percentFreq, ue.s, ue.selfAvgProximity, ue.selfStdProximity, ue.geneProximity);
+          System.out.printf("%d, %d, %f, %f, %f, %s, %f, %f, %f, %f\n", ue.size, ue.repeat, ue.freq, ue.expectedFreq, ue.percentFreq, ue.s, ue.selfAvgProximity, ue.selfStdProximity, ue.geneAvgProximity, ue.geneStdProximity);
       }
 
       System.out.println("\nPalindromes:");

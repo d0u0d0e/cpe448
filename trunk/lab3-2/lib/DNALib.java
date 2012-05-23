@@ -527,6 +527,7 @@ public class DNALib
       StringBuffer buf = new StringBuffer();
       HashMap<String, Integer> freq = new HashMap<String, Integer>();
       HashMap<String, Integer> amino = new HashMap<String, Integer>();
+      try {
       for (Gene g : geneList)
       {
          if (!g.id.equals("Intergenic"))
@@ -551,8 +552,6 @@ public class DNALib
          }
       }
 
-     
-
       for (String s : freq.keySet())
       {
          String a = map.get(s).name;
@@ -571,8 +570,14 @@ public class DNALib
          buf.append(String.format("%s, %s, %d, %.2f\n", s, map.get(s).name,
                  freq.get(s), (double)freq.get(s) / (double)amino.get(map.get(s).name)));
       }
+      
+      } catch (Exception e) {
+          System.out.println(e);
+      }
+      
       System.out.print(buf);
       return buf.toString();
+
    }
 
    public void getError()

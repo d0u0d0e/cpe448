@@ -23,19 +23,21 @@ public class Repeat
       int repeat;
       double selfAvgProximity;
       double selfStdProximity;
-      double geneProximity;
+      double geneAvgProximity;
+      double geneStdProximity;
       double freq;
       double expectedFreq;
       double percentFreq;
 
-      public Unexpected(String s, int size, int repeat, double selfAvgProximity, double selfStdProximity, double geneProximity, double freq, double expectedFreq, double percentFreq)
+      public Unexpected(String s, int size, int repeat, double selfAvgProximity, double selfStdProximity, double geneAvgProximity, double geneStdProximity, double freq, double expectedFreq, double percentFreq)
       {
          this.s = s;
          this.size = size;
          this.repeat = repeat;
          this.selfAvgProximity = selfAvgProximity;
          this.selfStdProximity = selfStdProximity;
-         this.geneProximity = geneProximity;
+         this.geneAvgProximity = geneAvgProximity;
+         this.geneStdProximity = geneStdProximity;
          this.freq = freq;
          this.expectedFreq = expectedFreq;
          this.percentFreq = percentFreq;
@@ -102,11 +104,12 @@ public class Repeat
          {
             double selfAvgProximity = getSelfAvgProximity(s);  
             double selfStdProximity = getSelfStdProximity(s, selfAvgProximity);  
-            double geneProximity = getGeneProximity(s, geneList);  
+            double geneAvgProximity = getGeneAvgProximity(s, geneList);  
+            double geneStdProximity = getGeneStdProximity(s, geneList, geneAvgProximity);  
             double freq = 1.0 / (total / (double)repeat);
             double expectedFreq = 1.0 / ((double)total / (p * total));
             double percentFreq = freq / expectedFreq * 100;
-            Unexpected ue = new Unexpected(s, s.length(), repeat, selfAvgProximity, selfStdProximity, geneProximity, freq, expectedFreq, percentFreq);
+            Unexpected ue = new Unexpected(s, s.length(), repeat, selfAvgProximity, selfStdProximity, geneAvgProximity, geneStdProximity, freq, expectedFreq, percentFreq);
             unexpected.add(ue);
          }
          }
@@ -165,7 +168,7 @@ public class Repeat
          });
       for (int i = 0; i < locs.size() - 1; i++)
       {
-         int l = locs.get(i) - locs.get(i+1);
+         int l = locs.get(i) - locs.get(i+1) - s.length();
          sumDev += (l - mean) * (l - mean);
       }
       return Math.sqrt(sumDev / (locs.size() - 1));
@@ -184,13 +187,40 @@ public class Repeat
          });
       for (int i = 0; i < locs.size() - 1; i++)
       {
-         sum += locs.get(i) - locs.get(i+1);
+         sum += locs.get(i) - locs.get(i+1) - s.length();
       }
 
       return sum / (locs.size()-1);
    }
 
-   public double getGeneProximity(String s, ArrayList<Gene> geneList)
+   public double getGeneStdProximity(String s, ArrayList<Gene> geneList, double mean)
+   {
+      double sumDev = 0.0;
+      ArrayList<Integer> locs = locations.get(s);
+      for (Integer i : locs)
+      {
+         int min = 0;
+         for (Gene g : geneList)
+         {
+            if (!g.id.equals("Intergenic"))
+            {
+               int start = Math.abs(g.points.get(0).start - i);
+               if (min == 0)
+               {
+                  min = start;
+               }
+               else if (min > start)
+               {
+                  min = start;
+               }
+            }
+         }  
+         sumDev += (min - mean) * (min - mean); 
+      } 
+      return Math.sqrt(sumDev / locs.size());
+   }
+
+   public double getGeneAvgProximity(String s, ArrayList<Gene> geneList)
    {
       double sum = 0.0;
       ArrayList<Integer> locs = locations.get(s);
@@ -202,7 +232,16 @@ public class Repeat
          {
             if (!g.id.equals("Intergenic"))
             {
-               int start = Math.abs(g.points.get(0).start - i);
+               int start;
+               if (g.points.get(0).start > i)
+               {
+                  start = g.points.get(0).start - i - s.length();
+               }
+               else
+               {
+                  start = i - g.points.get(0).start;
+               }
+               
                if (min == 0)
                {
                   min = start;

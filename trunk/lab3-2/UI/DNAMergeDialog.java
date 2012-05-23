@@ -32,7 +32,7 @@ public class DNAMergeDialog extends JDialog {
    /*
     * CONSTANTS
     */
-   private final int DIALOG_HEIGHT = 200, DIALOG_WIDTH = 500;
+   private final int DIALOG_HEIGHT = 250, DIALOG_WIDTH = 500;
 
    private File[] fastaFiles, gffFiles;
    private Controller controller;
@@ -41,7 +41,7 @@ public class DNAMergeDialog extends JDialog {
     */
    private Container mPane = null, mOwner = null;
    private JDialog mDialog = null;
-   private JTextField mFileRangeStart, mFileRangeEnd, mWindow, mSlide;
+   private JTextField mFileRangeStart, mFileRangeEnd, mExistance, mExtension;
    private JComboBox mFileType;
    private String[] comboBoxOptions = {"Select one...", "Fosmid", "Contig"};
 
@@ -84,8 +84,8 @@ public class DNAMergeDialog extends JDialog {
 
       mFileRangeStart = new JTextField(20);
       mFileRangeEnd = new JTextField(20);
-      mWindow = new JTextField(6);
-      mSlide = new JTextField(6);
+      mExistance = new JTextField(6);
+      mExtension = new JTextField(6);
       mFileType = new JComboBox(comboBoxOptions);
    }
 
@@ -95,19 +95,13 @@ public class DNAMergeDialog extends JDialog {
     */
    public void init() {
       JPanel fileFieldLabel = prepareStandAloneLabel("Select FASTA and GFF files:");
-      
-      JPanel windowField = prepareWindowSizeField("Window:", mWindow);
-      JPanel slideField = prepareWindowSizeField("Slide:", mSlide);
-
-      JPanel nucleotideRangeField = new JPanel();
-      nucleotideRangeField.setLayout(new FlowLayout(FlowLayout.LEADING));
-      nucleotideRangeField.add(windowField);
-      nucleotideRangeField.add(slideField);
+      JPanel penaltyPanel = preparePenaltyField("Existance:", mExistance, "Extension:", mExtension);
       
       mPane.add(fileFieldLabel);
       mPane.add(prepareInputFilesField(mFileRangeStart, "FASTA", true));
       mPane.add(prepareInputFilesField(mFileRangeEnd, "GFF", false));
-      
+      //mPane.add(prepareStandAloneLabel("Set Gap Penalty (Optional):"));
+      //mPane.add(penaltyPanel);
       mPane.add(initControls());
 
       mPane.validate();
@@ -201,15 +195,17 @@ public class DNAMergeDialog extends JDialog {
     * parameters. This is abstracted so that it may be called
     * for both the window and the slide text fields.
     */
-   private JPanel prepareWindowSizeField(String labelPrefix, JTextField windowSize) {
-      JPanel windowSizePanel = new JPanel();
+   private JPanel preparePenaltyField(String ExistenceLabel, JTextField existence, String ExtensionLabel, JTextField extension) {
+      JPanel penaltyPanel = new JPanel();
 
-      windowSizePanel.setLayout(new FlowLayout());
+      penaltyPanel.setLayout(new FlowLayout(FlowLayout.LEADING));
 
-      windowSizePanel.add(new JLabel(labelPrefix));
-      windowSizePanel.add(windowSize);
+      penaltyPanel.add(new JLabel(ExistenceLabel));
+      penaltyPanel.add(existence);
+      penaltyPanel.add(new JLabel(ExtensionLabel));
+      penaltyPanel.add(extension);
 
-      return windowSizePanel;
+      return penaltyPanel;
    }
 
    /**

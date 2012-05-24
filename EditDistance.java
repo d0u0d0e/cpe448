@@ -99,8 +99,10 @@ public class EditDistance {
 
          if(global)
             if(gapext.length() >=6) {
-               if(gapext.substring(0, 6).equals("Insert"))
+               if(gapext.substring(0, 6).equals("Insert")) {
+                  pen = 0;
                   ext = extension;
+               }
             }
 
          slns[0][d2] = new SubSln(slns[0][d2-1].value + pen + ext, EnumSet.of(Dir.left), "Insert");
@@ -117,8 +119,10 @@ public class EditDistance {
          ext = 0;
          if(global)
             if(gapext.length() >=6) {
-               if(gapext.substring(0, 6).equals("Delete"))
+               if(gapext.substring(0, 6).equals("Delete")) {
+                  pen = 0;
                   ext = extension;
+               }
             }
 
           slns[d1][0] = new SubSln(slns[d1-1][0].value + pen + ext, EnumSet.of(Dir.up), "Delete");
@@ -152,9 +156,12 @@ public class EditDistance {
             //Insert
               gapext = slns[d1][d2-1].edits.toString();
               ext = 0;
+              pen = penalty;
               if(gapext.length() >=6) {
-                 if(gapext.substring(0, 6).equals("Insert"))
+                 if(gapext.substring(0, 6).equals("Insert")) {
+                    pen = 0;
                     ext = extension;
+                 }
               }
 
               if(slns[d1][d2-1].value + pen + ext == val) {
@@ -175,9 +182,12 @@ public class EditDistance {
             //Delete
               gapext = slns[d1-1][d2].edits.toString();
               ext = 0;
+              pen = penalty;
               if(gapext.length() >=6) {
-                 if(gapext.substring(0, 6).equals("Delete"))
+                 if(gapext.substring(0, 6).equals("Delete")) {
+                    pen = 0;
                     ext = extension;
+                 }
               }
 
               if(slns[d1-1][d2].value + pen + ext == val) {

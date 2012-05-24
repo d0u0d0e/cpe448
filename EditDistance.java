@@ -63,11 +63,13 @@ public class EditDistance {
             ArrayList<Local> list = bestLocal(slns, s1.length()+1, s2.length()+1);
 
             for(Local loc : list)
-               System.out.printf("\nBest cost is:  %d at %d,%d\n", loc.value, loc.x, loc.y);
+               System.out.printf("\nBest cost is:  %d at %d,%d", loc.value, loc.x, loc.y);
          }
 
+         System.out.println();
          printMappings(slns, s1, s2);
          printSlns(slns, s1, s2);
+
       }
       catch(FileNotFoundException e) {
     	  System.out.println("\nmatrix not found");
@@ -102,6 +104,7 @@ public class EditDistance {
             }
 
          slns[0][d2] = new SubSln(slns[0][d2-1].value + pen + ext, EnumSet.of(Dir.left), "Insert");
+         slns[0][d2].step.append("' ' --- '" + s2.charAt(d2-1)+"' ,");
       }
 
       for(d1 =1; d1 <= s1.length(); d1++) {
@@ -114,6 +117,7 @@ public class EditDistance {
             }
 
           slns[d1][0] = new SubSln(slns[d1-1][0].value + pen + ext, EnumSet.of(Dir.up), "Delete");
+          slns[d1][0].step.append("'" + s1.charAt(d1-1)+"' --- ' ' ,");
           key.setCharAt(0, s1.charAt(d1-1));
           
           //filling out table
@@ -213,31 +217,30 @@ public class EditDistance {
    static void printMappings(SubSln[][] slns, String s1, String s2) {
       int d1 = s1.length(), d2 = s2.length(), stp;
       ArrayList<String> edits = new ArrayList<String>();
+      Iterator iter;
+      Dir dir;
 
-      while(d1 != 0 && d2 != 0) {
+      while(d1 != 0 || d2 != 0) {
          stp = slns[d1][d2].step.indexOf(",");
-
+ 
          if(stp > 0)
             edits.add(slns[d1][d2].step.substring(0, stp));
          else
             edits.add(slns[d1][d2].step.toString());
 
-         Iterator<Dir> iter = slns[d1][d2].from.iterator();
-         while(iter.hasNext()) {
-            Dir dir = iter.next();
-
-            if(dir.equals(Dir.left))
-               d2--;
-            else if(dir.equals(Dir.up))
-               d1--;
-            else if(dir.equals(Dir.upLeft)) {
-               d1--;
-               d2--;
-            }
+         iter = slns[d1][d2].from.iterator();
+         dir = (Dir)iter.next();
+         if(dir.equals(Dir.left))
+            d2--;
+         else if(dir.equals(Dir.up))
+               d1--; 
+         else if(dir.equals(Dir.upLeft)) {
+            d1--;
+            d2--;
          }
       }
 
-      System.out.println("Mappings are:");
+      System.out.println("\nMappings are:");
 
       for(int i = edits.size()-1; i >= 0; i--)
          System.out.println(edits.get(i));

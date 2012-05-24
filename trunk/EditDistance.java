@@ -108,6 +108,11 @@ public class EditDistance {
       }
 
       for(d1 =1; d1 <= s1.length(); d1++) {
+         if(global)
+            pen = penalty;
+         else
+            pen = 0;
+
          gapext = slns[d1-1][0].edits.toString();
          ext = 0;
          if(global)
@@ -121,6 +126,7 @@ public class EditDistance {
           key.setCharAt(0, s1.charAt(d1-1));
           
           //filling out table
+          pen = penalty;
           for(d2 = 1; d2 <= s2.length(); d2++) {
               val = -100000;
               key.setCharAt(1, s2.charAt(d2-1));

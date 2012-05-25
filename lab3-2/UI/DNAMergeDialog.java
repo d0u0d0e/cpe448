@@ -253,6 +253,7 @@ public class DNAMergeDialog extends JDialog {
                 existancePenalty = Integer.valueOf(mExistance.getText());
                 extensionPenalty = Integer.valueOf(mExtension.getText());
             }
+            controller.setFastaFile(fastaFiles);
             controller.setGffFile(gffFiles);
             try {
                 controller.combineFiles(existancePenalty, extensionPenalty);

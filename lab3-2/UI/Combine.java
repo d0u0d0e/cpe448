@@ -32,7 +32,6 @@ public class Combine
       int bp = 0, varCount = 0;
       int offset = -1, overlap = -1, split = 1;
       File matrix = new File("blosum62.txt");
-
       // parse files
       for (int i = 0; i < fastaFiles.length; i++)
       {
@@ -140,7 +139,6 @@ public class Combine
                                    "SQQHRFHASSNHQENQRPSDS";
 
                            //System.out.println(p1); 
-                           //System.out.println(p2);
 
                            SubSln[][] sln1 = null;
                            SubSln[][] sln2 = null;
@@ -151,7 +149,7 @@ public class Combine
                                    sln1 = EditDistance.align(ref, p1, EditDistance.scoreMatrix(matrix), existance, extension, false);
                                    sln2 = EditDistance.align(ref, p2, EditDistance.scoreMatrix(matrix), existance, extension, false);
                                } catch (Exception e) {System.err.println(e);}
-                           }
+                           
                            for(SubSln[] arr: sln1){
                                for(SubSln sol: arr) {
                                    if(sol.value > p1cost)
@@ -164,11 +162,11 @@ public class Combine
                                        p2cost = sol.value;
                                }
                            }
-                           System.out.println("####"+p1cost+"   "+p2cost);
                            // if lib2 is better, enter below if statement. otherwise do nothing   
                            if (p2cost > p1cost)
                            {
                               iso.CDS.set(k, found.CDS.get(k));
+                           }
                            }
                         }
                      }

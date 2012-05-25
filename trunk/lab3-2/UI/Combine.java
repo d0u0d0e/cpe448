@@ -10,6 +10,9 @@ import java.util.Comparator;
 import java.util.Collections;
 import lib.BioOverlap;
 import lib.Isoform;
+import lib.DNALib;
+import lib.EditDistance;
+import lib.EditDistance.SubSln;
 
 public class Combine
 {
@@ -17,7 +20,7 @@ public class Combine
        
    }
            
-   public void combineFiles(File[] fastaFiles, File[] gffFiles) throws IOException
+   public void combineFiles(File[] fastaFiles, File[] gffFiles, int existance, int extension) throws IOException
    {
       ArrayList<String> fasta = new ArrayList<String>();
       ArrayList<ArrayList<Isoform>> gff = new ArrayList<ArrayList<Isoform>>();
@@ -28,6 +31,7 @@ public class Combine
       int minMatch = 1000;
       int bp = 0, varCount = 0;
       int offset = -1, overlap = -1, split = 1;
+      File matrix = new File("blosum62.txt");
 
       // parse files
       for (int i = 0; i < fastaFiles.length; i++)
@@ -98,7 +102,71 @@ public class Combine
                            bp += difference(found.CDS.get(k), iso.CDS.get(k));
                            outVar.write(iso.CDS.get(k).get(11) + ", CDS, " + iso.CDS.get(k).get(0) + ", " + iso.CDS.get(k).get(3) + ", " + iso.CDS.get(k).get(4) + "\n");
                            outVar.write(found.CDS.get(k).get(11) + ", CDS, " + found.CDS.get(k).get(0) + ", " + found.CDS.get(k).get(3) + ", " + found.CDS.get(k).get(4) + "\n\n");
-                           if (isHigher(found.CDS.get(k), iso.CDS.get(k)))
+                           
+                           // get protein sequence of the two variations
+                           DNALib lib1, lib2;
+                           if (Integer.parseInt(iso.CDS.get(k).get(3)) < Integer.parseInt(iso.CDS.get(k).get(4)))
+                              lib1 = new DNALib(superFASTA.substring(Integer.parseInt(iso.CDS.get(k).get(3)), Integer.parseInt(iso.CDS.get(k).get(4))));
+                           else
+                              lib1 = new DNALib(superFASTA.substring(Integer.parseInt(iso.CDS.get(k).get(4)), Integer.parseInt(iso.CDS.get(k).get(3))));
+                           if (Integer.parseInt(found.CDS.get(k).get(3)) < Integer.parseInt(found.CDS.get(k).get(4)))
+                              lib2 = new DNALib(superFASTA.substring(Integer.parseInt(found.CDS.get(k).get(3)), Integer.parseInt(found.CDS.get(k).get(4))));
+                           else
+                              lib2 = new DNALib(superFASTA.substring(Integer.parseInt(found.CDS.get(k).get(4)), Integer.parseInt(found.CDS.get(k).get(3))));
+
+                           String p1 = lib1.protein;
+                           String p2 = lib2.protein;
+                           String ref = "MKLRCFNQAQTSHSWHPRSVFRVVSSCPPDRKKRPSPASWQICIGHLLT"+
+                                   "NYLGMFKMDSADFWQQARAPFGLQTALHQYSSPPNQQPISHHALHHSVPQENEQ"+
+                                   "LAGVQPEGPAAGSGVVGNNSSMAISGTNSTVGSKAESSHIPQQHSEQQSYGSDS"+
+                                   "FRGTQSPQLSSHHLLFNAAAAAAAAVHLKSTAMQNNLSPIGDQVQNNLRNYGQG"+
+                                   "SLNALCGIKPKQEMDAKTPLQPLDECPHPLVQAQAQSQYGGDYYDVADPQAREI"+
+                                   "SEGRALIIGLGAPSTVSTDDAQSSAPSHQLAGTGRALQTHQCKPMSPGTVGSSN"+
+                                   "LGAGRRSAPTTISKTFSQGQQSPQHSTTPSGGSTTPDIKYNNDKMANEIQLQLS"+
+                                   "RSSSAAAISERTLEECWSTLQRLFMHKSAMQQIQQQIPRVGLGTHGVTGSANLG"+
+                                   "GSITPSSDTKPHQCQQCMKSFSSNHQLVQHIRVHTGEKPYKCSYCDRRFKQLSH"+
+                                   "VQQHTRLHTGERPYKCHLPDCGRAFIQLSNLQQHLRNHDAQVERAKNRPFHCNI"+
+                                   "CGKGFATESSLRTHTSKELQLHLGVLQQHAALIGGPNATSCPVCHKLFLGTEAL"+
+                                   "VDHMKHVHKEKSPPPGGSASSQFSELNQIVTGNGNGTGSSNEQIATQCTTESNS"+
+                                   "HQATVGSSLIDSFLGKRRTANHPCPVCGKHYVNEGSLRKHLACHAENSQLTNSL"+
+                                   "RMWPCSVCQAVFTHENGLLTHMESMRMDPKHQFAAQYVLSRAAAEQRERESLLA"+
+                                   "VTLAASSGASTRIGIADAGNVLPTGAHNSDGSNSKCPSPSANSECSSNGRLSSS"+
+                                   "TTSDQDQDIDHGLSENENSNQNNIGSSTNNNNNCTSNNNASSHKMAELRLPGTG"+
+                                   "QYTMDAELHVANRMSLMAAAAAAVAASRPQDGVDTSAVPSAAVQAAVVNLAAAM"+
+                                   "RMNNSSNGATPYQQHHADHTQAHQTHILQHAHPHHHQQQQAPQHQQQQLSHLLV"+
+                                   "HTHPSNSNSRSQSSPNINVPSLQNESTAASIAMNMNVHMMRGSLDPDPSLGGMH"+
+                                   "GIEVLHQHQQQHHHHHHHHTSNYPQHAVTPTNQHTHPHPQTHQTAHHHTSPETA"+
+                                   "LRMHQAEAILRSHTEAAFRLATGSGPDTGVKCEADQNQLNSNNAGNAGGNSGGN"+
+                                   "SQQHRFHASSNHQENQRPSDS";
+
+                           //System.out.println(p1); 
+                           //System.out.println(p2);
+
+                           SubSln[][] sln1 = null;
+                           SubSln[][] sln2 = null;
+                           int p1cost = 0, p2cost = 0;
+                           // run editdistance against reference sequence for each protein sequence
+                           if (existance != Integer.MAX_VALUE && extension != Integer.MAX_VALUE) {
+                               try {
+                                   sln1 = EditDistance.align(ref, p1, EditDistance.scoreMatrix(matrix), existance, extension, false);
+                                   sln2 = EditDistance.align(ref, p2, EditDistance.scoreMatrix(matrix), existance, extension, false);
+                               } catch (Exception e) {System.err.println(e);}
+                           }
+                           for(SubSln[] arr: sln1){
+                               for(SubSln sol: arr) {
+                                   if(sol.value > p1cost)
+                                       p1cost = sol.value;
+                               }
+                           }
+                           for(SubSln[] arr: sln2){
+                               for(SubSln sol: arr) {
+                                   if(sol.value > p2cost)
+                                       p2cost = sol.value;
+                               }
+                           }
+                           System.out.println("####"+p1cost+"   "+p2cost);
+                           // if lib2 is better, enter below if statement. otherwise do nothing   
+                           if (p2cost > p1cost)
                            {
                               iso.CDS.set(k, found.CDS.get(k));
                            }

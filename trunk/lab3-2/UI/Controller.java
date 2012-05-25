@@ -502,11 +502,11 @@ public class Controller {
                 end, lib.GCContent(start, end)));
     }
 
-    public void combineFiles() {
+    public void combineFiles(int existancePenalty, int extensionPenalty) {
         setMainWindowOutput("Merging files...\n");
         Combine c = new Combine();
         try {
-            c.combineFiles(fastaFileArr, gffFileArr);
+            c.combineFiles(fastaFileArr, gffFileArr, existancePenalty, extensionPenalty);
         }
         catch (Exception e) {
             System.err.println("ERROR: " + e.getMessage());

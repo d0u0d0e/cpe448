@@ -25,9 +25,13 @@ BioGUI.java:
 test: classes
 	java UI/STTest
 
+testAlign: classes
+	java lib/EditDistance
+
 clean:
 	@echo "-------------------------"
 	@echo "*** Cleaning Files..."
 	rm -f UI/*.class
 	rm -f lib/*.class
+	rm -f *.csv
 	@echo "--------------------"

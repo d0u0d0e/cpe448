@@ -142,6 +142,7 @@ public class MainWindow extends JFrame {
    }
    
    private JMenu initHelpMenu() {
+       JMenuItem about = new JMenuItem("About");
        JMenuItem howTo = new JMenuItem("How to");
        JMenu helpMenu = new JMenu("Help");
        
@@ -153,7 +154,18 @@ public class MainWindow extends JFrame {
            }
        });
        
+       about.addActionListener(new ActionListener() {
+           public void actionPerformed(java.awt.event.ActionEvent e) {
+               JOptionPane.showMessageDialog(mMainFrame,
+                "<html><h1>DNA Splicer</h1><p><b>v3.2.4</b><HR>Created by:<br />"+
+                       "Daniel Huang<br />Benjamin Tupas<br />Ricardo Tijero</p><HR><P>Powered By:<b> People</b><br />Copyright 2012 Team 6 Inc.</p></html>",
+                "About", JOptionPane.INFORMATION_MESSAGE);
+               return;
+           }
+       });
+       
        helpMenu.add(howTo);
+       helpMenu.add(about);
        return helpMenu;
    }
    

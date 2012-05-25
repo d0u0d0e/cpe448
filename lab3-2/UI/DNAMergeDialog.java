@@ -100,8 +100,8 @@ public class DNAMergeDialog extends JDialog {
       mPane.add(fileFieldLabel);
       mPane.add(prepareInputFilesField(mFileRangeStart, "FASTA", true));
       mPane.add(prepareInputFilesField(mFileRangeEnd, "GFF", false));
-      //mPane.add(prepareStandAloneLabel("Set Gap Penalty (Optional):"));
-      //mPane.add(penaltyPanel);
+      mPane.add(prepareStandAloneLabel("Set Gap Penalty (Optional):"));
+      mPane.add(penaltyPanel);
       mPane.add(initControls());
 
       mPane.validate();
@@ -239,16 +239,23 @@ public class DNAMergeDialog extends JDialog {
 
       okayButton.addActionListener(new ActionListener(){
          public void actionPerformed(ActionEvent e) {
+            int existancePenalty, extensionPenalty;
             if (fastaFiles == null || gffFiles == null) {
                JOptionPane.showMessageDialog(mOwner,
                 "No FASTA files of GFF files were set.",
                 "Invalid File", JOptionPane.ERROR_MESSAGE);
                return;
             }
-            controller.setFastaFile(fastaFiles);
+            if (mExistance.getText().equals("") || mExtension.getText().equals(""))
+                existancePenalty = extensionPenalty = Integer.MAX_VALUE;
+            else
+            {
+                existancePenalty = Integer.valueOf(mExistance.getText());
+                extensionPenalty = Integer.valueOf(mExtension.getText());
+            }
             controller.setGffFile(gffFiles);
             try {
-                controller.combineFiles();
+                controller.combineFiles(existancePenalty, extensionPenalty);
             } catch (Exception ex) {
                 Logger.getLogger(InputFilesDialog.class.getName()).log(Level.SEVERE, null, ex);
             }

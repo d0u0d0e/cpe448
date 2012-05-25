@@ -1,5 +1,4 @@
 package lib;
-
 import java.lang.StringBuffer; 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,9 +10,11 @@ public class DNALib
 {
    private int error;
    private String seq;
+   public String protein;
    private StringBuffer sequence;
    private ArrayList<Gene> geneList;
    Map<String, aminoAcid> map = new HashMap<String, aminoAcid>(64);
+   Map<String, String> pmap = new HashMap<String, String>(64);
 	
    class aminoAcid {
       String name;
@@ -37,6 +38,10 @@ public class DNALib
    
    public DNALib(String seq) {
       this.seq = seq;
+      this.sequence = new StringBuffer(seq);
+      this.createMap();
+      this.protein = toProtein();
+      this.counts();
    }
 
    public DNALib(String seq, ArrayList<Gene> geneList)
@@ -96,8 +101,8 @@ public class DNALib
 
    private void mapAdd(String name, aminoAcid aa) {
       this.map.put(name, aa);
-		
       for(int i = 0; i < aa.codons.size(); i++){
+         this.pmap.put(aa.codons.get(i).name, name);	
          map.put(aa.codons.get(i).name, aa);
       }
    }
@@ -252,6 +257,22 @@ public class DNALib
          start += 3;
 	 end += 3;
       }
+   }
+
+   public String toProtein()
+   {
+      int start = 0, end = 3;
+      String sub;
+      String protein = "";
+
+      while(end <= seq.length()) 
+      {
+         sub = seq.substring(start, end);
+         protein = protein + this.pmap.get(sub);
+         start += 3;
+	      end += 3;
+      }
+      return protein;
    }
 
    public void histogram(String amino){
